@@ -49,25 +49,43 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
         </div>
       )
     }
+    const kindArt: Record<string, string> = {
+      clinic: '/art/clinic-chair.webp',
+      tools: '/art/tool-mirror.webp',
+      'practice-brush': '/art/tool-brush.webp',
+      prepare: '/art/tool-ring.webp',
+      spray: '/art/tool-spray.webp',
+      visit: '/art/drnour.webp',
+    }
     return (
-      <div className="min-h-dvh flex flex-col items-center justify-center gap-4 px-6 pt-14" data-testid="freeplay-picker">
-        {manifest.modules.map(m => (
-          <button
+      <div className="min-h-[calc(100dvh-3.5rem)] flex flex-col items-center justify-center gap-3 px-6 pt-14" data-testid="freeplay-picker">
+        {manifest.modules.map((m, i) => (
+          <motion.button
             key={m.id}
             data-testid={`freeplay-${m.id}`}
             onClick={() => setFreeChoice(m.id)}
-            className="min-h-[72px] w-full max-w-xs rounded-full bg-white shadow-md text-xl font-bold"
+            initial={{ opacity: 0, x: -24 }}
+            animate={{ opacity: 1, x: 0 }}
+            whileTap={{ scale: 0.96 }}
+            transition={{ type: 'spring', stiffness: 350, damping: 16, delay: i * 0.08 }}
+            className="min-h-[72px] w-full max-w-xs rounded-3xl bg-white shadow-md text-xl font-bold flex items-center gap-4 px-5"
           >
-            {t(lang, m.titleId as StringId)}
-          </button>
+            <img src={kindArt[m.kind]} alt="" className="w-11 h-11 object-contain select-none" draggable={false} />
+            <span className="text-start">{t(lang, m.titleId as StringId)}</span>
+          </motion.button>
         ))}
-        <button
+        <motion.button
           data-testid="freeplay-certificate"
           onClick={() => setFreeChoice('certificate')}
-          className="min-h-[72px] w-full max-w-xs rounded-full bg-sunny text-white shadow-md text-xl font-bold"
+          initial={{ opacity: 0, x: -24 }}
+          animate={{ opacity: 1, x: 0 }}
+          whileTap={{ scale: 0.96 }}
+          transition={{ type: 'spring', stiffness: 350, damping: 16, delay: manifest.modules.length * 0.08 }}
+          className="min-h-[72px] w-full max-w-xs rounded-3xl bg-sunny text-white shadow-md text-xl font-bold flex items-center gap-4 px-5"
         >
-          {t(lang, 'ui.certificate')}
-        </button>
+          <img src="/art/milo-celebrate.webp" alt="" className="w-11 h-11 object-contain select-none" draggable={false} />
+          <span className="text-start">{t(lang, 'ui.certificate')}</span>
+        </motion.button>
       </div>
     )
   }

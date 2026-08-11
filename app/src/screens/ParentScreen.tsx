@@ -35,7 +35,7 @@ export function ParentScreen({ onDone }: { onDone: () => void }) {
           <div className="flex flex-col gap-4 w-full max-w-xs">
             <Pop>
               <GameButton
-                icon={<span className="text-3xl">🪥</span>}
+                icon={<img src="/art/tool-brush.webp" alt="" className="w-9 select-none" draggable={false} />}
                 label={t(lang, 'parent.checkup')}
                 variant="mint"
                 onPress={() => {
@@ -46,7 +46,7 @@ export function ParentScreen({ onDone }: { onDone: () => void }) {
             </Pop>
             <Pop delay={0.08}>
               <GameButton
-                icon={<span className="text-3xl">⭐</span>}
+                icon={<img src="/art/star.png" alt="" className="w-8 select-none" draggable={false} />}
                 label={t(lang, 'parent.treatment')}
                 variant="primary"
                 onPress={() => {

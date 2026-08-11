@@ -60,11 +60,18 @@ export function RewardScreen({ onPlayAgain }: { onPlayAgain?: () => void }) {
         </div>
       ))}
 
-      <Pop>
-        <div className="flex gap-1 text-4xl" data-testid="reward-stars">
-          {'⭐⭐⭐⭐⭐'}
-        </div>
-      </Pop>
+      <div className="flex gap-2" data-testid="reward-stars">
+        {Array.from({ length: 5 }, (_, i) => (
+          <Pop key={i} delay={0.15 + i * 0.12}>
+            <img
+              src="/art/star.png"
+              alt=""
+              draggable={false}
+              className="w-11 select-none drop-shadow-[0_0_8px_rgba(255,212,94,0.9)]"
+            />
+          </Pop>
+        ))}
+      </div>
       <Floating>
         <motion.img
           src="/art/milo-celebrate.webp"

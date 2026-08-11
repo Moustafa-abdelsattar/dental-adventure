@@ -42,8 +42,10 @@ export function SprayScreen({ onComplete }: ModuleProps) {
   }, [])
 
   return (
-    <div className="min-h-dvh flex flex-col items-center px-4 pb-8 bg-gradient-to-b from-grape/20 to-transparent">
-      <h1 className="text-2xl font-bold mt-2 mb-1">{t(lang, 'spray.title')}</h1>
+    <div className="min-h-[calc(100dvh-3.5rem)] flex flex-col items-center justify-center px-4 pb-10 bg-gradient-to-b from-grape/30 via-sky/15 to-transparent">
+      <h1 className="text-3xl font-bold mb-1 bg-gradient-to-b from-grape to-sky-deep bg-clip-text text-transparent">
+        {t(lang, 'spray.title')}
+      </h1>
       <p className="text-ink/60 font-bold mb-3 text-center">{t(lang, 'spray.intro', { name: childName })}</p>
 
       {/* quiet night sky */}

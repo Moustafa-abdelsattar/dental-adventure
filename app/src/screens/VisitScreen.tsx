@@ -4,7 +4,6 @@ import { audio } from '../lib/audio'
 import { t, type StringId } from '../lib/i18n'
 import { useGame } from '../store/game'
 import { DrNour } from '../game/drnour/DrNour'
-import { toolPalette as P } from '../game/tools/palette'
 import { Sparkle } from '../game/Sparkle'
 import { GameButton } from '../components/ui/GameButton'
 import type { ModuleProps } from './registry'
@@ -83,8 +82,10 @@ export function VisitScreen({ onComplete }: ModuleProps) {
   }, [phase])
 
   return (
-    <div className="min-h-dvh flex flex-col items-center px-4 pb-8">
-      <h1 className="text-2xl font-bold mt-2 mb-3">{t(lang, 'visit.title')}</h1>
+    <div className="min-h-[calc(100dvh-3.5rem)] flex flex-col items-center justify-center px-4 pb-10">
+      <h1 className="text-3xl font-bold mb-3 bg-gradient-to-b from-sky-deep to-grape bg-clip-text text-transparent">
+        {t(lang, 'visit.title')}
+      </h1>
 
       <div className="relative w-full max-w-md aspect-[4/5] rounded-3xl bg-white/60 shadow-inner overflow-hidden flex items-end justify-center">
         {/* soft ceiling light — glow fades in over >1s, deliberately no flash */}
@@ -96,13 +97,16 @@ export function VisitScreen({ onComplete }: ModuleProps) {
           animate={{ opacity: phase === 'steps' && step >= 1 && !frozen ? 1 : 0 }}
           transition={{ duration: 1.2, ease: 'easeInOut' }}
         />
-        <svg viewBox="0 0 100 40" className="absolute top-2 start-1/2 -translate-x-1/2 w-24" aria-hidden>
-          <rect x="46" y="0" width="8" height="12" rx="4" fill={P.metal} />
-          <path d="M30 12 Q50 2 70 12 L64 20 Q50 12 36 20 Z" fill={P.sparkle} />
-        </svg>
+        {/* the clinic light peeks from the top */}
+        <img
+          src="/art/clinic-light.webp"
+          alt=""
+          draggable={false}
+          className="absolute -top-3 start-[8%] w-[30%] select-none opacity-95"
+        />
 
         {/* peer child reclining on the chair — custom art */}
-        <div className="absolute bottom-2 start-1 w-[72%]" data-testid="peer-child">
+        <div className="absolute bottom-3 start-0 w-[64%]" data-testid="peer-child">
           <motion.img
             src="/art/visit-child-chair.webp"
             alt=""
@@ -134,8 +138,8 @@ export function VisitScreen({ onComplete }: ModuleProps) {
           )}
         </div>
 
-        <div className="absolute bottom-2 end-2">
-          <DrNour masked={masked} onMaskTap={() => void maskTap()} idle={!frozen} size={130} />
+        <div className="absolute bottom-2 end-1 w-[44%]">
+          <DrNour masked={masked} onMaskTap={() => void maskTap()} idle={!frozen} />
         </div>
       </div>
 
@@ -152,16 +156,17 @@ export function VisitScreen({ onComplete }: ModuleProps) {
           onClick={handTap}
           animate={frozen ? { scale: 1 } : { scale: [1, 1.1, 1] }}
           transition={{ duration: 1.2, repeat: frozen ? 0 : Infinity }}
-          className="mt-2 w-24 h-24 rounded-full bg-sunny text-5xl shadow-lg"
+          className="mt-2 w-24 h-24 rounded-full bg-sunny shadow-lg flex items-center justify-center"
           aria-label="raise hand"
         >
-          ✋
+          <img src="/art/hand.png" alt="" className="w-14 select-none" draggable={false} />
         </motion.button>
       )}
       {frozen && (
-        <p className="mt-2 text-grape font-bold text-lg" data-testid="paused-label">
-          ⏸
-        </p>
+        <svg viewBox="0 0 24 24" className="mt-2 w-8 h-8" data-testid="paused-label" aria-label="paused">
+          <rect x="5" y="4" width="5" height="16" rx="2.5" fill="#8b6fd8" />
+          <rect x="14" y="4" width="5" height="16" rx="2.5" fill="#8b6fd8" />
+        </svg>
       )}
 
       {phase === 'steps' && (

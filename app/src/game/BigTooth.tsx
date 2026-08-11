@@ -1,5 +1,5 @@
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'motion/react'
-import { toolPalette as P } from './tools/palette'
 import { Sparkle } from './Sparkle'
 
 /**
@@ -25,12 +25,29 @@ export function BigTooth({
   onSpotTap?: (index: number) => void
   onBodyTap?: () => void
 }) {
+  // on the crown edges, clear of the face
   const spotPos = [
-    { cx: 64, cy: 76 },
-    { cx: 136, cy: 68 },
-    { cx: 84, cy: 138 },
-    { cx: 122, cy: 148 },
+    { cx: 42, cy: 64 },
+    { cx: 160, cy: 58 },
+    { cx: 56, cy: 148 },
+    { cx: 148, cy: 152 },
   ]
+
+  // brief foam burst wherever a spot was just cleaned
+  const prevSpots = useRef(spots)
+  const [foams, setFoams] = useState<{ key: number; cx: number; cy: number }[]>([])
+  useEffect(() => {
+    spots.forEach((dirty, i) => {
+      if (!dirty && prevSpots.current[i]) {
+        const key = performance.now() + i
+        setFoams(f => [...f, { key, cx: spotPos[i].cx, cy: spotPos[i].cy }])
+        setTimeout(() => setFoams(f => f.filter(x => x.key !== key)), 750)
+      }
+    })
+    prevSpots.current = spots
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [spots])
+
   return (
     <div className="relative w-full max-w-xs mx-auto aspect-square" data-testid="big-tooth">
       {showUmbrella && (
@@ -63,15 +80,9 @@ export function BigTooth({
         <svg viewBox="0 0 200 200" className="absolute inset-0 w-full h-full" style={{ pointerEvents: 'none' }}>
           {spotPos.map((p, i) =>
             spots[i] ? (
-              <motion.circle
+              <motion.g
                 key={i}
                 data-testid={`plaque-${i}`}
-                cx={p.cx}
-                cy={p.cy}
-                r="13"
-                fill="#d9c86a"
-                stroke={P.outline}
-                strokeWidth="3"
                 onClick={e => {
                   e.stopPropagation()
                   onSpotTap?.(i)
@@ -79,12 +90,46 @@ export function BigTooth({
                 onPointerEnter={e => {
                   if (e.buttons > 0) onSpotTap?.(i)
                 }}
-                animate={{ opacity: [0.75, 0.95, 0.75] }}
+                animate={{ opacity: [0.8, 1, 0.8] }}
                 transition={{ duration: 1.6, repeat: Infinity }}
                 style={{ cursor: 'pointer', pointerEvents: 'auto' }}
-              />
+              >
+                <path
+                  d={`M${p.cx - 13} ${p.cy} Q${p.cx - 11} ${p.cy - 12} ${p.cx} ${p.cy - 12} Q${p.cx + 12} ${p.cy - 11} ${p.cx + 13} ${p.cy + 1} Q${p.cx + 11} ${p.cy + 12} ${p.cx - 1} ${p.cy + 12} Q${p.cx - 12} ${p.cy + 10} ${p.cx - 13} ${p.cy} Z`}
+                  fill="#e3d17e"
+                  stroke="#b9a353"
+                  strokeWidth="2.5"
+                />
+                <circle cx={p.cx - 4} cy={p.cy - 3} r="2.2" fill="#c4ad5c" />
+                <circle cx={p.cx + 4} cy={p.cy + 3} r="1.8" fill="#c4ad5c" />
+              </motion.g>
             ) : null,
           )}
+
+          {foams.map(f => (
+            <g key={f.key} data-testid="foam">
+              {[
+                { dx: 0, dy: 0, r: 11 },
+                { dx: -11, dy: -7, r: 7 },
+                { dx: 10, dy: -9, r: 6 },
+                { dx: 7, dy: 9, r: 7 },
+                { dx: -9, dy: 8, r: 5 },
+              ].map((b, j) => (
+                <motion.circle
+                  key={j}
+                  cx={f.cx + b.dx}
+                  cy={f.cy + b.dy}
+                  fill="#ffffff"
+                  stroke="#dfe7f5"
+                  strokeWidth="1.5"
+                  initial={{ r: 0, opacity: 0.95 }}
+                  animate={{ r: b.r * 1.25, opacity: 0 }}
+                  transition={{ duration: 0.7, ease: 'easeOut', delay: j * 0.04 }}
+                />
+              ))}
+              <Sparkle x={f.cx} y={f.cy - 16} size={6} />
+            </g>
+          ))}
 
           {sparkle && (
             <g data-testid="tooth-sparkle">

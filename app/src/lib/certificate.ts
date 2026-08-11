@@ -56,9 +56,8 @@ export async function renderCertificate({ name, lang, date }: { name: string; la
   ctx.font = `bold 40px ${font}`
   ctx.fillText(t(lang, 'cert.for'), W / 2, 1030)
 
-  // five stars
-  ctx.font = '72px serif'
-  ctx.fillText('⭐⭐⭐⭐⭐', W / 2, 1150)
+  // five gold stars (drawn, not emoji — consistent on every device)
+  for (let i = 0; i < 5; i++) drawStar(ctx, W / 2 + (i - 2) * 105, 1120, 40, '#f0b429')
 
   // rosette
   ctx.fillStyle = '#3b7fc4'
@@ -78,6 +77,23 @@ export async function renderCertificate({ name, lang, date }: { name: string; la
   return new Promise<Blob>((resolve, reject) =>
     canvas.toBlob(b => (b ? resolve(b) : reject(new Error('toBlob failed'))), 'image/png'),
   )
+}
+
+function drawStar(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, color: string) {
+  ctx.save()
+  ctx.beginPath()
+  for (let i = 0; i < 10; i++) {
+    const radius = i % 2 === 0 ? r : r * 0.45
+    const a = (i * Math.PI) / 5 - Math.PI / 2
+    const x = cx + Math.cos(a) * radius
+    const y = cy + Math.sin(a) * radius
+    if (i === 0) ctx.moveTo(x, y)
+    else ctx.lineTo(x, y)
+  }
+  ctx.closePath()
+  ctx.fillStyle = color
+  ctx.fill()
+  ctx.restore()
 }
 
 /** Loads an image with a timeout; resolves null on failure (e.g. tests). */

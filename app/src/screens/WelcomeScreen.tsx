@@ -24,8 +24,9 @@ export function WelcomeScreen({ onStart }: { onStart: () => void }) {
         <h1 className="text-5xl font-bold leading-tight bg-gradient-to-b from-sky-deep to-grape bg-clip-text text-transparent drop-shadow-sm">
           {t(lang, 'app.title')}
         </h1>
-        <p className="inline-block mt-2 rounded-full bg-white/70 px-4 py-1 text-base text-ink/70 font-bold shadow-sm">
-          ✨ {t(lang, 'app.subtitle')}
+        <p className="inline-flex items-center gap-1.5 mt-2 rounded-full bg-white/70 px-4 py-1 text-base text-ink/70 font-bold shadow-sm">
+          <img src="/art/star.png" alt="" className="w-4 select-none" draggable={false} />
+          {t(lang, 'app.subtitle')}
         </p>
       </FadeIn>
       <MiloHero />

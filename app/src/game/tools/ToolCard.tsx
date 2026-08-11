@@ -14,11 +14,13 @@ export function ToolCard({
   lang,
   met,
   onMet,
+  index = 0,
 }: {
   toolId: ToolId
   lang: Lang
   met: boolean
   onMet: (toolId: ToolId) => void
+  index?: number
 }) {
   const { Svg } = TOOLS[toolId]
 
@@ -33,9 +35,9 @@ export function ToolCard({
       data-testid={`tool-${toolId}`}
       onClick={() => void tap()}
       whileTap={{ scale: 0.95 }}
-      initial={{ opacity: 0, scale: 0.7 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={springs.playful}
+      initial={{ opacity: 0, scale: 0.7, y: 16 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ ...springs.playful, delay: index * 0.09 }}
       className="relative bg-white rounded-3xl p-3 shadow-md flex flex-col items-center gap-1 min-h-[72px]"
     >
       <div className="w-full aspect-square">
@@ -43,12 +45,13 @@ export function ToolCard({
       </div>
       <span className="font-bold text-sm text-center leading-tight">{t(lang, `tool.${toolId}.name` as StringId)}</span>
       {met && (
-        <span
-          className="absolute top-1 end-1 bg-sunny text-white rounded-full w-7 h-7 flex items-center justify-center text-sm shadow"
+        <img
+          src="/art/star.png"
+          alt=""
+          draggable={false}
+          className="absolute top-1 end-1 w-7 select-none drop-shadow-[0_0_5px_rgba(255,212,94,0.9)]"
           data-testid={`met-${toolId}`}
-        >
-          ⭐
-        </span>
+        />
       )}
     </motion.button>
   )

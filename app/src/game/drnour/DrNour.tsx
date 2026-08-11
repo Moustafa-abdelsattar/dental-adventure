@@ -12,11 +12,12 @@ export function DrNour({
   masked,
   onMaskTap,
   idle = true,
-  size = 160,
+  size,
 }: {
   masked: boolean
   onMaskTap?: () => void
   idle?: boolean
+  /** Fixed pixel width; omit to fill the parent. */
   size?: number
 }) {
   const [hasMaskedArt, setHasMaskedArt] = useState(true)
@@ -24,7 +25,7 @@ export function DrNour({
   return (
     <motion.div
       className="relative select-none"
-      style={{ width: size }}
+      style={{ width: size ?? '100%' }}
       animate={idle ? { y: [0, -4, 0] } : {}}
       transition={{ duration: 3.5, repeat: idle ? Infinity : 0, ease: 'easeInOut' }}
       data-testid="drnour"

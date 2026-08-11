@@ -12,15 +12,15 @@ export function StarFly({ from, onArrive }: { from: { x: number; y: number }; on
     ? { x: target.left + target.width / 2, y: target.top + target.height / 2 }
     : { x: window.innerWidth - 60, y: 24 }
   return (
-    <motion.span
-      className="fixed z-50 text-4xl pointer-events-none"
-      initial={{ left: from.x, top: from.y, scale: 1.6, opacity: 1 }}
-      animate={{ left: to.x, top: to.y, scale: 0.7, opacity: 0.9 }}
+    <motion.img
+      src="/art/star.png"
+      alt=""
+      className="fixed z-50 w-12 pointer-events-none select-none drop-shadow-[0_0_10px_rgba(255,212,94,0.9)]"
+      initial={{ left: from.x, top: from.y, scale: 1.5, opacity: 1, rotate: -20 }}
+      animate={{ left: to.x, top: to.y, scale: 0.6, opacity: 0.95, rotate: 20 }}
       transition={{ ...springs.playful, duration: 0.9 }}
       onAnimationComplete={onArrive}
       data-testid="starfly"
-    >
-      ⭐
-    </motion.span>
+    />
   )
 }

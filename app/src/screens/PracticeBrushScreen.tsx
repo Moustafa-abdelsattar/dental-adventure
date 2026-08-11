@@ -50,8 +50,10 @@ export function PracticeBrushScreen({ onComplete }: ModuleProps) {
   }
 
   return (
-    <div className="min-h-dvh flex flex-col items-center px-4 pb-8">
-      <h1 className="text-2xl font-bold mt-2 mb-1">{t(lang, 'practice.brush.title')}</h1>
+    <div className="min-h-[calc(100dvh-3.5rem)] flex flex-col items-center justify-center px-4 pb-10">
+      <h1 className="text-3xl font-bold mb-1 bg-gradient-to-b from-sky-deep to-grape bg-clip-text text-transparent">
+        {t(lang, 'practice.brush.title')}
+      </h1>
       <p className="text-ink/60 font-bold mb-3 text-center">{t(lang, 'practice.brush.intro', { name: childName })}</p>
 
       <motion.div

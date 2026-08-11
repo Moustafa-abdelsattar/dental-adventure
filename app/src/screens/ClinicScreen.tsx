@@ -9,12 +9,12 @@ import type { ModuleProps } from './registry'
 
 type ItemId = 'chair' | 'light' | 'sink' | 'table'
 
-// positioned in the lower two-thirds of the scene — small thumbs reach there
+// four corners of the room, weighted low — small thumbs reach there
 const ITEMS: { id: ItemId; nameId: StringId; descId: StringId; className: string }[] = [
-  { id: 'light', nameId: 'clinic.light.name', descId: 'clinic.light.desc', className: 'top-[22%] start-[10%]' },
-  { id: 'chair', nameId: 'clinic.chair.name', descId: 'clinic.chair.desc', className: 'top-[56%] start-[8%]' },
-  { id: 'sink', nameId: 'clinic.sink.name', descId: 'clinic.sink.desc', className: 'top-[26%] end-[8%]' },
-  { id: 'table', nameId: 'clinic.table.name', descId: 'clinic.table.desc', className: 'top-[60%] end-[8%]' },
+  { id: 'light', nameId: 'clinic.light.name', descId: 'clinic.light.desc', className: 'top-[6%] start-[7%] w-[42%]' },
+  { id: 'sink', nameId: 'clinic.sink.name', descId: 'clinic.sink.desc', className: 'top-[8%] end-[5%] w-[44%]' },
+  { id: 'chair', nameId: 'clinic.chair.name', descId: 'clinic.chair.desc', className: 'bottom-[5%] start-[4%] w-[47%]' },
+  { id: 'table', nameId: 'clinic.table.name', descId: 'clinic.table.desc', className: 'bottom-[4%] end-[4%] w-[44%]' },
 ]
 
 const IDLE_HINT_MS = 10000
@@ -71,13 +71,15 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
 
   return (
     <div className="min-h-dvh flex flex-col items-center px-4 pb-8">
-      <h1 className="text-2xl font-bold mt-2 mb-1">{t(lang, 'clinic.title')}</h1>
+      <h1 className="text-3xl font-bold mt-1 mb-1 bg-gradient-to-b from-sky-deep to-grape bg-clip-text text-transparent">
+        {t(lang, 'clinic.title')}
+      </h1>
       <p className="text-ink/60 font-bold mb-2 text-center">{t(lang, 'clinic.intro', { name: childName })}</p>
 
-      <div ref={sceneRef} className="relative w-full max-w-md aspect-[4/5] rounded-3xl bg-white/60 shadow-inner overflow-hidden">
-        {/* room backdrop */}
-        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-sky/15" />
-        {ITEMS.map(item => {
+      <div ref={sceneRef} className="relative w-full max-w-md aspect-[4/5] rounded-3xl shadow-inner overflow-hidden bg-gradient-to-b from-sky/25 via-white/70 to-mint/20">
+        {/* room: wall line + floor */}
+        <div className="absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-b from-sky/10 to-sky/25 rounded-t-[40%_18px]" />
+        {ITEMS.map((item, idx) => {
           const isExplored = explored.has(item.id)
           return (
             <motion.button
@@ -85,15 +87,30 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
               data-testid={`hotspot-${item.id}`}
               aria-label={t(lang, item.nameId)}
               onClick={() => tapItem(item.id)}
-              animate={isExplored ? { scale: 1 } : { scale: hintFor === item.id ? [1, 1.12, 1] : [1, 1.05, 1] }}
-              transition={{ duration: hintFor === item.id ? 0.8 : 2, repeat: isExplored ? 0 : Infinity, ease: 'easeInOut' }}
-              className={`absolute ${item.className} w-[38%] aspect-square rounded-3xl flex items-center justify-center`}
+              initial={{ opacity: 0, scale: 0.6, y: 18 }}
+              animate={
+                isExplored
+                  ? { opacity: 1, y: 0, scale: 1 }
+                  : { opacity: 1, y: 0, scale: hintFor === item.id ? [1, 1.12, 1] : [1, 1.05, 1] }
+              }
+              transition={{
+                opacity: { ...{ type: 'spring', stiffness: 350, damping: 16 }, delay: 0.15 + idx * 0.12 },
+                y: { type: 'spring', stiffness: 350, damping: 16, delay: 0.15 + idx * 0.12 },
+                scale: isExplored
+                  ? { type: 'spring', stiffness: 350, damping: 16 }
+                  : { duration: hintFor === item.id ? 0.8 : 2, repeat: Infinity, ease: 'easeInOut', delay: 0.3 + idx * 0.12 },
+              }}
+              className={`absolute ${item.className} aspect-square rounded-3xl flex items-center justify-center`}
             >
               <ItemSvg id={item.id} />
               {isExplored && (
-                <span className="absolute top-1 end-1 bg-mint text-white rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold shadow" data-testid={`explored-${item.id}`}>
-                  ✓
-                </span>
+                <img
+                  src="/art/star.png"
+                  alt=""
+                  draggable={false}
+                  className="absolute top-0 end-0 w-9 select-none drop-shadow-[0_0_6px_rgba(255,212,94,0.9)]"
+                  data-testid={`explored-${item.id}`}
+                />
               )}
             </motion.button>
           )

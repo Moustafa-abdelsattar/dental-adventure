@@ -20,13 +20,14 @@ export function ProgressHud() {
         className="flex gap-1 shrink-0"
       >
         {Array.from({ length: 5 }, (_, i) => (
-          <span
+          <img
             key={i}
+            src="/art/star.png"
+            alt=""
+            draggable={false}
             data-testid={i < count ? 'star-filled' : 'star-empty'}
-            className={`text-2xl transition-all ${i < count ? 'drop-shadow-[0_0_6px_rgba(255,212,94,0.8)]' : 'opacity-25 grayscale'}`}
-          >
-            ⭐
-          </span>
+            className={`w-7 select-none transition-all ${i < count ? 'drop-shadow-[0_0_6px_rgba(255,212,94,0.9)]' : 'opacity-25 grayscale'}`}
+          />
         ))}
       </div>
     </div>

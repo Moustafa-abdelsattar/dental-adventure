@@ -50,8 +50,10 @@ export function ToolsScreen({ module, onComplete }: ModuleProps) {
   }
 
   return (
-    <div className="min-h-dvh flex flex-col items-center px-4 pb-8">
-      <h1 className="text-2xl font-bold mt-2 mb-1">{t(lang, 'tools.title')}</h1>
+    <div className="min-h-[calc(100dvh-3.5rem)] flex flex-col items-center justify-center px-4 pb-16 -mt-2">
+      <h1 className="text-3xl font-bold mb-1 bg-gradient-to-b from-sky-deep to-grape bg-clip-text text-transparent">
+        {t(lang, 'tools.title')}
+      </h1>
       <p className="text-ink/60 font-bold mb-3 text-center">{t(lang, 'tools.intro', { name: childName })}</p>
 
       {/* group progress: a tooth that gets shinier per finished group */}
@@ -79,8 +81,8 @@ export function ToolsScreen({ module, onComplete }: ModuleProps) {
         className="grid grid-cols-3 gap-3 w-full max-w-md"
         data-testid={`tool-group-${page}`}
       >
-        {groups[page]?.map(toolId => (
-          <ToolCard key={toolId} toolId={toolId} lang={lang} met={met.has(toolId)} onMet={id => void handleMet(id)} />
+        {groups[page]?.map((toolId, i) => (
+          <ToolCard key={toolId} toolId={toolId} lang={lang} met={met.has(toolId)} onMet={id => void handleMet(id)} index={i} />
         ))}
       </motion.div>
     </div>
