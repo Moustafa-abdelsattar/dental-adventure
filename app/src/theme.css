@@ -1,0 +1,28 @@
+@import './fonts.css';
+@import 'tailwindcss';
+
+@theme {
+  --color-sky: #7ec8f2;
+  --color-sky-deep: #3b7fc4;
+  --color-bubblegum: #f97ba9;
+  --color-sunny: #ffd45e;
+  --color-mint: #7fd0ba;
+  --color-grape: #8b6fd8;
+  --color-cream: #fef9f0;
+  --color-ink: #3a3560;
+  --font-display: 'Baloo 2', system-ui, sans-serif;
+  --font-display-ar: 'Baloo Bhaijaan 2', system-ui, sans-serif;
+}
+
+body {
+  font-family: var(--font-display);
+  background: var(--color-cream);
+  color: var(--color-ink);
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+  user-select: none;
+}
+
+html[dir='rtl'] body {
+  font-family: var(--font-display-ar);
+}
