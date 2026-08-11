@@ -3,8 +3,8 @@ import { springs } from '../lib/springs'
 import { audio } from '../lib/audio'
 import { useGame } from '../store/game'
 import type { Lang } from '../lib/i18n'
-import { Floating } from '../components/motion/Floating'
 import { FadeIn } from '../components/motion/FadeIn'
+import { MiloHero } from '../components/ui/MiloHero'
 
 /**
  * First screen: two big self-voicing language buttons.
@@ -23,9 +23,7 @@ export function LanguageScreen() {
 
   return (
     <div className="min-h-dvh flex flex-col items-center justify-center gap-8 px-6">
-      <Floating>
-        <img src="/art/milo.webp" alt="Milo the Tooth" draggable={false} className="w-44 select-none drop-shadow-lg" />
-      </Floating>
+      <MiloHero size={185} draggable={false} />
       <FadeIn className="flex flex-col items-center gap-1">
         <span className="text-2xl font-bold" dir="rtl" lang="ar" style={{ fontFamily: 'var(--font-display-ar)' }}>
           اختر اللغة

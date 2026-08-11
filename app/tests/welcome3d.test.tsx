@@ -1,6 +1,5 @@
 import { render, screen, cleanup } from '@testing-library/react'
 import { WelcomeScreen } from '../src/screens/WelcomeScreen'
-import { SafeBoundary } from '../src/components/ui/SafeBoundary'
 import { useGame } from '../src/store/game'
 import { audio } from '../src/lib/audio'
 
@@ -13,20 +12,9 @@ beforeEach(() => {
 })
 afterEach(() => vi.restoreAllMocks())
 
-test('welcome screen never crashes without WebGL — start button always present', async () => {
+test('welcome screen renders the Milo hero and the start button', async () => {
   render(<WelcomeScreen onStart={vi.fn()} />)
+  expect(screen.getByTestId('milo-hero')).toBeInTheDocument()
+  expect(screen.getByAltText('Milo the Tooth')).toHaveAttribute('src', '/art/milo.webp')
   expect(await screen.findByRole('button', { name: /Start the Adventure/ })).toBeInTheDocument()
-})
-
-function Bomb(): never {
-  throw new Error('no webgl')
-}
-
-test('SafeBoundary swaps a crashing child for the fallback', () => {
-  render(
-    <SafeBoundary fallback={<p>plan-b</p>}>
-      <Bomb />
-    </SafeBoundary>,
-  )
-  expect(screen.getByText('plan-b')).toBeInTheDocument()
 })

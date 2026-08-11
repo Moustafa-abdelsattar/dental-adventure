@@ -1,26 +1,64 @@
+import { motion } from 'motion/react'
 import { Floating } from '../motion/Floating'
 
-/** Soft decorative sky: clouds, drifting stars, and a wave at the bottom. */
+/**
+ * The sky behind every screen: layered gradient with a warm glow,
+ * depth-blurred drifting clouds, slow gold sparkles, and animated
+ * two-tone waves along the bottom.
+ */
 export function Backdrop() {
   return (
     <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden>
-      <div className="absolute inset-0 bg-gradient-to-b from-sky/35 via-cream to-cream" />
-      <Floating duration={7} className="absolute top-[8%] start-[6%] opacity-70">
-        <Cloud w={110} />
+      <div className="absolute inset-0 bg-gradient-to-b from-sky/45 via-cream to-cream" />
+      {/* warm glow behind the hero area */}
+      <div className="absolute top-[14%] start-1/2 -translate-x-1/2 w-[130%] aspect-square rounded-full bg-[radial-gradient(circle,rgba(255,244,214,0.85)_0%,rgba(255,244,214,0)_60%)]" />
+
+      {/* clouds at three depths */}
+      <Floating duration={9} amplitude={7} className="absolute top-[6%] start-[4%] opacity-90">
+        <Cloud w={120} />
       </Floating>
-      <Floating duration={9} amplitude={9} className="absolute top-[16%] end-[8%] opacity-60">
-        <Cloud w={80} />
+      <Floating duration={12} amplitude={10} className="absolute top-[15%] end-[6%] opacity-60 blur-[1px]">
+        <Cloud w={90} />
       </Floating>
-      <Floating duration={6} className="absolute top-[30%] start-[14%] text-sunny text-xl opacity-80">
-        ✦
+      <Floating duration={15} amplitude={6} className="absolute top-[34%] start-[12%] opacity-35 blur-[2px]">
+        <Cloud w={64} />
       </Floating>
-      <Floating duration={8} amplitude={10} className="absolute top-[24%] end-[24%] text-sunny text-sm opacity-70">
-        ✨
-      </Floating>
-      <svg className="absolute bottom-0 inset-x-0 w-full" viewBox="0 0 375 90" preserveAspectRatio="none">
-        <path d="M0 45 Q60 15 130 40 T260 38 T375 30 L375 90 L0 90 Z" fill="#7ec8f2" opacity="0.25" />
-        <path d="M0 62 Q80 38 170 58 T375 52 L375 90 L0 90 Z" fill="#7ec8f2" opacity="0.35" />
-      </svg>
+
+      {/* slow gold sparkles */}
+      {[
+        { cls: 'top-[24%] end-[20%] w-5', d: 0 },
+        { cls: 'top-[10%] start-[38%] w-3.5', d: 1.4 },
+        { cls: 'top-[42%] end-[8%] w-3', d: 2.6 },
+      ].map(s => (
+        <motion.img
+          key={s.cls}
+          src="/art/star.png"
+          alt=""
+          className={`absolute ${s.cls} select-none`}
+          animate={{ opacity: [0, 0.9, 0], scale: [0.5, 1.1, 0.5], rotate: [0, 25, 0] }}
+          transition={{ duration: 4.5, repeat: Infinity, delay: s.d, ease: 'easeInOut' }}
+        />
+      ))}
+
+      {/* animated two-tone waves */}
+      <motion.svg
+        className="absolute -bottom-1 inset-x-0 w-[130%]"
+        viewBox="0 0 480 100"
+        preserveAspectRatio="none"
+        animate={{ x: [0, -60, 0] }}
+        transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+      >
+        <path d="M0 48 Q70 18 150 44 T310 40 T480 32 L480 100 L0 100 Z" fill="#7ec8f2" opacity="0.22" />
+      </motion.svg>
+      <motion.svg
+        className="absolute -bottom-1 inset-x-0 w-[130%]"
+        viewBox="0 0 480 100"
+        preserveAspectRatio="none"
+        animate={{ x: [-60, 0, -60] }}
+        transition={{ duration: 17, repeat: Infinity, ease: 'easeInOut' }}
+      >
+        <path d="M0 66 Q90 40 190 62 T480 56 L480 100 L0 100 Z" fill="#7ec8f2" opacity="0.38" />
+      </motion.svg>
     </div>
   )
 }
