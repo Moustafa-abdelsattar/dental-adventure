@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react'
 import type { ModuleDef, ModuleKind } from '../content/types'
 import { ClinicScreen } from './ClinicScreen'
+import { ToolsScreen } from './ToolsScreen'
 
 export interface ModuleProps {
   module: ModuleDef
@@ -27,7 +28,7 @@ function DevModule({ module, onComplete }: ModuleProps) {
 
 export const defaultRegistry: ModuleRegistry = {
   clinic: ClinicScreen,
-  tools: DevModule,
+  tools: ToolsScreen,
   'practice-brush': DevModule,
   prepare: DevModule,
   spray: DevModule,
