@@ -41,7 +41,8 @@ class AudioController {
         resolve()
       }
       clip.onended = finish
-      clip.play().catch(finish)
+      // play() may return undefined in some environments (jsdom, old browsers)
+      Promise.resolve(clip.play()).catch(finish)
     })
   }
 
@@ -54,7 +55,7 @@ class AudioController {
     this.music = new Audio('/audio/music.mp3')
     this.music.loop = true
     this.music.volume = MUSIC_VOL
-    void this.music.play().catch(() => {
+    void Promise.resolve(this.music.play()).catch(() => {
       this.music = null
     })
   }
@@ -64,8 +65,8 @@ class AudioController {
     if (m) {
       this.current?.pause()
       this.music?.pause()
-    } else {
-      void this.music?.play().catch(() => {})
+    } else if (this.music) {
+      void Promise.resolve(this.music.play()).catch(() => {})
     }
   }
 

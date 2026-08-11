@@ -1,4 +1,6 @@
 {
+  "app.title": "Dental Adventure",
+  "app.subtitle": "Your first dental mission!",
   "lang.greet": "Hello! Let's play in English!",
   "ui.start": "Start the Adventure",
   "ui.next": "Next",
