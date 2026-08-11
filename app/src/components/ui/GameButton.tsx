@@ -23,8 +23,12 @@ export function GameButton({
   return (
     <motion.button
       whileTap={{ scale: 0.96 }}
-      animate={pulsing ? { scale: [1, 1.04, 1] } : {}}
-      transition={pulsing ? { duration: 1.6, repeat: Infinity, ease: 'easeInOut' } : springs.snappy}
+      animate={
+        pulsing
+          ? { boxShadow: ['0 0 0 0px rgba(249,123,169,0.45)', '0 0 0 16px rgba(249,123,169,0)'] }
+          : {}
+      }
+      transition={pulsing ? { duration: 1.6, repeat: Infinity, ease: 'easeOut' } : springs.snappy}
       onClick={onPress}
       className={`min-h-[72px] px-8 rounded-full text-2xl font-bold shadow-lg flex items-center justify-center gap-3 ${colors}`}
     >

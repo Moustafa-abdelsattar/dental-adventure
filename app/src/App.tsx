@@ -12,7 +12,10 @@ import { ProgressHud } from './components/ui/ProgressHud'
 export default function App() {
   const lang = useGame(s => s.lang)
   const path = useGame(s => s.path)
-  const [parentDone, setParentDone] = useState(false)
+  // a returning child (any star already earned) skips the parent moment and resumes
+  const [parentDone, setParentDone] = useState(
+    () => useGame.getState().path !== null && Object.keys(useGame.getState().stars).length > 0,
+  )
   const [started, setStarted] = useState(false)
 
   useEffect(() => {
