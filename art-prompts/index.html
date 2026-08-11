@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Dental Adventure — ChatGPT Art Prompt Sheet</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --ink:#3a3560; --sky:#7ec8f2; --pink:#f97ba9; --cream:#fef9f0; }
+  * { box-sizing:border-box; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--cream); color:var(--ink); margin:0; padding:24px; }
+  h1 { color:#3b7fc4; }
+  .howto { background:#fff; border-radius:16px; padding:16px 20px; box-shadow:0 2px 10px #0001; max-width:900px; }
+  .howto li { margin:6px 0; }
+  code { background:#eef4ff; padding:2px 6px; border-radius:6px; font-weight:600; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(420px,1fr)); gap:20px; margin-top:24px; }
+  .card { background:#fff; border-radius:16px; padding:16px; box-shadow:0 2px 10px #0001; display:flex; flex-direction:column; gap:10px; }
+  .card h2 { margin:0; font-size:18px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .file { background:var(--pink); color:#fff; font-size:12px; padding:3px 10px; border-radius:999px; font-family:monospace; }
+  .req { background:#7fd0ba; color:#fff; font-size:11px; padding:2px 8px; border-radius:999px; }
+  .opt { background:#c9d6ea; color:#3a3560; font-size:11px; padding:2px 8px; border-radius:999px; }
+  .ref { display:flex; gap:8px; }
+  .ref img { max-height:140px; border-radius:10px; border:2px solid #eef; }
+  textarea { width:100%; min-height:130px; border:2px solid #e7ecf7; border-radius:10px; padding:10px; font-size:13px; color:var(--ink); resize:vertical; }
+  button { align-self:flex-start; background:var(--sky); color:#fff; border:0; border-radius:999px; padding:8px 18px; font-weight:700; cursor:pointer; }
+  button:active { transform:scale(.96); }
+  .copied { background:#7fd0ba; }
+</style>
+</head>
+<body>
+<h1>🦷 Dental Adventure — Art Prompt Sheet</h1>
+<div class="howto">
+  <b>How to use (per card):</b>
+  <ol>
+    <li>In ChatGPT (image generation), <b>attach the reference image</b> shown on the card (they're in the <code>ref/</code> folder next to this file).</li>
+    <li>Paste the prompt (Copy button) and generate. Ask for a re-roll if the style drifts from the reference.</li>
+    <li>Save the result <b>with the exact filename on the card</b> into <code>F:\Dental_kids\art-in\</code>.</li>
+    <li>When the folder is ready, tell Claude "art is in" — everything gets wired in and animated.</li>
+  </ol>
+  <b>Rules that keep the set consistent:</b> always attach the same reference, always keep the STYLE paragraph unchanged, always request <b>transparent background PNG, 1024×1024, single centered subject</b>. If ChatGPT can't do transparency, ask for a plain solid #FEF9F0 background instead.
+</div>
+
+<div class="grid" id="grid"></div>
+
+<script>
+const STYLE = `STYLE (keep identical for every image in this set, match the attached reference exactly): soft 3D clay-render children's app illustration, cute rounded plush shapes, glossy smooth surfaces, gentle gradients, pastel palette (sky blue #7EC8F2, baby pink #F97BA9, butter yellow #FFD45E, mint #7FD0BA) on light cream, soft studio lighting, subtle soft shadow under the subject. Single centered subject, square 1024x1024, TRANSPARENT background (PNG with alpha). No text, no watermark, no border, no extra objects.`;
+
+const CARDS = [
+  { file:'clinic-chair.png', req:1, name:'Dental chair', ref:['ref/clinic-screen.png'],
+    subject:`SUBJECT: a cute pediatric dental chair like the blue reclining chair in the attached reference — soft rounded pastel sky-blue cushioned recliner on a small rounded metal base, slightly tilted back, friendly and comfy looking, absolutely no straps or scary details.` },
+  { file:'clinic-light.png', req:1, name:'Overhead dental light', ref:['ref/clinic-screen.png'],
+    subject:`SUBJECT: a cute dental operating light like in the attached reference — rounded butter-yellow lamp head on a small curved pastel arm, glowing warmly and gently (soft glow, never harsh), tiny sparkles around it.` },
+  { file:'clinic-sink.png', req:1, name:'Little rinse sink', ref:['ref/clinic-screen.png'],
+    subject:`SUBJECT: a cute small dental rinse sink — rounded white/pastel basin on a little pedestal with a tiny curved sky-blue tap and a small water swirl, friendly and toy-like.` },
+  { file:'clinic-table.png', req:1, name:'Tool table / tray', ref:['ref/clinic-screen.png','ref/tools-band.png'],
+    subject:`SUBJECT: a cute small dental instrument table — rounded pastel-purple tray on slim legs holding 3 tiny simplified colorful dental tools (mirror, brush, spray bottle) lying neatly, everything rounded and friendly.` },
+  { file:'drnour.png', req:1, name:'Dr. Nour — the friendly dentist (NO mask)', ref:['ref/visit-strip.png'],
+    subject:`SUBJECT: a friendly young female pediatric dentist character, waist-up, warm smile (mouth visible — NO face mask), warm medium skin tone, dark hair neatly rounded, lavender/purple scrubs with a tiny tooth badge, one hand giving a small wave. Big kind eyes, in the same cute proportions as the children in the attached reference.` },
+  { file:'visit-child-chair.png', req:1, name:'Happy child in the dental chair', ref:['ref/visit-strip.png'],
+    subject:`SUBJECT: a happy relaxed child reclining in a pastel sky-blue dental chair, like the attached reference panels — child smiling with mouth open comfortably, small bib, hands resting, seen from the side, cozy and calm mood.` },
+  { file:'milo.png', req:1, name:'Milo the Tooth — waving', ref:['ref/milo.png','ref/certificate.png'],
+    subject:`SUBJECT: Milo the Tooth, the mascot in the attached reference — a cute white molar tooth character with big sparkly eyes, rosy cheeks, tiny smile, wearing a small sky-blue superhero cape/scarf, standing on his two little root-legs, one arm waving hello.` },
+  { file:'milo-celebrate.png', req:0, name:'Milo celebrating (optional)', ref:['ref/milo.png'],
+    subject:`SUBJECT: the exact same Milo the Tooth character as the attached reference (white molar, blue cape, rosy cheeks) — both arms up celebrating, huge happy open-mouth smile, little gold stars floating around him.` },
+  { file:'tooth-happy.png', req:0, name:'Big happy tooth (optional — Fluent asset already in use)', ref:['ref/tools-band.png'],
+    subject:`SUBJECT: a big cute white molar tooth with a friendly face — big round eyes, rosy pink cheeks, small smile — front view, plump and glossy like the attached reference tools.` },
+  { file:'tooth-sleepy.png', req:0, name:'Big sleepy tooth (optional)', ref:['ref/tools-band.png'],
+    subject:`SUBJECT: the same big cute white molar tooth character, but with closed sleepy eyes (gentle curved eyelids), tiny relaxed smile, one small "z" NOT included (no text) — calm cozy expression.` },
+]
+
+const grid = document.getElementById('grid')
+for (const c of CARDS) {
+  const div = document.createElement('div'); div.className = 'card'
+  const prompt = STYLE + '\n\n' + c.subject
+  div.innerHTML = `
+    <h2>${c.name} <span class="file">${c.file}</span> ${c.req ? '<span class="req">required</span>' : '<span class="opt">optional</span>'}</h2>
+    <div class="ref">${c.ref.map(r => `<img src="${r}" alt="reference">`).join('')}</div>
+    <textarea readonly>${prompt}</textarea>
+    <button onclick="navigator.clipboard.writeText(this.previousElementSibling.value).then(()=>{this.textContent='Copied ✓';this.classList.add('copied');setTimeout(()=>{this.textContent='Copy prompt';this.classList.remove('copied')},1500)})">Copy prompt</button>`
+  grid.appendChild(div)
+}
+</script>
+</body>
+</html>
