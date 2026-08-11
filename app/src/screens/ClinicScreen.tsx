@@ -9,11 +9,12 @@ import type { ModuleProps } from './registry'
 
 type ItemId = 'chair' | 'light' | 'sink' | 'table'
 
+// positioned in the lower two-thirds of the scene — small thumbs reach there
 const ITEMS: { id: ItemId; nameId: StringId; descId: StringId; className: string }[] = [
-  { id: 'light', nameId: 'clinic.light.name', descId: 'clinic.light.desc', className: 'top-[6%] start-[12%]' },
-  { id: 'chair', nameId: 'clinic.chair.name', descId: 'clinic.chair.desc', className: 'top-[34%] start-[8%]' },
-  { id: 'sink', nameId: 'clinic.sink.name', descId: 'clinic.sink.desc', className: 'top-[10%] end-[10%]' },
-  { id: 'table', nameId: 'clinic.table.name', descId: 'clinic.table.desc', className: 'top-[42%] end-[8%]' },
+  { id: 'light', nameId: 'clinic.light.name', descId: 'clinic.light.desc', className: 'top-[22%] start-[10%]' },
+  { id: 'chair', nameId: 'clinic.chair.name', descId: 'clinic.chair.desc', className: 'top-[56%] start-[8%]' },
+  { id: 'sink', nameId: 'clinic.sink.name', descId: 'clinic.sink.desc', className: 'top-[26%] end-[8%]' },
+  { id: 'table', nameId: 'clinic.table.name', descId: 'clinic.table.desc', className: 'top-[60%] end-[8%]' },
 ]
 
 const IDLE_HINT_MS = 10000
