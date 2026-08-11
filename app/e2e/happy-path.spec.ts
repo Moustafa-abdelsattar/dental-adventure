@@ -21,9 +21,11 @@ async function completeClinic(page: Page) {
 }
 
 async function completeTools(page: Page, ids: string[]) {
-  for (const id of ids) {
-    await page.getByTestId(`tool-${id}`).click()
-    await expect(page.getByTestId(`met-${id}`)).toBeVisible({ timeout: 15_000 })
+  // the last tool of a group advances the page immediately, unmounting its
+  // met-badge — only assert the badge for non-final tools of the trio
+  for (let i = 0; i < ids.length; i++) {
+    await page.getByTestId(`tool-${ids[i]}`).click()
+    if (i < ids.length - 1) await expect(page.getByTestId(`met-${ids[i]}`)).toBeVisible({ timeout: 15_000 })
   }
 }
 

@@ -59,13 +59,14 @@ export function ToolsScreen({ module, onComplete }: ModuleProps) {
         {groups.map((g, i) => {
           const finished = g.every(id => met.has(id))
           return (
-            <motion.span
+            <motion.img
               key={i}
+              src="/art/tooth.png"
+              alt=""
+              draggable={false}
               animate={finished ? { scale: [1, 1.3, 1] } : {}}
-              className={`text-2xl ${finished ? 'drop-shadow-[0_0_8px_rgba(255,212,94,0.9)]' : i === page ? '' : 'opacity-30 grayscale'}`}
-            >
-              🦷
-            </motion.span>
+              className={`w-8 select-none ${finished ? 'drop-shadow-[0_0_8px_rgba(255,212,94,0.9)]' : i === page ? 'opacity-70' : 'opacity-30 grayscale'}`}
+            />
           )
         })}
       </div>

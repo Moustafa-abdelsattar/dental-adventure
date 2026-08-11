@@ -1,0 +1,1 @@
+﻿Art assets in this folder are from Microsoft Fluent UI Emoji (https://github.com/microsoft/fluentui-emoji), licensed under the MIT License. Copyright (c) Microsoft Corporation.

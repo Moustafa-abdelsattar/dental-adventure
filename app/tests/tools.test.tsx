@@ -18,11 +18,13 @@ beforeEach(() => {
 })
 afterEach(() => vi.restoreAllMocks())
 
-test('every tool id has an entry and renders with the shared ToolFace', () => {
+test('every tool id has an entry and renders its Fluent 3D art asset', () => {
   for (const id of ALL_IDS) {
     const { Svg } = TOOLS[id]
     const { container, unmount } = render(<Svg />)
-    expect(container.querySelectorAll('[data-toolface]').length, `tool ${id} must carry the family face`).toBeGreaterThanOrEqual(1)
+    const img = container.querySelector('img')
+    expect(img, `tool ${id} must render its art image`).toBeTruthy()
+    expect(img!.getAttribute('src')).toBe(`/art/tool-${id}.png`)
     unmount()
   }
 })
