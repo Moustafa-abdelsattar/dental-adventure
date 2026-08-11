@@ -5,6 +5,7 @@ import { ToolsScreen } from './ToolsScreen'
 import { PracticeBrushScreen } from './PracticeBrushScreen'
 import { PrepareScreen } from './PrepareScreen'
 import { SprayScreen } from './SprayScreen'
+import { VisitScreen } from './VisitScreen'
 
 export interface ModuleProps {
   module: ModuleDef
@@ -14,26 +15,11 @@ export interface ModuleProps {
 
 export type ModuleRegistry = Partial<Record<ModuleKind, ComponentType<ModuleProps>>>
 
-/**
- * Placeholder module used until the real screen for a kind is built.
- * Replaced entry-by-entry in Tasks 9-12.
- */
-function DevModule({ module, onComplete }: ModuleProps) {
-  return (
-    <div className="min-h-dvh flex flex-col items-center justify-center gap-4">
-      <p className="text-xl font-bold">[dev] {module.id}</p>
-      <button className="min-h-[72px] px-8 rounded-full bg-mint text-white text-xl font-bold" onClick={() => onComplete()}>
-        complete {module.id}
-      </button>
-    </div>
-  )
-}
-
 export const defaultRegistry: ModuleRegistry = {
   clinic: ClinicScreen,
   tools: ToolsScreen,
   'practice-brush': PracticeBrushScreen,
   prepare: PrepareScreen,
   spray: SprayScreen,
-  visit: DevModule,
+  visit: VisitScreen,
 }
