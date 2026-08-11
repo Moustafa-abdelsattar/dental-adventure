@@ -1,0 +1,16 @@
+{
+  "path": "treatment",
+  "modules": [
+    { "id": "clinic", "kind": "clinic", "stars": 1, "titleId": "clinic.title" },
+    {
+      "id": "tools",
+      "kind": "tools",
+      "stars": 1,
+      "titleId": "tools.title",
+      "toolIds": ["mirror", "explorer", "suction", "syringe", "brush", "xray", "ring", "umbrella", "spray"]
+    },
+    { "id": "prepare", "kind": "prepare", "stars": 1, "titleId": "prepare.title" },
+    { "id": "spray", "kind": "spray", "stars": 1, "titleId": "spray.title" },
+    { "id": "visit", "kind": "visit", "stars": 1, "titleId": "visit.title" }
+  ]
+}

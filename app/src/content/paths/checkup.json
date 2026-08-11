@@ -1,0 +1,15 @@
+{
+  "path": "checkup",
+  "modules": [
+    { "id": "clinic", "kind": "clinic", "stars": 1, "titleId": "clinic.title" },
+    {
+      "id": "tools",
+      "kind": "tools",
+      "stars": 2,
+      "titleId": "tools.title",
+      "toolIds": ["mirror", "explorer", "suction", "syringe", "brush", "xray"]
+    },
+    { "id": "practice", "kind": "practice-brush", "stars": 1, "titleId": "practice.brush.title" },
+    { "id": "visit", "kind": "visit", "stars": 1, "titleId": "visit.title" }
+  ]
+}
