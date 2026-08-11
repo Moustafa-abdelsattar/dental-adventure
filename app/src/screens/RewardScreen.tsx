@@ -3,7 +3,7 @@ import { useGame } from '../store/game'
 import { t } from '../lib/i18n'
 import { audio } from '../lib/audio'
 import { renderCertificate } from '../lib/certificate'
-import { Milo } from '../game/milo/Milo'
+import { motion } from 'motion/react'
 import { Floating } from '../components/motion/Floating'
 import { FadeIn } from '../components/motion/FadeIn'
 import { Pop } from '../components/motion/Pop'
@@ -66,7 +66,15 @@ export function RewardScreen({ onPlayAgain }: { onPlayAgain?: () => void }) {
         </div>
       </Pop>
       <Floating>
-        <Milo pose="celebrate" size={190} />
+        <motion.img
+          src="/art/milo-celebrate.webp"
+          alt="Milo celebrating"
+          draggable={false}
+          className="w-52 select-none drop-shadow-lg cursor-pointer"
+          onClick={() => void audio.replayLast()}
+          animate={{ rotate: [-2, 2, -2] }}
+          transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
+        />
       </Floating>
       <FadeIn>
         <h1 className="text-4xl font-bold">{t(lang, 'reward.congrats', { name: childName })}</h1>

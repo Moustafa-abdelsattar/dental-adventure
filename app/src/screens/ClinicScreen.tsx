@@ -118,45 +118,33 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
   )
 }
 
+import type { TargetAndTransition, Transition } from 'motion/react'
+
+const itemIdle: Record<ItemId, { anim: TargetAndTransition; transition: Transition }> = {
+  chair: { anim: { rotate: [-1.5, 1.5, -1.5] }, transition: { duration: 4, repeat: Infinity, ease: 'easeInOut' } },
+  light: { anim: { rotate: [-3, 3, -3] }, transition: { duration: 3.4, repeat: Infinity, ease: 'easeInOut' } },
+  sink: { anim: { y: [0, -3, 0] }, transition: { duration: 3, repeat: Infinity, ease: 'easeInOut' } },
+  table: { anim: { rotate: [1.5, -1.5, 1.5] }, transition: { duration: 3.8, repeat: Infinity, ease: 'easeInOut' } },
+}
+
 function ItemSvg({ id, large = false }: { id: ItemId; large?: boolean }) {
-  const s = large ? 150 : 90
-  switch (id) {
-    case 'chair':
-      return (
-        <svg width={s} viewBox="0 0 100 100" aria-hidden>
-          <rect x="18" y="18" width="20" height="46" rx="10" fill="#7ec8f2" transform="rotate(-18 28 41)" />
-          <rect x="26" y="52" width="52" height="16" rx="8" fill="#3b7fc4" />
-          <rect x="44" y="66" width="10" height="18" rx="5" fill="#c9d6ea" />
-          <rect x="30" y="82" width="40" height="8" rx="4" fill="#c9d6ea" />
-        </svg>
-      )
-    case 'light':
-      return (
-        <svg width={s} viewBox="0 0 100 100" aria-hidden>
-          <rect x="46" y="40" width="8" height="44" rx="4" fill="#c9d6ea" />
-          <path d="M28 40 Q50 18 72 40 L64 48 Q50 36 36 48 Z" fill="#ffd45e" />
-          <ellipse cx="50" cy="52" rx="16" ry="6" fill="#fff3c9" opacity="0.9" />
-        </svg>
-      )
-    case 'sink':
-      return (
-        <svg width={s} viewBox="0 0 100 100" aria-hidden>
-          <ellipse cx="50" cy="58" rx="30" ry="14" fill="#eaf3ff" stroke="#c9d6ea" strokeWidth="4" />
-          <path d="M50 30 Q66 30 66 44" stroke="#7ec8f2" strokeWidth="6" fill="none" strokeLinecap="round" />
-          <circle cx="66" cy="48" r="3" fill="#7ec8f2" />
-          <rect x="30" y="66" width="40" height="18" rx="8" fill="#c9d6ea" />
-        </svg>
-      )
-    case 'table':
-      return (
-        <svg width={s} viewBox="0 0 100 100" aria-hidden>
-          <rect x="18" y="42" width="64" height="10" rx="5" fill="#8b6fd8" />
-          <rect x="24" y="52" width="8" height="30" rx="4" fill="#c9d6ea" />
-          <rect x="68" y="52" width="8" height="30" rx="4" fill="#c9d6ea" />
-          <rect x="30" y="32" width="12" height="6" rx="3" fill="#7fd0ba" />
-          <rect x="48" y="30" width="12" height="8" rx="3" fill="#f97ba9" />
-          <circle cx="70" cy="35" r="4" fill="#ffd45e" />
-        </svg>
-      )
-  }
+  return (
+    <div className="relative flex items-center justify-center" style={{ width: large ? 170 : '100%' }}>
+      {id === 'light' && (
+        <motion.div
+          className="absolute inset-0 m-auto w-3/4 h-3/4 rounded-full bg-sunny/40 blur-xl"
+          animate={{ opacity: [0.4, 0.85, 0.4] }}
+          transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      )}
+      <motion.img
+        src={`/art/clinic-${id}.webp`}
+        alt=""
+        draggable={false}
+        className="relative w-full object-contain select-none drop-shadow-md"
+        animate={itemIdle[id].anim}
+        transition={itemIdle[id].transition}
+      />
+    </div>
+  )
 }

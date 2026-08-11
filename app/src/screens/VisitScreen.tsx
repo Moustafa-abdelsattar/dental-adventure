@@ -101,30 +101,38 @@ export function VisitScreen({ onComplete }: ModuleProps) {
           <path d="M30 12 Q50 2 70 12 L64 20 Q50 12 36 20 Z" fill={P.sparkle} />
         </svg>
 
-        {/* peer child reclining on the chair */}
-        <svg viewBox="0 0 220 150" className="absolute bottom-4 w-[90%]" aria-hidden data-testid="peer-child">
-          <rect x="20" y="78" width="150" height="26" rx="13" fill="#7ec8f2" transform="rotate(-8 95 91)" />
-          <rect x="60" y="104" width="80" height="16" rx="8" fill="#3b7fc4" />
-          <rect x="90" y="118" width="14" height="22" rx="7" fill={P.metal} />
-          <circle cx="46" cy="64" r="20" fill="#f5c29e" />
-          <path d="M28 58 C28 42 38 36 46 36 C54 36 64 42 64 58 C64 50 56 46 46 46 C36 46 28 50 28 58 Z" fill="#3d2f26" />
-          <circle cx="40" cy="62" r="2.5" fill="#3a3560" />
-          <circle cx="52" cy="62" r="2.5" fill="#3a3560" />
-          <path d="M40 70 q6 5 12 0" stroke="#3a3560" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-          <rect x="62" y="70" width="86" height="22" rx="11" fill="#7fd0ba" transform="rotate(-8 105 81)" />
+        {/* peer child reclining on the chair — custom art */}
+        <div className="absolute bottom-2 start-1 w-[72%]" data-testid="peer-child">
+          <motion.img
+            src="/art/visit-child-chair.webp"
+            alt=""
+            draggable={false}
+            className="w-full select-none drop-shadow-md"
+            animate={{ y: [0, -3, 0] }}
+            transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+          />
           {phase === 'steps' && step >= 2 && (
-            <motion.g initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 1 }} data-testid="mirror-near">
-              <rect x="78" y="30" width="4" height="22" rx="2" fill={P.metal} />
-              <circle cx="80" cy="24" r="9" fill={P.body} stroke={P.outline} strokeWidth="2" />
-            </motion.g>
+            <motion.img
+              data-testid="mirror-near"
+              src="/art/tool-mirror.webp"
+              alt=""
+              draggable={false}
+              className="absolute top-[8%] start-[30%] w-[22%] select-none"
+              initial={{ opacity: 0, x: 24, rotate: 20 }}
+              animate={{ opacity: 1, x: 0, rotate: [0, -8, 0] }}
+              transition={{ duration: 1.2 }}
+            />
           )}
           {phase === 'steps' && step >= 3 && (
-            <g data-testid="clean-sparkles">
-              <Sparkle x={46} y={44} size={5} />
-              <Sparkle x={60} y={54} delay={0.4} size={4} />
-            </g>
+            <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full pointer-events-none">
+              <g data-testid="clean-sparkles">
+                <Sparkle x={34} y={26} size={5} />
+                <Sparkle x={48} y={38} delay={0.4} size={4} />
+                <Sparkle x={26} y={44} delay={0.8} size={4} />
+              </g>
+            </svg>
           )}
-        </svg>
+        </div>
 
         <div className="absolute bottom-2 end-2">
           <DrNour masked={masked} onMaskTap={() => void maskTap()} idle={!frozen} size={130} />

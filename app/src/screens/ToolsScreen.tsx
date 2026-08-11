@@ -61,7 +61,7 @@ export function ToolsScreen({ module, onComplete }: ModuleProps) {
           return (
             <motion.img
               key={i}
-              src="/art/tooth.png"
+              src="/art/tooth-happy.webp"
               alt=""
               draggable={false}
               animate={finished ? { scale: [1, 1.3, 1] } : {}}

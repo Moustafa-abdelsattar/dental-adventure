@@ -13,7 +13,7 @@ export default defineConfig({
       workbox: {
         // precache everything, including narration — after the first online
         // load the whole game (voices included) works fully offline
-        globPatterns: ['**/*.{js,css,html,woff2,svg,png,mp3}'],
+        globPatterns: ['**/*.{js,css,html,woff2,svg,png,webp,mp3}'],
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
       },
       manifest: {

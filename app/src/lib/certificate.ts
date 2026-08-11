@@ -33,8 +33,10 @@ export async function renderCertificate({ name, lang, date }: { name: string; la
   ctx.font = `bold 74px ${font}`
   ctx.fillText(t(lang, 'cert.title'), W / 2, 220)
 
-  // Milo — simplified crown-and-legs tooth with a big smile
-  drawMilo(ctx, W / 2, 500, 2.2)
+  // Milo — the custom art if it loads, else the drawn fallback
+  const miloImg = await loadImage('/art/milo-celebrate.webp', 500)
+  if (miloImg) ctx.drawImage(miloImg, W / 2 - 210, 300, 420, 420)
+  else drawMilo(ctx, W / 2, 500, 2.2)
 
   // awarded to
   ctx.fillStyle = '#3a3560'
@@ -76,6 +78,23 @@ export async function renderCertificate({ name, lang, date }: { name: string; la
   return new Promise<Blob>((resolve, reject) =>
     canvas.toBlob(b => (b ? resolve(b) : reject(new Error('toBlob failed'))), 'image/png'),
   )
+}
+
+/** Loads an image with a timeout; resolves null on failure (e.g. tests). */
+function loadImage(src: string, timeoutMs: number): Promise<HTMLImageElement | null> {
+  return new Promise(resolve => {
+    const img = new Image()
+    const timer = setTimeout(() => resolve(null), timeoutMs)
+    img.onload = () => {
+      clearTimeout(timer)
+      resolve(img)
+    }
+    img.onerror = () => {
+      clearTimeout(timer)
+      resolve(null)
+    }
+    img.src = src
+  })
 }
 
 function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {

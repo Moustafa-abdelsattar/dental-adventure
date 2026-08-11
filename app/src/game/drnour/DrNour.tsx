@@ -1,11 +1,10 @@
 import { motion } from 'motion/react'
 import { springs } from '../../lib/springs'
-import { toolPalette as P } from '../tools/palette'
 
 /**
- * Dr. Nour — the friendly dentist the board forgot.
- * Rendered masked first; tapping the mask slides it down to reveal her smile,
- * teaching that the masked stranger is a smiling helper underneath.
+ * Dr. Nour — the owner's custom dentist art, with a coded face mask overlay.
+ * Rendered masked first; tapping the mask slides it away, revealing the
+ * smile underneath — teaching that the masked stranger is a smiling helper.
  */
 export function DrNour({
   masked,
@@ -19,52 +18,60 @@ export function DrNour({
   size?: number
 }) {
   return (
-    <motion.svg
-      viewBox="0 0 160 220"
-      width={size}
+    <motion.div
+      className="relative select-none"
+      style={{ width: size }}
       animate={idle ? { y: [0, -4, 0] } : {}}
       transition={{ duration: 3.5, repeat: idle ? Infinity : 0, ease: 'easeInOut' }}
-      style={{ overflow: 'visible' }}
+      data-testid="drnour"
       role="img"
       aria-label="Dr. Nour"
-      data-testid="drnour"
     >
-      {/* scrubs */}
-      <path d="M40 140 Q80 120 120 140 L128 210 L32 210 Z" fill="#8b6fd8" />
-      <rect x="66" y="150" width="28" height="34" rx="8" fill="#7a5fc7" />
-      {/* neck + head */}
-      <rect x="70" y="108" width="20" height="18" rx="8" fill="#f0b48f" />
-      <circle cx="80" cy="78" r="40" fill="#f5c29e" />
-      {/* rounded hair */}
-      <path d="M40 76 C40 40 60 30 80 30 C100 30 120 40 120 76 C120 60 108 48 80 48 C52 48 40 60 40 76 Z" fill="#5a4638" />
-      <path d="M40 76 Q38 92 44 100 L48 78 Z" fill="#5a4638" />
-      <path d="M120 76 Q122 92 116 100 L112 78 Z" fill="#5a4638" />
-      {/* eyes — always warm and visible above the mask */}
-      <circle cx="66" cy="74" r="4.5" fill={P.outline} />
-      <circle cx="94" cy="74" r="4.5" fill={P.outline} />
-      <path d="M58 64 q8 -6 16 0" stroke="#5a4638" strokeWidth="3" fill="none" strokeLinecap="round" />
-      <path d="M86 64 q8 -6 16 0" stroke="#5a4638" strokeWidth="3" fill="none" strokeLinecap="round" />
+      <img src="/art/drnour.webp" alt="" draggable={false} className="w-full drop-shadow-md" />
+
       {masked ? (
-        <motion.g
-          id="drnour-mask"
-          data-testid="drnour-mask"
-          onClick={onMaskTap}
-          initial={false}
-          whileTap={{ scale: 0.96 }}
-          transition={springs.soft}
-          style={{ cursor: 'pointer' }}
-        >
-          <path d="M52 84 Q80 78 108 84 L104 106 Q80 116 56 106 Z" fill="#bfe3f7" stroke={P.accent} strokeWidth="3" />
-          <line x1="52" y1="86" x2="42" y2="76" stroke={P.accent} strokeWidth="3" strokeLinecap="round" />
-          <line x1="108" y1="86" x2="118" y2="76" stroke={P.accent} strokeWidth="3" strokeLinecap="round" />
-        </motion.g>
-      ) : (
-        <motion.g initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={springs.soft} data-testid="drnour-smile">
-          <circle cx="60" cy="92" r="6" fill="#f9a8c5" opacity="0.6" />
-          <circle cx="100" cy="92" r="6" fill="#f9a8c5" opacity="0.6" />
-          <path d="M64 94 Q80 110 96 94" stroke="#b0654a" strokeWidth="4" fill="none" strokeLinecap="round" />
-        </motion.g>
-      )}
-    </motion.svg>
+          <motion.svg
+            key="mask"
+            data-testid="drnour-mask"
+            viewBox="0 0 100 60"
+            onClick={onMaskTap}
+            className="absolute cursor-pointer"
+            style={{ left: '27%', top: '26%', width: '34%' }}
+            initial={false}
+            whileTap={{ scale: 0.95 }}
+            transition={springs.soft}
+          >
+            <path d="M22 14 Q50 6 78 14 L74 44 Q50 56 26 44 Z" fill="#cfe8f9" stroke="#7ec8f2" strokeWidth="3" />
+            <path d="M28 22 Q50 17 72 22 M27 30 Q50 25 73 30 M28 38 Q50 33 72 38" stroke="#a9d5f0" strokeWidth="2" fill="none" />
+            <line x1="22" y1="16" x2="6" y2="8" stroke="#7ec8f2" strokeWidth="3" strokeLinecap="round" />
+            <line x1="78" y1="16" x2="94" y2="8" stroke="#7ec8f2" strokeWidth="3" strokeLinecap="round" />
+          </motion.svg>
+        ) : (
+          <motion.svg
+            key="smile"
+            data-testid="drnour-smile"
+            viewBox="0 0 100 60"
+            className="absolute pointer-events-none"
+            style={{ left: '20%', top: '18%', width: '48%' }}
+            initial={{ opacity: 0, scale: 0.6 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={springs.playful}
+          >
+            {[
+              { x: 12, y: 14, d: 0 },
+              { x: 88, y: 10, d: 0.25 },
+              { x: 80, y: 46, d: 0.5 },
+            ].map(s => (
+              <motion.path
+                key={s.x}
+                d={`M${s.x} ${s.y - 5} L${s.x + 1.6} ${s.y - 1.6} L${s.x + 5} ${s.y} L${s.x + 1.6} ${s.y + 1.6} L${s.x} ${s.y + 5} L${s.x - 1.6} ${s.y + 1.6} L${s.x - 5} ${s.y} L${s.x - 1.6} ${s.y - 1.6} Z`}
+                fill="#ffd45e"
+                animate={{ opacity: [0, 1, 0], scale: [0.6, 1.2, 0.6] }}
+                transition={{ duration: 1.4, repeat: Infinity, delay: s.d }}
+              />
+            ))}
+          </motion.svg>
+        )}
+    </motion.div>
   )
 }

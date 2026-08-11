@@ -10,9 +10,9 @@ interface ToolSvgProps {
 }
 
 /**
- * Every tool is a Microsoft Fluent 3D asset (soft clay-render look, MIT
- * licensed — see public/art/LICENSE.txt) wrapped in its own Motion demo
- * animation, with SVG particle overlays (sparkles, drops, mist) on top.
+ * Every tool is the owner's custom clay-render art (generated to match the
+ * spec board's style) wrapped in its own Motion demo animation, with SVG
+ * particle overlays (sparkles, drops, mist) on top.
  */
 function ToolArt({
   id,
@@ -30,7 +30,7 @@ function ToolArt({
   return (
     <div className="relative w-full h-full flex items-center justify-center">
       <motion.img
-        src={`/art/tool-${id}.png`}
+        src={`/art/tool-${id}.webp`}
         alt=""
         draggable={false}
         className="w-[82%] h-[82%] object-contain drop-shadow-md select-none"

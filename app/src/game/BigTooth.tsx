@@ -3,9 +3,9 @@ import { toolPalette as P } from './tools/palette'
 import { Sparkle } from './Sparkle'
 
 /**
- * The large friendly tooth used by the practice modules — the Fluent 3D
- * tooth asset with an animated face, plaque spots, and care-tool overlays
- * (ring / umbrella / sparkles) drawn on top.
+ * The large friendly tooth used by the practice modules — the owner's
+ * custom clay-render tooth art (happy / sleepy variants with baked faces),
+ * with plaque spots and care-tool overlays (ring / umbrella / sparkles).
  * `spots` marks which of the four plaque spots are still dirty.
  */
 export function BigTooth({
@@ -28,18 +28,18 @@ export function BigTooth({
   const spotPos = [
     { cx: 64, cy: 76 },
     { cx: 136, cy: 68 },
-    { cx: 84, cy: 128 },
-    { cx: 122, cy: 140 },
+    { cx: 84, cy: 138 },
+    { cx: 122, cy: 148 },
   ]
   return (
-    <div className="relative w-full max-w-xs mx-auto aspect-[200/220]" data-testid="big-tooth">
+    <div className="relative w-full max-w-xs mx-auto aspect-square" data-testid="big-tooth">
       {showUmbrella && (
         <motion.img
           data-testid="tooth-umbrella"
-          src="/art/tool-umbrella.png"
+          src="/art/tool-umbrella.webp"
           alt=""
           draggable={false}
-          className="absolute -top-[16%] start-1/2 -translate-x-1/2 w-[62%] z-10 pointer-events-none select-none drop-shadow"
+          className="absolute -top-[10%] start-1/2 -translate-x-1/2 w-[64%] z-10 pointer-events-none select-none drop-shadow"
           initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0, rotate: [-3, 3, -3] }}
           transition={{ rotate: { duration: 2.4, repeat: Infinity, ease: 'easeInOut' } }}
@@ -52,27 +52,15 @@ export function BigTooth({
         animate={sleepy ? { y: [0, 3, 0] } : { y: [0, -4, 0] }}
         transition={{ duration: sleepy ? 3 : 4, repeat: Infinity, ease: 'easeInOut' }}
       >
-        <img src="/art/tooth.png" alt="" draggable={false} className="w-full h-full object-contain select-none drop-shadow-lg" />
+        <img
+          src={sleepy ? '/art/tooth-sleepy.webp' : '/art/tooth-happy.webp'}
+          alt=""
+          draggable={false}
+          className="w-full h-full object-contain select-none drop-shadow-lg"
+        />
 
-        {/* face + plaque + sparkles overlay */}
-        <svg viewBox="0 0 200 220" className="absolute inset-0 w-full h-full" style={{ pointerEvents: 'none' }}>
-          {sleepy ? (
-            <>
-              <path d="M68 96 q7 8 14 0" stroke={P.outline} strokeWidth="4.5" fill="none" strokeLinecap="round" />
-              <path d="M118 96 q7 8 14 0" stroke={P.outline} strokeWidth="4.5" fill="none" strokeLinecap="round" />
-            </>
-          ) : (
-            <>
-              <ellipse cx="75" cy="94" rx="7" ry="9" fill={P.outline} />
-              <ellipse cx="125" cy="94" rx="7" ry="9" fill={P.outline} />
-              <circle cx="77.5" cy="90" r="2.4" fill="#ffffff" />
-              <circle cx="127.5" cy="90" r="2.4" fill="#ffffff" />
-            </>
-          )}
-          <path d="M86 116 q14 12 28 0" stroke={P.outline} strokeWidth="4.5" fill="none" strokeLinecap="round" />
-          <circle cx="58" cy="110" r="7" fill={P.grip} opacity="0.6" />
-          <circle cx="142" cy="110" r="7" fill={P.grip} opacity="0.6" />
-
+        {/* plaque + sparkles overlay */}
+        <svg viewBox="0 0 200 200" className="absolute inset-0 w-full h-full" style={{ pointerEvents: 'none' }}>
           {spotPos.map((p, i) =>
             spots[i] ? (
               <motion.circle
@@ -100,9 +88,9 @@ export function BigTooth({
 
           {sparkle && (
             <g data-testid="tooth-sparkle">
-              <Sparkle x={54} y={54} />
-              <Sparkle x={148} y={66} delay={0.3} />
-              <Sparkle x={100} y={160} delay={0.6} />
+              <Sparkle x={44} y={44} />
+              <Sparkle x={158} y={58} delay={0.3} />
+              <Sparkle x={100} y={166} delay={0.6} />
             </g>
           )}
         </svg>
@@ -111,10 +99,10 @@ export function BigTooth({
       {showRing && (
         <motion.img
           data-testid="tooth-ring"
-          src="/art/tool-ring.png"
+          src="/art/tool-ring.webp"
           alt=""
           draggable={false}
-          className="absolute inset-x-0 top-[14%] mx-auto w-[96%] z-10 pointer-events-none select-none opacity-90"
+          className="absolute inset-0 m-auto w-[92%] z-10 pointer-events-none select-none opacity-90"
           initial={{ scale: 1.25, opacity: 0 }}
           animate={{ scale: 1, opacity: 0.9 }}
         />
