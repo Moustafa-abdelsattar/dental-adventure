@@ -2,6 +2,7 @@ import type { FC } from 'react'
 import { motion } from 'motion/react'
 import { toolPalette as P, TOOL_STROKE as SW } from './palette'
 import { ToolFace } from './ToolFace'
+import { Sparkle } from '../Sparkle'
 
 export type ToolId = 'mirror' | 'explorer' | 'suction' | 'syringe' | 'brush' | 'xray' | 'ring' | 'umbrella' | 'spray'
 
@@ -35,16 +36,6 @@ function MiniTooth({ x, y, s = 1, sleepy = false }: { x: number; y: number; s?: 
   )
 }
 
-function Sparkle({ x, y, delay = 0, size = 5 }: { x: number; y: number; delay?: number; size?: number }) {
-  return (
-    <motion.path
-      d={`M${x} ${y - size} L${x + size / 3} ${y - size / 3} L${x + size} ${y} L${x + size / 3} ${y + size / 3} L${x} ${y + size} L${x - size / 3} ${y + size / 3} L${x - size} ${y} L${x - size / 3} ${y - size / 3} Z`}
-      fill={P.sparkle}
-      animate={{ opacity: [0, 1, 0], scale: [0.6, 1.15, 0.6] }}
-      transition={{ duration: 1.2, repeat: Infinity, delay }}
-    />
-  )
-}
 
 const MirrorSvg: FC<ToolSvgProps> = ({ demo }) => (
   <motion.svg viewBox="0 0 120 120" animate={demo ? { rotate: [0, -8, 8, 0] } : {}} transition={{ duration: 2, repeat: demo ? Infinity : 0, ease: 'easeInOut' }}>
