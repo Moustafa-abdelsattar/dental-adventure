@@ -12,7 +12,7 @@ A single-URL, portrait, mobile-first **web app (PWA)** that dentists send to par
 ## 2. Flow
 
 1. **Language screen** — two large self-voicing buttons (each speaks its own greeting in its own language on appear/tap). Choice persists; never shown again (changeable via a small parent corner control).
-2. **Parent moment** — "Which visit is your child having?" → **First Checkup** / **Treatment Visit**, two big illustrated buttons. Skipped when the URL has `?visit=checkup` or `?visit=treatment` (doctor-preset links).
+2. **Parent moment** — "Which visit is your child having?" → **First Checkup** / **Treatment Visit**, two big illustrated buttons. Skipped when the URL has `?visit=checkup` or `?visit=treatment` (doctor-preset links). Same screen asks **"What's your child's name?"** — optional text input (Arabic or English keyboard), skippable.
 3. **Welcome** — logo, Milo floats/blinks/waves, big pulsing START.
 4. **Adventure modules** (linear, per path — §3).
 5. **Reward** — 5 stars complete → confetti → "You are now a DENTAL HERO!" → certificate.
@@ -39,6 +39,14 @@ Rules: stars **never reset**; Dental Hero status permanent; Play Again = free-pl
 - **Dr. Nour** — friendly dentist (name works in AR + EN). Simulation opens with the **mask-on/mask-off reveal** ("It's still Dr. Nour underneath!") and teaches the **raise-your-hand stop signal**. This addresses the board's biggest gap (no human dentist anywhere).
 - **Peer child** — one fixed happy child character in the chair (symbolic modeling).
 
+## 4b. Personalization (child's name)
+
+- Name entered by the parent at the parent moment (optional; default display name: "my friend" / "يا صديقي"). Stored locally with the rest of progress.
+- **Written text is personalized everywhere:** all Milo speech-bubble strings are templates with a `{name}` slot ("Great job, Omar!" / "!أحسنت يا عمر"); the HUD title reads "<Name>'s Adventure"; the certificate "Awarded To:" auto-fills from it (still editable there).
+- **Audio stays name-free in v1** (clips are pre-generated): voiced lines use warm vocatives ("my hero!", "my friend!", "يا بطل", "يا صديقي") so speech and text never contradict — text shows the name where audio says the vocative.
+- v2 option (not in v1): synthesize name audio once at entry while online, cache it, splice after greeting clips.
+- Tests: `{name}` templating renders in both languages, RTL Arabic names render correctly inside RTL and LTR sentences, skip path falls back to the default, name persists across reload and flows into the certificate.
+
 ## 5. Copy rules (honest preparation)
 
 - Sensory language, never absolute promises: "tickly", "buzzy", "cold like a little wind" — never "it never hurts" / "no pain".
@@ -58,7 +66,7 @@ Tap-first everywhere (drag optional sugar); targets ≥ 2 cm with hit-slop; sequ
 
 ## 8. Tech architecture
 
-- **Stack:** Vite + React + TypeScript, Tailwind (logical properties → automatic RTL mirroring via `dir="rtl"`), Motion (framer-motion), vite-plugin-pwa (precache incl. audio), zustand store persisted to localStorage (language, path, stars, per-module progress).
+- **Stack:** Vite + React + TypeScript, Tailwind (logical properties → automatic RTL mirroring via `dir="rtl"`), Motion (framer-motion), vite-plugin-pwa (precache incl. audio), zustand store persisted to localStorage (language, path, **child name**, stars, per-module progress).
 - **Structure** (per approach doc): `components/ui`, `components/motion` (FadeIn, Pop, Floating, StarBurst), `game/Milo`, `game/Tools`, `screens/`, `content/` (manifests), `audio/`.
 - **Content manifests:** per-path JSON (`checkup.json`, `treatment.json`) — module list, objects/tools, string ids, animation triggers, clip ids. Copy edits never touch code.
 - **i18n:** `en.json` / `ar.json` keyed by string id; every id maps to `public/audio/{en,ar}/<id>.mp3`.
