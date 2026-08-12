@@ -16,9 +16,11 @@ const { MsEdgeTTS, OUTPUT_FORMAT } = require('../app/node_modules/msedge-tts/dis
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const WIPE = process.argv.includes('--wipe')
 
-// Ana is a child voice — a natural fit for Milo. Arabic has no child neural
-// voice, so Salma (warm, friendly Egyptian) narrates the Arabic side.
-const VOICES = { en: 'en-US-AnaNeural', ar: 'ar-EG-SalmaNeural' }
+// One male multilingual voice for both languages so Milo is the same
+// character in EN and AR; pitched up + slightly faster to sound like an
+// energetic boy rather than an adult narrator.
+const VOICES = { en: 'en-US-AndrewMultilingualNeural', ar: 'en-US-AndrewMultilingualNeural' }
+const PROSODY = { pitch: '+20%', rate: '+10%' }
 
 async function makeTts(lang) {
   const tts = new MsEdgeTTS()
@@ -27,7 +29,7 @@ async function makeTts(lang) {
 }
 
 async function synth(tts, text) {
-  const { audioStream } = await tts.toStream(text)
+  const { audioStream } = await tts.toStream(text, PROSODY)
   const chunks = []
   for await (const c of audioStream) chunks.push(c)
   return Buffer.concat(chunks)

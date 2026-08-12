@@ -54,7 +54,7 @@ export function DrNour({
           viewBox="0 0 100 62"
           onClick={onMaskTap}
           className="absolute cursor-pointer"
-          style={{ left: '26%', top: '29%', width: '47%' }}
+          style={{ left: '29.5%', top: '27.5%', width: '42%' }}
           initial={false}
           whileTap={{ scale: 0.95 }}
           transition={springs.soft}
