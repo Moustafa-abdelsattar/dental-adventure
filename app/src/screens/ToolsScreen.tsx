@@ -7,10 +7,16 @@ import { ToolCard } from '../game/tools/ToolCard'
 import type { ToolId } from '../game/tools/tools'
 import type { ModuleProps } from './registry'
 
-/** Chunk the roster into pages of three so each tool gets its moment. */
+/** Chunk the roster into balanced pages of at most three (4 → 2+2, not 3+1). */
 function groupsOf3(ids: ToolId[]): ToolId[][] {
+  const pages = Math.ceil(ids.length / 3)
   const out: ToolId[][] = []
-  for (let i = 0; i < ids.length; i += 3) out.push(ids.slice(i, i + 3))
+  let start = 0
+  for (let p = 0; p < pages; p++) {
+    const size = Math.ceil((ids.length - start) / (pages - p))
+    out.push(ids.slice(start, start + size))
+    start += size
+  }
   return out
 }
 
@@ -78,7 +84,7 @@ export function ToolsScreen({ module, onComplete }: ModuleProps) {
         initial={{ opacity: 0, x: 30 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3 }}
-        className="grid grid-cols-3 gap-3 w-full max-w-md"
+        className={`grid gap-3 w-full ${groups[page]?.length === 2 ? 'grid-cols-2 max-w-xs' : 'grid-cols-3 max-w-md'}`}
         data-testid={`tool-group-${page}`}
       >
         {groups[page]?.map((toolId, i) => (

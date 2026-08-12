@@ -20,12 +20,18 @@ for (const m of manifests) {
         for (const part of ['name', 'desc', 'fact']) expect(en).toHaveProperty(`tool.${toolId}.${part}`)
     }
   })
+
+  test(`${m.path}: Milo's arc — every pre-visit module has a beat, the last one is the role reversal`, () => {
+    const preVisit = m.modules.filter(mod => mod.kind !== 'visit')
+    for (const mod of preVisit) expect(en, `module ${mod.id} needs a beatId`).toHaveProperty(mod.beatId ?? '')
+    expect(preVisit[preVisit.length - 1].beatId).toBe('story.reversal')
+  })
 }
 
-test('treatment includes tools 7-9, checkup does not', () => {
+test('checkup teaches only the four essential tools; treatment carries the rest', () => {
   const ids = (m: typeof checkup) => m.modules.find(x => x.kind === 'tools')!.toolIds!
+  expect(ids(checkup)).toEqual(['mirror', 'suction', 'syringe', 'brush'])
   expect(ids(treatment)).toEqual(expect.arrayContaining(['ring', 'umbrella', 'spray']))
-  expect(ids(checkup)).not.toEqual(expect.arrayContaining(['ring']))
 })
 
 test('starIdsFor expands multi-star modules', () => {
@@ -66,6 +72,16 @@ describe('ModuleHost engine', () => {
     }
     expect(useGame.getState().heroEarned).toBe(true)
     expect(screen.getByTestId('reward-screen')).toBeInTheDocument()
+  })
+
+  test('completing a module with a beat shows Milo\'s story line and tapping dismisses it', () => {
+    render(<ModuleHost registry={registry} />)
+    fireEvent.click(screen.getByText('done-clinic'))
+    const beat = screen.getByTestId('story-beat')
+    expect(beat.textContent).toContain('My wiggles are getting smaller')
+    fireEvent.click(beat)
+    act(() => vi.advanceTimersByTime(1000))
+    expect(screen.queryByTestId('story-beat')).not.toBeInTheDocument()
   })
 
   test('resumes at the first incomplete module', () => {

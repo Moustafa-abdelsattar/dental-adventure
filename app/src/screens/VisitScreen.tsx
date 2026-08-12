@@ -159,7 +159,7 @@ export function VisitScreen({ onComplete }: ModuleProps) {
           className="mt-2 w-24 h-24 rounded-full bg-sunny shadow-lg flex items-center justify-center"
           aria-label="raise hand"
         >
-          <img src="/art/hand.png" alt="" className="w-14 select-none" draggable={false} />
+          <RaisedHand className="w-14" />
         </motion.button>
       )}
       {frozen && (
@@ -178,5 +178,27 @@ export function VisitScreen({ onComplete }: ModuleProps) {
       )}
       {phase === 'done' && <GameButton label={t(lang, 'ui.next')} onPress={completeOnce} />}
     </div>
+  )
+}
+
+/** Soft rounded raised hand, drawn to sit on the sunny button. */
+function RaisedHand({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 64 64" className={className} aria-hidden>
+      <g fill="#ee9250">
+        {/* pinky → index */}
+        <rect x="12" y="21" width="7.5" height="22" rx="3.75" />
+        <rect x="21" y="13" width="8" height="28" rx="4" />
+        <rect x="30.5" y="10" width="8" height="31" rx="4" />
+        <rect x="40" y="15" width="7.5" height="26" rx="3.75" />
+        {/* thumb */}
+        <rect x="44.5" y="31" width="7.5" height="17" rx="3.75" transform="rotate(-34 48 36)" />
+        {/* palm */}
+        <path d="M12 37 h35.5 v7 a17.75 13.5 0 0 1 -35.5 0 Z" />
+      </g>
+      {/* soft shading + highlight so it reads on the sunny button */}
+      <ellipse cx="30" cy="49" rx="14" ry="6" fill="#d1773b" opacity="0.35" />
+      <ellipse cx="29" cy="39" rx="11" ry="5" fill="#ffd9ae" opacity="0.55" />
+    </svg>
   )
 }

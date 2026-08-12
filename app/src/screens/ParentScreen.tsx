@@ -33,9 +33,8 @@ export function ParentScreen({ onDone }: { onDone: () => void }) {
         <>
           <h1 className="text-3xl font-bold text-center">{t(lang, 'parent.whichVisit')}</h1>
           <div className="flex flex-col gap-4 w-full max-w-xs">
-            <Pop>
+            <Pop className="flex flex-col">
               <GameButton
-                icon={<img src="/art/tool-brush.webp" alt="" className="w-9 select-none" draggable={false} />}
                 label={t(lang, 'parent.checkup')}
                 variant="mint"
                 onPress={() => {
@@ -44,9 +43,8 @@ export function ParentScreen({ onDone }: { onDone: () => void }) {
                 }}
               />
             </Pop>
-            <Pop delay={0.08}>
+            <Pop delay={0.08} className="flex flex-col">
               <GameButton
-                icon={<img src="/art/star.png" alt="" className="w-8 select-none" draggable={false} />}
                 label={t(lang, 'parent.treatment')}
                 variant="primary"
                 onPress={() => {

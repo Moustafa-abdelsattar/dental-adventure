@@ -32,7 +32,7 @@ export function Backdrop() {
       ].map(s => (
         <motion.img
           key={s.cls}
-          src="/art/star.png"
+          src="/art/star.svg"
           alt=""
           className={`absolute ${s.cls} select-none`}
           animate={{ opacity: [0, 0.9, 0], scale: [0.5, 1.1, 0.5], rotate: [0, 25, 0] }}

@@ -64,7 +64,7 @@ export function RewardScreen({ onPlayAgain }: { onPlayAgain?: () => void }) {
         {Array.from({ length: 5 }, (_, i) => (
           <Pop key={i} delay={0.15 + i * 0.12}>
             <img
-              src="/art/star.png"
+              src="/art/star.svg"
               alt=""
               draggable={false}
               className="w-11 select-none drop-shadow-[0_0_8px_rgba(255,212,94,0.9)]"
@@ -86,6 +86,16 @@ export function RewardScreen({ onPlayAgain }: { onPlayAgain?: () => void }) {
       <FadeIn>
         <h1 className="text-4xl font-bold">{t(lang, 'reward.congrats', { name: childName })}</h1>
         <p className="text-2xl font-bold text-grape mt-1">{t(lang, 'reward.hero')}</p>
+      </FadeIn>
+      {/* the shared ending of Milo's arc: child + Milo earned this together */}
+      <FadeIn delay={0.2}>
+        <span
+          data-testid="shared-badge"
+          className="inline-flex items-center gap-2 rounded-full bg-white/85 px-5 py-2 text-lg font-bold text-ink shadow-md"
+        >
+          <img src="/art/milo.webp" alt="" draggable={false} className="w-8 select-none" />
+          {t(lang, 'story.together')}
+        </span>
       </FadeIn>
 
       <FadeIn delay={0.3} className="flex flex-col gap-3 w-full max-w-xs">

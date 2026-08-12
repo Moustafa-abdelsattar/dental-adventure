@@ -51,13 +51,13 @@ export function SprayScreen({ onComplete }: ModuleProps) {
       {/* quiet night sky */}
       <div className="relative w-full max-w-xs h-14 mb-1" aria-hidden>
         <Floating duration={5} className="absolute start-4 top-0">
-          <img src="/art/moon.png" alt="" className="w-10 select-none" draggable={false} />
+          <img src="/art/moon.svg" alt="" className="w-10 select-none" draggable={false} />
         </Floating>
         <Floating duration={7} className="absolute end-8 top-1">
-          <img src="/art/star.png" alt="" className="w-7 select-none" draggable={false} />
+          <img src="/art/star.svg" alt="" className="w-7 select-none" draggable={false} />
         </Floating>
         <Floating duration={6} className="absolute start-1/2 top-5">
-          <img src="/art/star.png" alt="" className="w-4 opacity-70 select-none" draggable={false} />
+          <img src="/art/star.svg" alt="" className="w-4 opacity-70 select-none" draggable={false} />
         </Floating>
       </div>
 

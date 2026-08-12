@@ -22,6 +22,8 @@ export function PracticeBrushScreen({ onComplete }: ModuleProps) {
   const [wiggle, setWiggle] = useState(0)
   const [done, setDone] = useState(false)
   const doneRef = useRef(false)
+  // ref mirror so rapid taps in one frame don't read stale state and lose a spot
+  const spotsRef = useRef(spots)
   const BrushSvg = TOOLS.brush.Svg
 
   useEffect(() => {
@@ -35,9 +37,10 @@ export function PracticeBrushScreen({ onComplete }: ModuleProps) {
       void audio.say(lang, 'milo.hint.tap')
       return
     }
-    const next = [...spots]
+    const next = [...spotsRef.current]
     if (!next[i]) return
     next[i] = false
+    spotsRef.current = next
     setSpots(next)
     if (next.some(Boolean)) {
       void audio.say(lang, 'milo.great')

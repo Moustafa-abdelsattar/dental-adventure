@@ -33,7 +33,7 @@ function ToolArt({
         src={`/art/tool-${id}.webp`}
         alt=""
         draggable={false}
-        className="w-[82%] h-[82%] object-contain drop-shadow-md select-none"
+        className="absolute inset-0 w-full h-full object-contain p-[9%] drop-shadow-md select-none"
         animate={demo && demoAnim ? demoAnim : {}}
         transition={demo && demoTransition ? demoTransition : {}}
       />

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="moon-glow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff2c4"/>
+      <stop offset="1" stop-color="#ffd270"/>
+    </linearGradient>
+    <mask id="moon-bite">
+      <rect width="64" height="64" fill="white"/>
+      <circle cx="47" cy="21" r="22" fill="black"/>
+    </mask>
+  </defs>
+  <circle cx="31" cy="33" r="26" fill="url(#moon-glow)" mask="url(#moon-bite)"/>
+  <circle cx="22" cy="27" r="3.4" fill="#f0b355" opacity="0.45"/>
+  <circle cx="28" cy="44" r="2.4" fill="#f0b355" opacity="0.4"/>
+</svg>

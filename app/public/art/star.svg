@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="star-gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe382"/>
+      <stop offset="1" stop-color="#f2a93b"/>
+    </linearGradient>
+  </defs>
+  <polygon
+    points="32,9 38.76,23.7 54.83,25.58 42.94,36.55 46.11,52.42 32,44.5 17.89,52.42 21.06,36.55 9.17,25.58 25.24,23.7"
+    fill="url(#star-gold)" stroke="url(#star-gold)" stroke-width="9" stroke-linejoin="round"/>
+  <ellipse cx="26" cy="23" rx="6" ry="3.6" fill="#fff6cf" opacity="0.55" transform="rotate(-24 26 23)"/>
+</svg>

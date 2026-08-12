@@ -22,7 +22,7 @@ export function ProgressHud() {
         {Array.from({ length: 5 }, (_, i) => (
           <img
             key={i}
-            src="/art/star.png"
+            src="/art/star.svg"
             alt=""
             draggable={false}
             data-testid={i < count ? 'star-filled' : 'star-empty'}

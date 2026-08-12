@@ -53,7 +53,7 @@ export function MiloHero({ src = '/art/milo.webp', size = 230, draggable = true 
         ].map(s => (
           <motion.img
             key={s.cls}
-            src="/art/star.png"
+            src="/art/star.svg"
             alt=""
             draggable={false}
             className={`absolute ${s.cls} select-none pointer-events-none`}

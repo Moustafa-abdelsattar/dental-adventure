@@ -37,11 +37,11 @@ async function meetAll(roster: ToolId[]) {
   }
 }
 
-test('checkup roster shows 6 tools in 2 groups and completes after meeting all', async () => {
+test('checkup roster shows the 4 essential tools in 2 balanced groups and completes after meeting all', async () => {
   const module = checkup.modules.find(m => m.kind === 'tools')! as ModuleDef
   const onComplete = vi.fn()
   render(<ToolsScreen module={module} onComplete={onComplete} />)
-  expect(screen.getByTestId('tool-group-0').querySelectorAll('button')).toHaveLength(3)
+  expect(screen.getByTestId('tool-group-0').querySelectorAll('button')).toHaveLength(2)
   await meetAll(module.toolIds! as ToolId[])
   expect(onComplete).toHaveBeenCalledTimes(1)
   expect(audio.say).toHaveBeenCalledWith('en', 'tools.done')

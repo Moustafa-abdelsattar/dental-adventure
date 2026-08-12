@@ -25,7 +25,7 @@ export function WelcomeScreen({ onStart }: { onStart: () => void }) {
           {t(lang, 'app.title')}
         </h1>
         <p className="inline-flex items-center gap-1.5 mt-2 rounded-full bg-white/70 px-4 py-1 text-base text-ink/70 font-bold shadow-sm">
-          <img src="/art/star.png" alt="" className="w-4 select-none" draggable={false} />
+          <img src="/art/star.svg" alt="" className="w-4 select-none" draggable={false} />
           {t(lang, 'app.subtitle')}
         </p>
       </FadeIn>

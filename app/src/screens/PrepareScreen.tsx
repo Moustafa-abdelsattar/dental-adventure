@@ -6,6 +6,7 @@ import { useGame } from '../store/game'
 import { BigTooth } from '../game/BigTooth'
 import { TOOLS, type ToolId } from '../game/tools/tools'
 import { StarBurst } from '../components/motion/StarBurst'
+import { DoneBadge } from '../components/ui/DoneBadge'
 import type { ModuleProps } from './registry'
 
 const SEQUENCE: { toolId: ToolId; stepId: StringId }[] = [
@@ -85,9 +86,10 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
                     : { scale: 1 }
               }
               transition={wiggleId === toolId ? { duration: 0.4 } : { duration: 1.4, repeat: isNext ? Infinity : 0 }}
-              className={`aspect-square rounded-3xl bg-white shadow-lg p-2 ${isNext ? 'ring-4 ring-sunny' : ''} ${!isNext && !used ? 'opacity-40' : ''} ${used ? 'ring-2 ring-mint' : ''}`}
+              className={`relative aspect-square rounded-3xl bg-white shadow-lg p-2 ${isNext ? 'ring-4 ring-sunny' : ''} ${!isNext && !used ? 'opacity-40' : ''} ${used ? 'ring-2 ring-mint' : ''}`}
             >
               <Svg demo={used} />
+              {used && <DoneBadge testid={`prep-done-${toolId}`} className="absolute -top-2 -end-2 w-8 h-8" />}
             </motion.button>
           )
         })}

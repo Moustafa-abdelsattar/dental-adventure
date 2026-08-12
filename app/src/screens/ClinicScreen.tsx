@@ -5,6 +5,7 @@ import { t, type StringId } from '../lib/i18n'
 import { useGame } from '../store/game'
 import { Pop } from '../components/motion/Pop'
 import { GameButton } from '../components/ui/GameButton'
+import { DoneBadge } from '../components/ui/DoneBadge'
 import type { ModuleProps } from './registry'
 
 type ItemId = 'chair' | 'light' | 'sink' | 'table'
@@ -70,7 +71,7 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
   const openItem = open ? ITEMS.find(i => i.id === open)! : null
 
   return (
-    <div className="min-h-dvh flex flex-col items-center px-4 pb-8">
+    <div className="min-h-[calc(100dvh-3.5rem)] flex flex-col items-center justify-center px-4 pb-8">
       <h1 className="text-3xl font-bold mt-1 mb-1 bg-gradient-to-b from-sky-deep to-grape bg-clip-text text-transparent">
         {t(lang, 'clinic.title')}
       </h1>
@@ -103,15 +104,7 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
               className={`absolute ${item.className} aspect-square rounded-3xl flex items-center justify-center`}
             >
               <ItemSvg id={item.id} />
-              {isExplored && (
-                <img
-                  src="/art/star.png"
-                  alt=""
-                  draggable={false}
-                  className="absolute top-0 end-0 w-9 select-none drop-shadow-[0_0_6px_rgba(255,212,94,0.9)]"
-                  data-testid={`explored-${item.id}`}
-                />
-              )}
+              {isExplored && <DoneBadge testid={`explored-${item.id}`} className="absolute top-0 end-0 w-10 h-10" />}
             </motion.button>
           )
         })}

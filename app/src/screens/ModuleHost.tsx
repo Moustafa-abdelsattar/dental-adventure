@@ -7,6 +7,7 @@ import { useGame } from '../store/game'
 import { audio } from '../lib/audio'
 import { t, type StringId } from '../lib/i18n'
 import { StarFly } from '../components/motion/StarFly'
+import { StoryBeat } from '../components/ui/StoryBeat'
 import { RewardScreen } from './RewardScreen'
 import { defaultRegistry, type ModuleRegistry } from './registry'
 
@@ -28,6 +29,7 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
   const awardStar = useGame(s => s.awardStar)
   const [flights, setFlights] = useState<{ key: number; from: { x: number; y: number } }[]>([])
   const [freeChoice, setFreeChoice] = useState<string | null>(null)
+  const [beat, setBeat] = useState<{ stringId: string; calm: number } | null>(null)
 
   if (!lang || !path) return null
   const manifest = manifests[path]
@@ -98,7 +100,14 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
   if (!Screen) return null
 
   const handleComplete = (origin?: { x: number; y: number }) => {
-    void audio.say(lang, 'milo.starEarned')
+    // Milo's arc: modules with a story beat speak it (and show him calming);
+    // the rest keep the plain star-earned cheer.
+    if (current.beatId) {
+      const doneCount = finished.length + 1
+      setBeat({ stringId: current.beatId, calm: Math.min(1, doneCount / (manifest.modules.length - 1)) })
+    } else {
+      void audio.say(lang, 'milo.starEarned')
+    }
     const from = origin ?? { x: window.innerWidth / 2, y: window.innerHeight / 2 }
     starIdsFor(current).forEach((id, i) => {
       setTimeout(() => {
@@ -121,6 +130,7 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
       {flights.map(f => (
         <StarFly key={f.key} from={f.from} onArrive={() => setFlights(fl => fl.filter(x => x.key !== f.key))} />
       ))}
+      {beat && <StoryBeat stringId={beat.stringId as StringId} calm={beat.calm} onDone={() => setBeat(null)} />}
     </div>
   )
 }

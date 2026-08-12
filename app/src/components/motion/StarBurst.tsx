@@ -10,7 +10,7 @@ export function StarBurst({ show, size = 90 }: { show: boolean; size?: number })
         return (
           <motion.img
             key={i}
-            src="/art/star.png"
+            src="/art/star.svg"
             alt=""
             draggable={false}
             className="absolute w-8 select-none"
