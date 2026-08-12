@@ -1,15 +1,38 @@
 {
   "path": "checkup",
   "modules": [
-    { "id": "clinic", "kind": "clinic", "stars": 1, "titleId": "clinic.title" },
+    {
+      "id": "clinic",
+      "kind": "clinic",
+      "stars": 1,
+      "titleId": "clinic.title",
+      "beatId": "story.calmer1"
+    },
     {
       "id": "tools",
       "kind": "tools",
       "stars": 2,
       "titleId": "tools.title",
-      "toolIds": ["mirror", "explorer", "suction", "syringe", "brush", "xray"]
+      "toolIds": [
+        "mirror",
+        "suction",
+        "syringe",
+        "brush"
+      ],
+      "beatId": "story.calmer2"
     },
-    { "id": "practice", "kind": "practice-brush", "stars": 1, "titleId": "practice.brush.title" },
-    { "id": "visit", "kind": "visit", "stars": 1, "titleId": "visit.title" }
+    {
+      "id": "practice",
+      "kind": "practice-brush",
+      "stars": 1,
+      "titleId": "practice.brush.title",
+      "beatId": "story.reversal"
+    },
+    {
+      "id": "visit",
+      "kind": "visit",
+      "stars": 1,
+      "titleId": "visit.title"
+    }
   ]
 }

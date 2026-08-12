@@ -1,6 +1,6 @@
 import en from '../src/content/strings/en.json'
 import ar from '../src/content/strings/ar.json'
-import { t, dirFor, STRING_IDS } from '../src/lib/i18n'
+import { t, dirFor, STRING_IDS, vocativeFor } from '../src/lib/i18n'
 
 test('en and ar have identical key sets', () => {
   expect(Object.keys(ar).sort()).toEqual(Object.keys(en).sort())
@@ -15,9 +15,18 @@ test('templating inserts name', () => {
   expect(t('ar', 'milo.great', { name: 'عمر' })).toContain('عمر')
 })
 
-test('empty name falls back to localized friend word', () => {
-  expect(t('en', 'milo.great', {})).toBe('Great job, my friend!')
-  expect(t('ar', 'milo.great', {})).toContain('صديقي')
+test('empty name falls back to a fun nickname from the pool, deterministically per line', () => {
+  const pools = { en: en['friend.vocative'].split('|'), ar: ar['friend.vocative'].split('|') }
+  for (const lang of ['en', 'ar'] as const) {
+    const nick = vocativeFor(lang, 'milo.great')
+    expect(pools[lang]).toContain(nick)
+    expect(vocativeFor(lang, 'milo.great')).toBe(nick) // stable across calls
+    expect(t(lang, 'milo.great', {})).toContain(nick)
+  }
+  // the whole point: different lines rotate through different nicknames
+  const nameLines = STRING_IDS.filter(id => en[id].includes('{name}'))
+  const used = new Set(nameLines.map(id => vocativeFor('en', id)))
+  expect(used.size).toBeGreaterThan(2)
 })
 
 test('dir mapping', () => {

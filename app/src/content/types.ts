@@ -6,6 +6,8 @@ export interface ModuleDef {
   stars: number
   titleId: string
   toolIds?: string[]
+  /** Milo's story line played when this module completes (his calming arc). */
+  beatId?: string
 }
 
 export interface PathManifest {

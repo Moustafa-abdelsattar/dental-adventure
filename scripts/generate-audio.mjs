@@ -38,7 +38,13 @@ let generated = 0
 let skipped = 0
 for (const lang of ['en', 'ar']) {
   const strings = JSON.parse(readFileSync(resolve(root, `app/src/content/strings/${lang}.json`), 'utf8'))
-  const vocative = strings['friend.vocative']
+  // must mirror vocativeFor() in app/src/lib/i18n.ts so baked audio matches on-screen text
+  const pool = strings['friend.vocative'].split('|')
+  const vocativeFor = id => {
+    let h = 0
+    for (let i = 0; i < id.length; i++) h = (h + id.charCodeAt(i)) % 997
+    return (pool[h % pool.length] ?? pool[0]).trim()
+  }
   const dir = resolve(root, `app/public/audio/${lang}`)
   mkdirSync(dir, { recursive: true })
   for (const [id, template] of Object.entries(strings)) {
@@ -47,7 +53,7 @@ for (const lang of ['en', 'ar']) {
       skipped++
       continue
     }
-    const text = template.replaceAll('{name}', vocative)
+    const text = template.replaceAll('{name}', vocativeFor(id))
     let attempts = 0
     for (;;) {
       try {
