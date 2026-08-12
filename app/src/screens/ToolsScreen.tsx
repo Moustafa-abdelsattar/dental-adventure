@@ -4,6 +4,7 @@ import { audio } from '../lib/audio'
 import { t } from '../lib/i18n'
 import { useGame } from '../store/game'
 import { ToolCard } from '../game/tools/ToolCard'
+import { GameButton } from '../components/ui/GameButton'
 import type { ToolId } from '../game/tools/tools'
 import type { ModuleProps } from './registry'
 
@@ -34,6 +35,14 @@ export function ToolsScreen({ module, onComplete }: ModuleProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // guarded completion so the fallback Next works even if narration hangs
+  const completedRef = useRef(false)
+  const completeOnce = () => {
+    if (completedRef.current) return
+    completedRef.current = true
+    onComplete()
+  }
+
   const handleMet = async (toolId: ToolId) => {
     if (doneRef.current) return
     const next = new Set(met)
@@ -48,12 +57,14 @@ export function ToolsScreen({ module, onComplete }: ModuleProps) {
     if (allDone) {
       doneRef.current = true
       await audio.say(lang, 'tools.done')
-      onComplete()
+      completeOnce()
     } else if (groupDone) {
       await audio.say(lang, 'tools.groupDone')
       setPage(p => Math.min(p + 1, groups.length - 1))
     }
   }
+
+  const allMet = roster.every(id => met.has(id))
 
   return (
     <div className="min-h-[calc(100dvh-3.5rem)] flex flex-col items-center justify-center px-4 pb-16 -mt-2">
@@ -91,6 +102,10 @@ export function ToolsScreen({ module, onComplete }: ModuleProps) {
           <ToolCard key={toolId} toolId={toolId} lang={lang} met={met.has(toolId)} onMet={id => void handleMet(id)} index={i} />
         ))}
       </motion.div>
+
+      <div data-testid="next-fallback" className="mt-4 w-full max-w-xs flex flex-col">
+        <GameButton label={t(lang, 'ui.next')} disabled={!allMet} onPress={completeOnce} />
+      </div>
     </div>
   )
 }

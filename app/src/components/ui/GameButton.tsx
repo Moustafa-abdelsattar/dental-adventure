@@ -8,12 +8,14 @@ export function GameButton({
   onPress,
   variant = 'primary',
   pulsing = false,
+  disabled = false,
 }: {
   label: string
   icon?: ReactNode
   onPress: () => void
   variant?: 'primary' | 'ghost' | 'mint'
   pulsing?: boolean
+  disabled?: boolean
 }) {
   const colors = {
     primary: 'bg-bubblegum text-white shadow-bubblegum/40',
@@ -22,15 +24,16 @@ export function GameButton({
   }[variant]
   return (
     <motion.button
-      whileTap={{ scale: 0.96 }}
+      disabled={disabled}
+      whileTap={disabled ? undefined : { scale: 0.96 }}
       animate={
-        pulsing
+        pulsing && !disabled
           ? { boxShadow: ['0 0 0 0px rgba(249,123,169,0.45)', '0 0 0 16px rgba(249,123,169,0)'] }
           : {}
       }
-      transition={pulsing ? { duration: 1.6, repeat: Infinity, ease: 'easeOut' } : springs.snappy}
-      onClick={onPress}
-      className={`min-h-[72px] px-8 rounded-full text-2xl font-bold shadow-lg flex items-center justify-center gap-3 ${colors}`}
+      transition={pulsing && !disabled ? { duration: 1.6, repeat: Infinity, ease: 'easeOut' } : springs.snappy}
+      onClick={() => !disabled && onPress()}
+      className={`min-h-[72px] px-8 rounded-full text-2xl font-bold shadow-lg flex items-center justify-center gap-3 ${colors} ${disabled ? 'opacity-40 saturate-50' : ''}`}
     >
       {icon}
       <span>{label}</span>

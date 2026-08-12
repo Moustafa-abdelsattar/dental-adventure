@@ -7,6 +7,7 @@ import { BigTooth } from '../game/BigTooth'
 import { TOOLS, type ToolId } from '../game/tools/tools'
 import { StarBurst } from '../components/motion/StarBurst'
 import { DoneBadge } from '../components/ui/DoneBadge'
+import { GameButton } from '../components/ui/GameButton'
 import type { ModuleProps } from './registry'
 
 const SEQUENCE: { toolId: ToolId; stepId: StringId }[] = [
@@ -36,6 +37,14 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // guarded completion so the fallback Next works even if narration hangs
+  const completedRef = useRef(false)
+  const completeOnce = () => {
+    if (completedRef.current) return
+    completedRef.current = true
+    onComplete()
+  }
+
   const tapTool = async (toolId: ToolId) => {
     if (done) return
     if (toolId !== SEQUENCE[step].toolId) {
@@ -52,7 +61,7 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
     } else if (!doneRef.current) {
       doneRef.current = true
       await audio.say(lang, 'prepare.done')
-      onComplete()
+      completeOnce()
     }
   }
 
@@ -93,6 +102,10 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
             </motion.button>
           )
         })}
+      </div>
+
+      <div data-testid="next-fallback" className="mt-4 w-full max-w-xs flex flex-col">
+        <GameButton label={t(lang, 'ui.next')} disabled={!done} onPress={completeOnce} />
       </div>
     </div>
   )

@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, act, cleanup } from '@testing-library/react'
+import { render, screen, fireEvent, act, cleanup, within } from '@testing-library/react'
 import { ClinicScreen } from '../src/screens/ClinicScreen'
 import { useGame } from '../src/store/game'
 import { audio } from '../src/lib/audio'
@@ -20,7 +20,7 @@ test('exploring all four objects completes the module', async () => {
   for (const id of ['light', 'chair', 'sink', 'table']) {
     fireEvent.click(screen.getByTestId(`hotspot-${id}`))
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Next' }))
+      fireEvent.click(within(screen.getByTestId('zoom-card')).getByRole('button', { name: 'Next' }))
     })
   }
   expect(onComplete).toHaveBeenCalledTimes(1)
@@ -32,7 +32,7 @@ test('fewer than four does not complete; explored badge shows', async () => {
   render(<ClinicScreen module={module} onComplete={onComplete} />)
   fireEvent.click(screen.getByTestId('hotspot-chair'))
   await act(async () => {
-    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
+    fireEvent.click(within(screen.getByTestId('zoom-card')).getByRole('button', { name: 'Next' }))
   })
   expect(screen.getByTestId('explored-chair')).toBeInTheDocument()
   expect(onComplete).not.toHaveBeenCalled()

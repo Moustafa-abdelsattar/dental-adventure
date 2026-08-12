@@ -7,6 +7,7 @@ import { useGame } from '../store/game'
 import { BigTooth } from '../game/BigTooth'
 import { TOOLS } from '../game/tools/tools'
 import { StarBurst } from '../components/motion/StarBurst'
+import { GameButton } from '../components/ui/GameButton'
 import type { ModuleProps } from './registry'
 
 /**
@@ -31,6 +32,14 @@ export function PracticeBrushScreen({ onComplete }: ModuleProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // guarded completion so the fallback Next works even if narration hangs
+  const completedRef = useRef(false)
+  const completeOnce = () => {
+    if (completedRef.current) return
+    completedRef.current = true
+    onComplete()
+  }
+
   const tapSpot = async (i: number) => {
     if (!brushSelected) {
       setWiggle(w => w + 1)
@@ -48,7 +57,7 @@ export function PracticeBrushScreen({ onComplete }: ModuleProps) {
       doneRef.current = true
       setDone(true)
       await audio.say(lang, 'practice.brush.done')
-      onComplete()
+      completeOnce()
     }
   }
 
@@ -82,6 +91,10 @@ export function PracticeBrushScreen({ onComplete }: ModuleProps) {
       >
         <BrushSvg demo={brushSelected} />
       </motion.button>
+
+      <div data-testid="next-fallback" className="mt-4 w-full max-w-xs flex flex-col">
+        <GameButton label={t(lang, 'ui.next')} disabled={!done} onPress={completeOnce} />
+      </div>
     </div>
   )
 }

@@ -56,6 +56,20 @@ test('treatment roster spans 3 groups including care tools', async () => {
   expect(onComplete).toHaveBeenCalledTimes(1)
 })
 
+test('fallback Next is disabled until every tool is met, then completes exactly once', async () => {
+  const module = checkup.modules.find(m => m.kind === 'tools')! as ModuleDef
+  const onComplete = vi.fn()
+  render(<ToolsScreen module={module} onComplete={onComplete} />)
+  const next = screen.getByTestId('next-fallback').querySelector('button')!
+  expect(next).toBeDisabled()
+  fireEvent.click(next)
+  expect(onComplete).not.toHaveBeenCalled()
+  await meetAll(module.toolIds! as ToolId[])
+  expect(next).toBeEnabled()
+  fireEvent.click(next) // auto path already completed; the guard must swallow this
+  expect(onComplete).toHaveBeenCalledTimes(1)
+})
+
 test('tapping a tool narrates description then fun fact', async () => {
   const module = checkup.modules.find(m => m.kind === 'tools')! as ModuleDef
   render(<ToolsScreen module={module} onComplete={vi.fn()} />)

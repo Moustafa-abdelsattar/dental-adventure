@@ -54,6 +54,16 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
     void audio.say(lang, item.descId)
   }
 
+  // separate from the narration flow so a hung clip can't strand the child —
+  // the fallback Next button can always finish a completed module
+  const completedRef = useRef(false)
+  const completeOnce = () => {
+    if (completedRef.current) return
+    completedRef.current = true
+    const rect = sceneRef.current?.getBoundingClientRect()
+    onComplete(rect ? { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 } : undefined)
+  }
+
   const closeCard = async () => {
     if (!open) return
     const next = new Set(explored)
@@ -63,8 +73,7 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
     if (next.size === ITEMS.length && !doneRef.current) {
       doneRef.current = true
       await audio.say(lang, 'clinic.done')
-      const rect = sceneRef.current?.getBoundingClientRect()
-      onComplete(rect ? { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 } : undefined)
+      completeOnce()
     }
   }
 
@@ -108,6 +117,10 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
             </motion.button>
           )
         })}
+      </div>
+
+      <div data-testid="next-fallback" className="mt-4 w-full max-w-xs flex flex-col">
+        <GameButton label={t(lang, 'ui.next')} disabled={explored.size < ITEMS.length} onPress={completeOnce} />
       </div>
 
       {openItem && (
