@@ -107,5 +107,7 @@
   "story.calmer2": "The little helpers are so nice! I feel calmer already.",
   "story.calmer3": "We got the tooth all ready together. I'm feeling good!",
   "story.reversal": "You helped me get ready, {name}. Now I'll stay right beside you while you practise your visit!",
-  "story.together": "We know what happens next!"
+  "story.together": "We know what happens next!",
+  "ui.startOver": "Start over",
+  "ui.startOverConfirm": "Tap again to restart from the beginning"
 }

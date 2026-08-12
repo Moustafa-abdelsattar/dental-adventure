@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useGame, selectStarCount } from '../store/game'
 import { t } from '../lib/i18n'
 import { audio } from '../lib/audio'
@@ -10,7 +10,21 @@ import { MiloHero } from '../components/ui/MiloHero'
 export function WelcomeScreen({ onStart }: { onStart: () => void }) {
   const lang = useGame(s => s.lang)
   const starCount = useGame(selectStarCount)
+  const reset = useGame(s => s.reset)
   const returning = starCount > 0
+  const [confirmReset, setConfirmReset] = useState(false)
+
+  // parent-facing escape hatch back to language/name setup; two taps to
+  // protect a child's progress from one stray tap
+  const startOver = () => {
+    if (!confirmReset) {
+      setConfirmReset(true)
+      setTimeout(() => setConfirmReset(false), 4000)
+      return
+    }
+    reset()
+    location.reload()
+  }
 
   useEffect(() => {
     if (lang) void audio.say(lang, returning ? 'milo.welcomeBack' : 'milo.welcome')
@@ -33,6 +47,15 @@ export function WelcomeScreen({ onStart }: { onStart: () => void }) {
       <SpeechBubble stringId={returning ? 'milo.welcomeBack' : 'milo.welcome'} />
       <FadeIn delay={0.25} className="w-full max-w-xs flex flex-col">
         <GameButton label={t(lang, 'ui.start')} pulsing onPress={onStart} />
+      </FadeIn>
+      <FadeIn delay={0.5}>
+        <button
+          data-testid="start-over"
+          onClick={startOver}
+          className={`min-h-11 px-4 text-sm font-bold underline underline-offset-4 ${confirmReset ? 'text-bubblegum' : 'text-ink/40'}`}
+        >
+          {t(lang, confirmReset ? 'ui.startOverConfirm' : 'ui.startOver')}
+        </button>
       </FadeIn>
     </div>
   )
