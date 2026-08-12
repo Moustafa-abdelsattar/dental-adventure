@@ -9,14 +9,16 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const env = readFileSync(resolve(root, '.env'), 'utf8')
 const KEY = env.match(/ELEVENLABS_API_KEY=(\S+)/)[1]
 
-// Jessica — playful, expressive premade voice; multilingual model covers Arabic
-// with the same voice so Milo sounds like one character in both languages.
-const VOICE_ID = 'cgSgspJ2msm6clMCkdW9'
+// Liam — warm young male premade voice; multilingual model covers Arabic with
+// the same voice so Milo sounds like one friendly-older-brother character in
+// both languages (voice direction: docs/arabic-audio-script.md — calm playful
+// energy, never overly excited, never babyish).
+const VOICE_ID = 'TX3LPaxmHKxFdv7VOQHJ'
 const MODEL = 'eleven_turbo_v2_5'
 
 const SETTINGS = {
-  en: { stability: 0.45, similarity_boost: 0.75, style: 0.4 },
-  ar: { stability: 0.55, similarity_boost: 0.75, style: 0.25 },
+  en: { stability: 0.45, similarity_boost: 0.75, style: 0.35 },
+  ar: { stability: 0.55, similarity_boost: 0.75, style: 0.2 },
 }
 
 async function tts(text, lang) {

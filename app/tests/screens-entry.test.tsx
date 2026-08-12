@@ -16,7 +16,7 @@ test('flow: language → parent (visit + name) → welcome; dir flips for Arabic
   fireEvent.click(screen.getByRole('button', { name: /زيارة علاج/ }))
   expect(useGame.getState().path).toBe('treatment')
   fireEvent.click(screen.getByRole('button', { name: /تخطّي/ }))
-  expect(screen.getByRole('button', { name: /ابدأ المغامرة/ })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: /يلا نبدأ المغامرة/ })).toBeInTheDocument()
 })
 
 test('?visit=checkup skips the visit chooser', () => {
