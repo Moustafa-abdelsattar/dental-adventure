@@ -9,11 +9,11 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const env = readFileSync(resolve(root, '.env'), 'utf8')
 const KEY = env.match(/ELEVENLABS_API_KEY=(\S+)/)[1]
 
-// Liam — warm young male premade voice; multilingual model covers Arabic with
-// the same voice so Milo sounds like one friendly-older-brother character in
-// both languages (voice direction: docs/arabic-audio-script.md — calm playful
-// energy, never overly excited, never babyish).
-const VOICE_ID = 'TX3LPaxmHKxFdv7VOQHJ'
+// Owner-picked voice-library voice (elevenlabs.io/app/voice-library?voiceId=…);
+// multilingual model covers Arabic with the same voice so Milo sounds like one
+// friendly-older-brother character in both languages (voice direction:
+// docs/arabic-audio-script.md — calm playful energy, never overly excited).
+const VOICE_ID = 'wxweiHvoC2r2jFM7mS8b'
 const MODEL = 'eleven_turbo_v2_5'
 
 const SETTINGS = {
