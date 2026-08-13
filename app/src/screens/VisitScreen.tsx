@@ -6,6 +6,7 @@ import { useGame } from '../store/game'
 import { DrNour } from '../game/drnour/DrNour'
 import { Sparkle } from '../game/Sparkle'
 import { GameButton } from '../components/ui/GameButton'
+import { ModuleFrame } from '../components/ui/ModuleFrame'
 import type { ModuleProps } from './registry'
 
 type Phase = 'meet' | 'stop' | 'steps' | 'done'
@@ -82,11 +83,19 @@ export function VisitScreen({ onComplete }: ModuleProps) {
   }, [phase])
 
   return (
-    <div className="min-h-[calc(100dvh-3.5rem)] flex flex-col items-center justify-center px-4 pb-10">
-      <h1 className="text-3xl font-bold mb-3 bg-gradient-to-b from-sky-deep to-grape bg-clip-text text-transparent">
-        {t(lang, 'visit.title')}
-      </h1>
-
+    <ModuleFrame
+      title={t(lang, 'visit.title')}
+      onIntroTap={() => void audio.replayLast()}
+      intro={
+        <>
+          {phase === 'meet' && t(lang, masked ? 'visit.meetDr' : 'visit.maskOff')}
+          {phase === 'stop' && t(lang, 'visit.stopSignal')}
+          {phase === 'steps' && step >= 0 && t(lang, STEPS[step].stringId)}
+          {phase === 'done' && t(lang, 'visit.done')}
+        </>
+      }
+      action={<GameButton label={t(lang, 'ui.next')} disabled={phase !== 'done'} onPress={completeOnce} />}
+    >
       <div className="relative w-full max-w-md aspect-[4/5] rounded-3xl bg-white/60 shadow-inner overflow-hidden flex items-end justify-center">
         {/* soft ceiling light — glow fades in over >1s, deliberately no flash */}
         <motion.div
@@ -143,41 +152,33 @@ export function VisitScreen({ onComplete }: ModuleProps) {
         </div>
       </div>
 
-      <p className="text-ink/70 font-bold text-center mt-3 min-h-12" onClick={() => void audio.replayLast()}>
-        {phase === 'meet' && t(lang, masked ? 'visit.meetDr' : 'visit.maskOff')}
-        {phase === 'stop' && t(lang, 'visit.stopSignal')}
-        {phase === 'steps' && step >= 0 && t(lang, STEPS[step].stringId)}
-        {phase === 'done' && t(lang, 'visit.done')}
-      </p>
-
       {phase === 'stop' && (
         <motion.button
           data-testid="raise-hand"
           onClick={handTap}
           animate={frozen ? { scale: 1 } : { scale: [1, 1.1, 1] }}
           transition={{ duration: 1.2, repeat: frozen ? 0 : Infinity }}
-          className="mt-2 w-24 h-24 rounded-full bg-sunny shadow-lg flex items-center justify-center"
+          className="shrink-0 w-24 h-24 rounded-full bg-sunny shadow-lg flex items-center justify-center"
           aria-label="raise hand"
         >
           <RaisedHand className="w-14" />
         </motion.button>
       )}
       {frozen && (
-        <svg viewBox="0 0 24 24" className="mt-2 w-8 h-8" data-testid="paused-label" aria-label="paused">
+        <svg viewBox="0 0 24 24" className="w-8 h-8" data-testid="paused-label" aria-label="paused">
           <rect x="5" y="4" width="5" height="16" rx="2.5" fill="#8b6fd8" />
           <rect x="14" y="4" width="5" height="16" rx="2.5" fill="#8b6fd8" />
         </svg>
       )}
 
       {phase === 'steps' && (
-        <div className="flex gap-2 mt-2" aria-hidden>
+        <div className="shrink-0 flex gap-2" aria-hidden>
           {STEPS.map((s, i) => (
             <span key={s.id} className={`w-3 h-3 rounded-full ${i <= step ? 'bg-grape' : 'bg-grape/20'}`} />
           ))}
         </div>
       )}
-      {phase === 'done' && <GameButton label={t(lang, 'ui.next')} onPress={completeOnce} />}
-    </div>
+    </ModuleFrame>
   )
 }
 

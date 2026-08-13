@@ -7,6 +7,7 @@ import { BigTooth } from '../game/BigTooth'
 import { StarBurst } from '../components/motion/StarBurst'
 import { Floating } from '../components/motion/Floating'
 import { GameButton } from '../components/ui/GameButton'
+import { ModuleFrame } from '../components/ui/ModuleFrame'
 import type { ModuleProps } from './registry'
 
 const PAUSE_MS = 600
@@ -51,14 +52,15 @@ export function SprayScreen({ onComplete }: ModuleProps) {
   }, [])
 
   return (
-    <div className="min-h-[calc(100dvh-3.5rem)] flex flex-col items-center justify-center px-4 pb-10 bg-gradient-to-b from-grape/30 via-sky/15 to-transparent">
-      <h1 className="text-3xl font-bold mb-1 bg-gradient-to-b from-grape to-sky-deep bg-clip-text text-transparent">
-        {t(lang, 'spray.title')}
-      </h1>
-      <p className="text-ink/60 font-bold mb-3 text-center">{t(lang, 'spray.intro', { name: childName })}</p>
-
+    <ModuleFrame
+      title={t(lang, 'spray.title')}
+      intro={t(lang, 'spray.intro', { name: childName })}
+      titleClassName="from-grape to-sky-deep"
+      className="bg-gradient-to-b from-grape/30 via-sky/15 to-transparent"
+      action={<GameButton label={t(lang, 'ui.next')} disabled={!done} onPress={completeOnce} />}
+    >
       {/* quiet night sky */}
-      <div className="relative w-full max-w-xs h-14 mb-1" aria-hidden>
+      <div className="shrink-0 relative w-full max-w-xs h-14" aria-hidden>
         <Floating duration={5} className="absolute start-4 top-0">
           <img src="/art/moon.svg" alt="" className="w-10 select-none" draggable={false} />
         </Floating>
@@ -88,11 +90,7 @@ export function SprayScreen({ onComplete }: ModuleProps) {
           </motion.div>
         )}
       </div>
-      {done && <p className="text-xl font-bold text-grape mt-2">{t(lang, 'spray.done', { name: childName })}</p>}
-
-      <div data-testid="next-fallback" className="mt-4 w-full max-w-xs flex flex-col">
-        <GameButton label={t(lang, 'ui.next')} disabled={!done} onPress={completeOnce} />
-      </div>
-    </div>
+      {done && <p className="text-xl font-bold text-grape">{t(lang, 'spray.done', { name: childName })}</p>}
+    </ModuleFrame>
   )
 }

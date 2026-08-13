@@ -46,7 +46,7 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
       const Screen = registry[chosen.kind]
       if (!Screen) return null
       return (
-        <div className="pt-14">
+        <div className="pt-[var(--hud-h)]">
           <Screen module={chosen} onComplete={() => setFreeChoice(null)} />
         </div>
       )
@@ -60,7 +60,7 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
       visit: '/art/drnour.webp',
     }
     return (
-      <div className="min-h-[calc(100dvh-3.5rem)] flex flex-col items-center justify-center gap-3 px-6 pt-14" data-testid="freeplay-picker">
+      <div className="min-h-[calc(100dvh-var(--hud-h))] flex flex-col items-center justify-center gap-3 px-6 pt-[var(--hud-h)]" data-testid="freeplay-picker">
         {manifest.modules.map((m, i) => (
           <motion.button
             key={m.id}
@@ -118,7 +118,7 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
   }
 
   return (
-    <div className="pt-14">
+    <div className="pt-[var(--hud-h)]">
       <motion.div
         key={current.id}
         initial={{ opacity: 0, x: 40 }}

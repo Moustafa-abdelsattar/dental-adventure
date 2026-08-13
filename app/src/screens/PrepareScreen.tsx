@@ -7,6 +7,7 @@ import { BigTooth } from '../game/BigTooth'
 import { TOOLS, type ToolId } from '../game/tools/tools'
 import { StarBurst } from '../components/motion/StarBurst'
 import { DoneBadge } from '../components/ui/DoneBadge'
+import { ModuleFrame } from '../components/ui/ModuleFrame'
 import { GameButton } from '../components/ui/GameButton'
 import type { ModuleProps } from './registry'
 
@@ -66,18 +67,17 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
   }
 
   return (
-    <div className="min-h-[calc(100dvh-3.5rem)] flex flex-col items-center justify-center px-4 pb-10">
-      <h1 className="text-3xl font-bold mb-1 bg-gradient-to-b from-sky-deep to-grape bg-clip-text text-transparent">
-        {t(lang, 'prepare.title')}
-      </h1>
-      <p className="text-ink/60 font-bold mb-3 text-center">{t(lang, 'prepare.intro', { name: childName })}</p>
-
+    <ModuleFrame
+      title={t(lang, 'prepare.title')}
+      intro={t(lang, 'prepare.intro', { name: childName })}
+      action={<GameButton label={t(lang, 'ui.next')} disabled={!done} onPress={completeOnce} />}
+    >
       <div className="relative w-full">
         <BigTooth showRing={step >= 1} showUmbrella={step >= 2} sleepy={done} sparkle={done} />
         <StarBurst show={done} />
       </div>
 
-      <div className="mt-4 grid grid-cols-3 gap-3 w-full max-w-sm">
+      <div className="shrink-0 grid grid-cols-3 gap-3 w-full max-w-sm">
         {SEQUENCE.map(({ toolId }, i) => {
           const isNext = !done && i === step
           const used = i < step
@@ -104,9 +104,6 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
         })}
       </div>
 
-      <div data-testid="next-fallback" className="mt-4 w-full max-w-xs flex flex-col">
-        <GameButton label={t(lang, 'ui.next')} disabled={!done} onPress={completeOnce} />
-      </div>
-    </div>
+    </ModuleFrame>
   )
 }

@@ -45,7 +45,7 @@ export function WelcomeScreen({ onStart }: { onStart: () => void }) {
       </FadeIn>
       <MiloHero />
       <SpeechBubble stringId={returning ? 'milo.welcomeBack' : 'milo.welcome'} />
-      <FadeIn delay={0.25} className="w-full max-w-xs flex flex-col">
+      <FadeIn delay={0.25} className="w-full max-w-xs flex flex-col" data-testid="start-adventure">
         <GameButton label={t(lang, 'ui.start')} pulsing onPress={onStart} />
       </FadeIn>
       <FadeIn delay={0.5}>

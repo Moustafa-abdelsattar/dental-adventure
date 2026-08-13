@@ -5,6 +5,7 @@ import { t } from '../lib/i18n'
 import { useGame } from '../store/game'
 import { ToolCard } from '../game/tools/ToolCard'
 import { GameButton } from '../components/ui/GameButton'
+import { ModuleFrame } from '../components/ui/ModuleFrame'
 import type { ToolId } from '../game/tools/tools'
 import type { ModuleProps } from './registry'
 
@@ -67,14 +68,13 @@ export function ToolsScreen({ module, onComplete }: ModuleProps) {
   const allMet = roster.every(id => met.has(id))
 
   return (
-    <div className="min-h-[calc(100dvh-3.5rem)] flex flex-col items-center justify-center px-4 pb-16 -mt-2">
-      <h1 className="text-3xl font-bold mb-1 bg-gradient-to-b from-sky-deep to-grape bg-clip-text text-transparent">
-        {t(lang, 'tools.title')}
-      </h1>
-      <p className="text-ink/60 font-bold mb-3 text-center">{t(lang, 'tools.intro', { name: childName })}</p>
-
+    <ModuleFrame
+      title={t(lang, 'tools.title')}
+      intro={t(lang, 'tools.intro', { name: childName })}
+      action={<GameButton label={t(lang, 'ui.next')} disabled={!allMet} onPress={completeOnce} />}
+    >
       {/* group progress: a tooth that gets shinier per finished group */}
-      <div className="flex gap-2 mb-4" data-testid="group-progress">
+      <div className="shrink-0 flex gap-2" data-testid="group-progress">
         {groups.map((g, i) => {
           const finished = g.every(id => met.has(id))
           return (
@@ -95,17 +95,13 @@ export function ToolsScreen({ module, onComplete }: ModuleProps) {
         initial={{ opacity: 0, x: 30 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3 }}
-        className={`grid gap-3 w-full ${groups[page]?.length === 2 ? 'grid-cols-2 max-w-xs' : 'grid-cols-3 max-w-md'}`}
+        className={`grid gap-3 w-full ${groups[page]?.length === 2 ? 'grid-cols-2 max-w-sm' : 'grid-cols-3 max-w-md'}`}
         data-testid={`tool-group-${page}`}
       >
         {groups[page]?.map((toolId, i) => (
           <ToolCard key={toolId} toolId={toolId} lang={lang} met={met.has(toolId)} onMet={id => void handleMet(id)} index={i} />
         ))}
       </motion.div>
-
-      <div data-testid="next-fallback" className="mt-4 w-full max-w-xs flex flex-col">
-        <GameButton label={t(lang, 'ui.next')} disabled={!allMet} onPress={completeOnce} />
-      </div>
-    </div>
+    </ModuleFrame>
   )
 }

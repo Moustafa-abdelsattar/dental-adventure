@@ -14,6 +14,30 @@
   --font-display-ar: 'Baloo Bhaijaan 2', system-ui, sans-serif;
 }
 
+:root {
+  /* the progress bar's own height plus whatever the notch steals */
+  --hud-h: calc(3.5rem + env(safe-area-inset-top, 0px));
+  /* every module screen shares one bottom rest, clear of the home indicator */
+  --screen-pb: calc(1rem + env(safe-area-inset-bottom, 0px));
+}
+
+/* One frame for every module screen: header at a fixed height, action row on
+   the floor, stage in between. Kept here rather than in utility classes so the
+   height maths stays readable next to the tokens it depends on. */
+.module-frame {
+  /* an exact height, not a minimum: the stage has to give ground so the title
+     and the Next button keep their places on a short phone */
+  height: calc(100dvh - var(--hud-h));
+  padding-top: 0.5rem;
+  padding-bottom: var(--screen-pb);
+}
+
+/* The stage takes whatever is left and the artwork shrinks into it, so the
+   Next button stays on screen on a short phone instead of below the fold. */
+.module-stage > * {
+  max-height: 100%;
+}
+
 body {
   font-family: var(--font-display);
   background: var(--color-cream);

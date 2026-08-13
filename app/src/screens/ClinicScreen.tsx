@@ -6,6 +6,7 @@ import { useGame } from '../store/game'
 import { Pop } from '../components/motion/Pop'
 import { GameButton } from '../components/ui/GameButton'
 import { DoneBadge } from '../components/ui/DoneBadge'
+import { ModuleFrame } from '../components/ui/ModuleFrame'
 import type { ModuleProps } from './registry'
 
 type ItemId = 'chair' | 'light' | 'sink' | 'table'
@@ -80,12 +81,11 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
   const openItem = open ? ITEMS.find(i => i.id === open)! : null
 
   return (
-    <div className="min-h-[calc(100dvh-3.5rem)] flex flex-col items-center justify-center px-4 pb-8">
-      <h1 className="text-3xl font-bold mt-1 mb-1 bg-gradient-to-b from-sky-deep to-grape bg-clip-text text-transparent">
-        {t(lang, 'clinic.title')}
-      </h1>
-      <p className="text-ink/60 font-bold mb-2 text-center">{t(lang, 'clinic.intro', { name: childName })}</p>
-
+    <ModuleFrame
+      title={t(lang, 'clinic.title')}
+      intro={t(lang, 'clinic.intro', { name: childName })}
+      action={<GameButton label={t(lang, 'ui.next')} disabled={explored.size < ITEMS.length} onPress={completeOnce} />}
+    >
       <div ref={sceneRef} className="relative w-full max-w-md aspect-[4/5] rounded-3xl shadow-inner overflow-hidden bg-gradient-to-b from-sky/25 via-white/70 to-mint/20">
         {/* room: wall line + floor */}
         <div className="absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-b from-sky/10 to-sky/25 rounded-t-[40%_18px]" />
@@ -119,10 +119,6 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
         })}
       </div>
 
-      <div data-testid="next-fallback" className="mt-4 w-full max-w-xs flex flex-col">
-        <GameButton label={t(lang, 'ui.next')} disabled={explored.size < ITEMS.length} onPress={completeOnce} />
-      </div>
-
       {openItem && (
         <div className="fixed inset-0 z-40 bg-ink/30 backdrop-blur-sm flex items-center justify-center p-6" data-testid="zoom-card">
           <Pop className="bg-white rounded-3xl p-6 flex flex-col items-center gap-4 w-full max-w-sm shadow-2xl">
@@ -137,7 +133,7 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
           </Pop>
         </div>
       )}
-    </div>
+    </ModuleFrame>
   )
 }
 

@@ -11,6 +11,12 @@ async function fakeAudio(page: Page) {
   })
 }
 
+// A story beat covers the next module for a couple of seconds and swallows the
+// first tap (by design — a child taps it away). Tests must let it leave first.
+async function settle(page: Page) {
+  await expect(page.getByTestId('story-beat')).toHaveCount(0, { timeout: 30_000 })
+}
+
 // Tappable game elements breathe on purpose (infinite pulse animations), so
 // Playwright's stability check would wait forever — force-click those.
 async function completeClinic(page: Page) {
@@ -21,20 +27,32 @@ async function completeClinic(page: Page) {
 }
 
 async function completeTools(page: Page, ids: string[]) {
+  await settle(page)
   // the last tool of a group advances the page immediately, unmounting its
-  // met-badge — only assert the badge for non-final tools of the trio
+  // met-badge — only assert the badge for non-final tools of the group
   for (let i = 0; i < ids.length; i++) {
-    await page.getByTestId(`tool-${ids[i]}`).click()
+    const tool = page.getByTestId(`tool-${ids[i]}`)
+    await expect(tool).toBeVisible({ timeout: 15_000 })
+    await tool.click()
     if (i < ids.length - 1) await expect(page.getByTestId(`met-${ids[i]}`)).toBeVisible({ timeout: 15_000 })
   }
 }
 
 async function completeBrush(page: Page) {
+  await settle(page)
   await page.getByTestId('pick-brush').click({ force: true })
-  for (const i of [0, 1, 2, 3]) await page.getByTestId(`plaque-${i}`).click({ force: true })
+  // wait for each spot instead of blind-clicking: a story beat can still be
+  // fading out when the brush screen arrives, and a lost click strands the run
+  for (const i of [0, 1, 2, 3]) {
+    const spot = page.getByTestId(`plaque-${i}`)
+    await expect(spot).toBeAttached({ timeout: 15_000 })
+    await spot.click({ force: true })
+    await expect(spot).toHaveCount(0, { timeout: 15_000 })
+  }
 }
 
 async function completeVisit(page: Page) {
+  await settle(page)
   await page.getByTestId('drnour-mask').click({ force: true })
   await page.getByTestId('raise-hand').click({ force: true })
   // steps auto-advance; the reward screen is the exit criterion
@@ -54,8 +72,8 @@ test.describe('Dental Adventure happy paths', () => {
 
     await completeClinic(page)
     await expect(page.getByTestId('tool-mirror')).toBeVisible({ timeout: 20_000 })
-    await completeTools(page, ['mirror', 'explorer', 'suction'])
-    await completeTools(page, ['syringe', 'brush', 'xray'])
+    await completeTools(page, ['mirror', 'suction'])
+    await completeTools(page, ['syringe', 'brush'])
     await expect(page.getByTestId('pick-brush')).toBeVisible({ timeout: 20_000 })
     await completeBrush(page)
     await expect(page.getByTestId('drnour-mask')).toBeVisible({ timeout: 20_000 })
@@ -73,7 +91,7 @@ test.describe('Dental Adventure happy paths', () => {
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
     await page.getByRole('button', { name: 'زيارة علاج' }).click()
     await page.getByRole('button', { name: 'تخطّي' }).click()
-    await page.getByRole('button', { name: 'ابدأ المغامرة' }).click()
+    await page.getByTestId('start-adventure').getByRole('button').click()
 
     await completeClinic(page)
     await expect(page.getByTestId('tool-mirror')).toBeVisible({ timeout: 20_000 })
@@ -82,13 +100,17 @@ test.describe('Dental Adventure happy paths', () => {
     await completeTools(page, ['ring', 'umbrella', 'spray'])
     // prepare: ring → umbrella → spray
     await expect(page.getByTestId('prep-ring')).toBeVisible({ timeout: 20_000 })
-    for (const id of ['ring', 'umbrella', 'spray']) await page.getByTestId(`prep-${id}`).click({ force: true })
+    await settle(page)
+    for (const id of ['ring', 'umbrella', 'spray']) {
+      await page.getByTestId(`prep-${id}`).click({ force: true })
+      await expect(page.getByTestId(`prep-done-${id}`)).toBeVisible({ timeout: 15_000 })
+    }
     // sleepy spray mission runs by itself
     await expect(page.getByTestId('drnour-mask')).toBeVisible({ timeout: 60_000 })
     await completeVisit(page)
 
     await expect(page.getByTestId('reward-screen')).toBeVisible({ timeout: 60_000 })
-    await expect(page.getByText('أصبحت الآن بطل الأسنان!')).toBeVisible()
+    await expect(page.getByText('بقيت مستكشف السنان!')).toBeVisible()
   })
 
   test('?visit=treatment preset skips the visit chooser', async ({ page }) => {

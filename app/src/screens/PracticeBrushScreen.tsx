@@ -8,6 +8,7 @@ import { BigTooth } from '../game/BigTooth'
 import { TOOLS } from '../game/tools/tools'
 import { StarBurst } from '../components/motion/StarBurst'
 import { GameButton } from '../components/ui/GameButton'
+import { ModuleFrame } from '../components/ui/ModuleFrame'
 import type { ModuleProps } from './registry'
 
 /**
@@ -62,12 +63,11 @@ export function PracticeBrushScreen({ onComplete }: ModuleProps) {
   }
 
   return (
-    <div className="min-h-[calc(100dvh-3.5rem)] flex flex-col items-center justify-center px-4 pb-10">
-      <h1 className="text-3xl font-bold mb-1 bg-gradient-to-b from-sky-deep to-grape bg-clip-text text-transparent">
-        {t(lang, 'practice.brush.title')}
-      </h1>
-      <p className="text-ink/60 font-bold mb-3 text-center">{t(lang, 'practice.brush.intro', { name: childName })}</p>
-
+    <ModuleFrame
+      title={t(lang, 'practice.brush.title')}
+      intro={t(lang, 'practice.brush.intro', { name: childName })}
+      action={<GameButton label={t(lang, 'ui.next')} disabled={!done} onPress={completeOnce} />}
+    >
       <motion.div
         key={wiggle}
         animate={wiggle ? { x: [0, -6, 6, -4, 0] } : {}}
@@ -86,15 +86,11 @@ export function PracticeBrushScreen({ onComplete }: ModuleProps) {
         }}
         animate={brushSelected ? { scale: 1.12, rotate: [-3, 3, -3] } : { scale: [1, 1.06, 1] }}
         transition={brushSelected ? { rotate: { duration: 1.6, repeat: Infinity }, scale: springs.snappy } : { duration: 1.8, repeat: Infinity }}
-        className={`mt-4 w-28 h-28 rounded-3xl bg-white shadow-lg p-2 ${brushSelected ? 'ring-4 ring-sunny' : ''}`}
+        className={`shrink-0 w-28 h-28 rounded-3xl bg-white shadow-lg p-2 ${brushSelected ? 'ring-4 ring-sunny' : ''}`}
         aria-label={t(lang, 'tool.brush.name')}
       >
         <BrushSvg demo={brushSelected} />
       </motion.button>
-
-      <div data-testid="next-fallback" className="mt-4 w-full max-w-xs flex flex-col">
-        <GameButton label={t(lang, 'ui.next')} disabled={!done} onPress={completeOnce} />
-      </div>
-    </div>
+    </ModuleFrame>
   )
 }

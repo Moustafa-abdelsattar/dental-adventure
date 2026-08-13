@@ -22,6 +22,8 @@ export function ParentScreen({ onDone }: { onDone: () => void }) {
   }
 
   return (
+    // both steps reserve the same heights, so the badge and the question stay
+    // put when the parent moves from the visit type to the name
     <div className="min-h-dvh flex flex-col items-center justify-center gap-6 px-6">
       <FadeIn>
         <span className="rounded-full bg-grape/15 text-grape px-4 py-1 text-sm font-bold uppercase tracking-wide">
@@ -31,8 +33,8 @@ export function ParentScreen({ onDone }: { onDone: () => void }) {
 
       {step === 'visit' ? (
         <>
-          <h1 className="text-3xl font-bold text-center">{t(lang, 'parent.whichVisit')}</h1>
-          <div className="flex flex-col gap-4 w-full max-w-xs">
+          <h1 className="text-3xl font-bold text-center min-h-[5rem] flex items-center">{t(lang, 'parent.whichVisit')}</h1>
+          <div className="flex flex-col gap-4 w-full max-w-xs min-h-[15rem]">
             <Pop className="flex flex-col">
               <GameButton
                 label={t(lang, 'parent.checkup')}
@@ -57,8 +59,8 @@ export function ParentScreen({ onDone }: { onDone: () => void }) {
         </>
       ) : (
         <>
-          <h1 className="text-3xl font-bold text-center">{t(lang, 'parent.childName')}</h1>
-          <div className="flex flex-col gap-4 w-full max-w-xs">
+          <h1 className="text-3xl font-bold text-center min-h-[5rem] flex items-center">{t(lang, 'parent.childName')}</h1>
+          <div className="flex flex-col gap-4 w-full max-w-xs min-h-[15rem]">
             <NameInput value={name} onChange={setName} placeholder={t(lang, 'parent.namePlaceholder')} />
             <GameButton label={t(lang, 'ui.next')} onPress={() => finish(true)} />
             <GameButton label={t(lang, 'parent.skip')} variant="ghost" onPress={() => finish(false)} />
