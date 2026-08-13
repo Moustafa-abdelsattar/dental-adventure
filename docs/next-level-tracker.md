@@ -16,7 +16,7 @@ Source: [next-level-plan.md](next-level-plan.md). Update the checkboxes as items
 - [ ] P1.3 Sound preview ("Hear the tool") and replay everywhere
 - [ ] P1.4 Descriptive praise instead of generic "Great job"
 - [ ] P1.5 Age modes 4–5 / 6–8
-- [ ] P1.6 Full Arabic RTL + recorded Arabic voice pass
+- [x] P1.6 Full Arabic RTL + recorded Arabic voice pass
 - [ ] P1.7 Reduced-motion and quiet modes
 
 ## Priority 2 — Create the defensible product
