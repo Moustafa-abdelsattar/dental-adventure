@@ -1,2 +1,5 @@
 .env
 node_modules/
+
+# local voice auditions (generated, never shipped)
+app/public/voice-samples/
