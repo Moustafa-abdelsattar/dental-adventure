@@ -60,7 +60,7 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
       visit: '/art/drnour.webp',
     }
     return (
-      <div className="min-h-[calc(100dvh-var(--hud-h))] flex flex-col items-center justify-center gap-3 px-6 pt-[var(--hud-h)]" data-testid="freeplay-picker">
+      <div className="min-h-[calc(var(--app-h)-var(--hud-h))] flex flex-col items-center justify-center gap-3 px-6 pt-[var(--hud-h)]" data-testid="freeplay-picker">
         {manifest.modules.map((m, i) => (
           <motion.button
             key={m.id}

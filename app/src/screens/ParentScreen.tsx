@@ -24,7 +24,7 @@ export function ParentScreen({ onDone }: { onDone: () => void }) {
   return (
     // both steps reserve the same heights, so the badge and the question stay
     // put when the parent moves from the visit type to the name
-    <div className="min-h-dvh flex flex-col items-center justify-center gap-6 px-6">
+    <div className="min-h-[var(--app-h)] flex flex-col items-center justify-center gap-6 px-6">
       <FadeIn>
         <span className="rounded-full bg-grape/15 text-grape px-4 py-1 text-sm font-bold uppercase tracking-wide">
           {t(lang, 'parent.forParents')}

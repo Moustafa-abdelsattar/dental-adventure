@@ -22,7 +22,7 @@ export function LanguageScreen() {
   }
 
   return (
-    <div className="min-h-dvh flex flex-col items-center justify-center gap-8 px-6">
+    <div className="min-h-[var(--app-h)] flex flex-col items-center justify-center gap-8 px-6">
       <MiloHero size={185} draggable={false} />
       <FadeIn className="flex flex-col items-center gap-1">
         <span className="text-2xl font-bold" dir="rtl" lang="ar" style={{ fontFamily: 'var(--font-display-ar)' }}>

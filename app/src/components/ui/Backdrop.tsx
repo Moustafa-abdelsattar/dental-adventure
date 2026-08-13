@@ -14,20 +14,20 @@ export function Backdrop() {
       <div className="absolute top-[14%] start-1/2 -translate-x-1/2 w-[130%] aspect-square rounded-full bg-[radial-gradient(circle,rgba(255,244,214,0.85)_0%,rgba(255,244,214,0)_60%)]" />
 
       {/* clouds at three depths */}
-      <Floating duration={9} amplitude={7} className="absolute top-[6%] start-[4%] opacity-90">
+      <Floating duration={9} amplitude={7} className="absolute top-[3%] start-[2%] opacity-90">
         <Cloud w={120} />
       </Floating>
-      <Floating duration={12} amplitude={10} className="absolute top-[15%] end-[6%] opacity-60 blur-[1px]">
+      <Floating duration={12} amplitude={10} className="absolute top-[26%] end-[5%] opacity-60 blur-[1px]">
         <Cloud w={90} />
       </Floating>
-      <Floating duration={15} amplitude={6} className="absolute top-[34%] start-[12%] opacity-35 blur-[2px]">
+      <Floating duration={15} amplitude={6} className="absolute top-[45%] start-[10%] opacity-35 blur-[2px]">
         <Cloud w={64} />
       </Floating>
 
       {/* slow gold sparkles */}
       {[
         { cls: 'top-[24%] end-[20%] w-5', d: 0 },
-        { cls: 'top-[10%] start-[38%] w-3.5', d: 1.4 },
+        { cls: 'top-[30%] start-[38%] w-3.5', d: 1.4 },
         { cls: 'top-[42%] end-[8%] w-3', d: 2.6 },
       ].map(s => (
         <motion.img

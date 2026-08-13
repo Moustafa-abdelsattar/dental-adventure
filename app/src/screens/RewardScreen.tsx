@@ -52,7 +52,7 @@ export function RewardScreen({ onPlayAgain }: { onPlayAgain?: () => void }) {
   }
 
   return (
-    <div className="min-h-dvh flex flex-col items-center justify-center gap-5 px-6 text-center relative overflow-hidden" data-testid="reward-screen">
+    <div className="min-h-[var(--app-h)] flex flex-col items-center justify-center gap-5 px-6 text-center relative overflow-hidden" data-testid="reward-screen">
       <div className="absolute inset-0 bg-gradient-to-b from-grape/25 via-transparent to-sunny/20 pointer-events-none" />
       {bursts.map((show, i) => (
         <div key={i} className={`absolute ${['top-1/4 start-1/4', 'top-1/3 end-1/4', 'top-1/2 start-1/2'][i]}`}>

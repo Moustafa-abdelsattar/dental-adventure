@@ -51,9 +51,11 @@ export default function App() {
     )
 
   return (
-    <>
-      <Backdrop />
-      <div className="relative">{screen}</div>
-    </>
+    <div className="app-stage">
+      <div className="app-column">
+        <Backdrop />
+        <div className="relative">{screen}</div>
+      </div>
+    </div>
   )
 }

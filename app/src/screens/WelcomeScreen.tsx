@@ -33,7 +33,7 @@ export function WelcomeScreen({ onStart }: { onStart: () => void }) {
 
   if (!lang) return null
   return (
-    <div className="min-h-dvh flex flex-col items-center justify-center gap-5 px-6">
+    <div className="min-h-[var(--app-h)] flex flex-col items-center justify-center gap-5 px-6">
       <FadeIn className="text-center">
         <h1 className="text-5xl font-bold leading-tight bg-gradient-to-b from-sky-deep to-grape bg-clip-text text-transparent drop-shadow-sm">
           {t(lang, 'app.title')}

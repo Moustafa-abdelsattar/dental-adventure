@@ -19,6 +19,49 @@
   --hud-h: calc(3.5rem + env(safe-area-inset-top, 0px));
   /* every module screen shares one bottom rest, clear of the home indicator */
   --screen-pb: calc(1rem + env(safe-area-inset-bottom, 0px));
+  /* the play area: the whole glass on a phone, one phone-shaped panel on a
+     laptop. Every screen measures itself against --app-h, never the window. */
+  --app-w: 27rem;
+  --app-h: 100dvh;
+}
+
+.app-stage {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-column {
+  position: relative;
+  width: 100%;
+  max-width: var(--app-w);
+  height: var(--app-h);
+  overflow: hidden;
+  /* also makes this the anchor for the fixed backdrop, HUD and overlays, so
+     they stay inside the panel instead of escaping across the desktop */
+  transform: translateZ(0);
+}
+
+/* Big screen: the game stops sprawling and sits as one panel on a calm desk.
+   Height-gated so a phone held sideways still plays full-bleed. */
+@media (min-width: 30rem) and (min-height: 40rem) {
+  :root {
+    --app-h: min(calc(100dvh - 3rem), 54rem);
+  }
+
+  .app-stage {
+    padding: 1.5rem 1rem;
+    background:
+      radial-gradient(120% 80% at 50% 0%, #eaf5fd 0%, #f4f7fb 45%, #eef1f7 100%);
+  }
+
+  .app-column {
+    border-radius: 2.25rem;
+    box-shadow:
+      0 30px 70px -28px rgba(58, 53, 96, 0.45),
+      0 6px 18px rgba(58, 53, 96, 0.08);
+  }
 }
 
 /* One frame for every module screen: header at a fixed height, action row on
@@ -27,7 +70,7 @@
 .module-frame {
   /* an exact height, not a minimum: the stage has to give ground so the title
      and the Next button keep their places on a short phone */
-  height: calc(100dvh - var(--hud-h));
+  height: calc(var(--app-h) - var(--hud-h));
   padding-top: 0.5rem;
   padding-bottom: var(--screen-pb);
 }
