@@ -4,7 +4,7 @@ import { writeFileSync, mkdirSync } from 'node:fs'
 import { readFileSync } from 'node:fs'
 
 const KEY = readFileSync('F:/Dental_kids/.env', 'utf8').match(/ELEVENLABS_API_KEY=(\S+)/)[1]
-const OUT = 'F:/Dental_kids/app/public/voice-samples'
+const OUT = 'F:/Dental_kids/voice-auditions'
 mkdirSync(OUT, { recursive: true })
 
 const TEXT = "Hello! Let's play in English! These are the dentist's little helpers, buddy. Tap each one to say hello!"
