@@ -2,7 +2,7 @@
 // title, stage and action row land, and whether anything overflows.
 import { chromium } from '@playwright/test'
 
-const base = 'http://127.0.0.1:4517'
+const base = process.env.BASE_URL ?? 'http://127.0.0.1:4517'
 const browser = await chromium.launch()
 const page = await browser.newPage({ viewport: { width: Number(process.env.VW ?? 390), height: Number(process.env.VH ?? 844) }, hasTouch: true })
 await page.addInitScript(() => {
