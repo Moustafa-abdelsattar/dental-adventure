@@ -15,7 +15,8 @@ Prepared 14 August 2026.
 | 2 — GameStage replaces ModuleFrame | Done — `feat/game-stage` |
 | 3 — Milo in Rive | Done in SVG — `feat/game-stage`. All seven states, separated layers including eyebrows, and the `trigger`/`setTalking` interface, with lip-sync wired to the baked clips. **The `.riv` file itself still needs authoring in the Rive editor**; it swaps in behind the same interface without callers changing |
 | 4 — Asset conversion | **Blocked** — needs a Meshy or Tripo API key and `blender-mcp`. Gates 6, 7, 8 |
-| 5, 9, 10 | Not started |
+| 5 — The 3D stage | Done — `feat/game-stage`. Harness at `?stage3d=1`. Measured 5 draw calls / 1.5k triangles / 60fps in a desktop browser; **the real low-end Android check is still outstanding** |
+| 9, 10 | Not started |
 
 ### Corrections found during Task 0
 The baseline in `MIGRATION_PLAN.md` §1 was out of date in both directions. Read it with these:
