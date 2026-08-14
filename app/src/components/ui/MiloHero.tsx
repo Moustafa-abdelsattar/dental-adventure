@@ -1,5 +1,5 @@
 import { motion, useMotionValue, useSpring, useTransform } from 'motion/react'
-import { springs } from '../../lib/springs'
+import { springs, springValues } from '../../lib/springs'
 import { audio } from '../../lib/audio'
 
 /**
@@ -11,8 +11,8 @@ import { audio } from '../../lib/audio'
 export function MiloHero({ src = '/art/milo.webp', size = 230, draggable = true }: { src?: string; size?: number; draggable?: boolean }) {
   const mx = useMotionValue(0)
   const my = useMotionValue(0)
-  const rotateX = useSpring(useTransform(my, [-0.5, 0.5], [13, -13]), { stiffness: 180, damping: 20 })
-  const rotateY = useSpring(useTransform(mx, [-0.5, 0.5], [-16, 16]), { stiffness: 180, damping: 20 })
+  const rotateX = useSpring(useTransform(my, [-0.5, 0.5], [13, -13]), springValues.soft)
+  const rotateY = useSpring(useTransform(mx, [-0.5, 0.5], [-16, 16]), springValues.soft)
   const shadowX = useTransform(rotateY, [-16, 16], [14, -14])
   const shadowScale = useTransform(rotateX, [-13, 13], [1.06, 0.9])
 

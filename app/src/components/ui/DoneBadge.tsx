@@ -1,4 +1,5 @@
 import { motion } from 'motion/react'
+import { springs } from '../../lib/springs'
 
 /**
  * The game-wide "you did this!" mark: a mint circle with a drawn check that
@@ -11,7 +12,7 @@ export function DoneBadge({ className = 'w-9 h-9', testid }: { className?: strin
       data-testid={testid}
       initial={{ scale: 0, rotate: -30 }}
       animate={{ scale: 1, rotate: 0 }}
-      transition={{ type: 'spring', stiffness: 420, damping: 14 }}
+      transition={springs.bouncy}
       className={`${className} inline-flex items-center justify-center rounded-full bg-mint shadow-md ring-2 ring-white`}
     >
       <svg viewBox="0 0 24 24" className="w-3/5 h-3/5" aria-hidden>
