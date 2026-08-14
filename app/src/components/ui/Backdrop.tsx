@@ -13,14 +13,16 @@ export function Backdrop() {
       {/* warm glow behind the hero area */}
       <div className="absolute top-[14%] start-1/2 -translate-x-1/2 w-[130%] aspect-square rounded-full bg-[radial-gradient(circle,rgba(255,244,214,0.85)_0%,rgba(255,244,214,0)_60%)]" />
 
-      {/* clouds at three depths */}
-      <Floating duration={9} amplitude={7} className="absolute top-[3%] start-[2%] opacity-90">
+      {/* Clouds at three depths, all kept below the caption band: the top of
+          the panel belongs to the HUD and the screen title, and a cloud
+          drifting behind the words reads as a smudge rather than as weather. */}
+      <Floating duration={9} amplitude={7} className="absolute top-[22%] start-[3%] opacity-90">
         <Cloud w={120} />
       </Floating>
-      <Floating duration={12} amplitude={10} className="absolute top-[26%] end-[5%] opacity-60 blur-[1px]">
+      <Floating duration={12} amplitude={10} className="absolute top-[38%] end-[5%] opacity-60 blur-[1px]">
         <Cloud w={90} />
       </Floating>
-      <Floating duration={15} amplitude={6} className="absolute top-[45%] start-[10%] opacity-35 blur-[2px]">
+      <Floating duration={15} amplitude={6} className="absolute top-[55%] start-[10%] opacity-35 blur-[2px]">
         <Cloud w={64} />
       </Floating>
 

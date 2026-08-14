@@ -111,10 +111,13 @@ export function Milo({ pose = 'idle', size = 180 }: { pose?: MiloPose; size?: nu
           cx="100"
           cy="114"
           fill="#7a4a5a"
+          // rx/ry must come from `initial`, not from static attributes: Motion
+          // owns these once it animates them, and without a starting value it
+          // writes `undefined` on its first render pass and the browser
+          // rejects the attribute.
+          initial={{ rx: 12, ry: 9 }}
           animate={{ ry: [6, 11, 6], rx: [10, 13, 10] }}
           transition={{ duration: 0.35, repeat: Infinity }}
-          rx={12}
-          ry={9}
         />
       ) : (
         <path

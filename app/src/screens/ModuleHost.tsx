@@ -122,7 +122,12 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
     <div className="relative pt-[var(--hud-h)]">
       {/* One module hands over to the next: the outgoing screen sinks back and
           fades while the incoming one rises into its place, overlapping by a
-          beat so the stage is never briefly empty. */}
+          beat so the stage is never briefly empty.
+
+          Note for tests: both screens are mounted during that overlap, so the
+          test ids every stage carries — `game-stage`, `next-fallback` — briefly
+          resolve to two elements. Playwright's strict mode will throw if a spec
+          queries one mid-handover; wait for the incoming screen's own id first. */}
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.div
           key={current.id}
