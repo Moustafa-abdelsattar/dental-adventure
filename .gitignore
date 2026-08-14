@@ -6,3 +6,10 @@ voice-auditions/
 
 # playwright MCP scratch output
 .playwright-mcp/
+
+# raw generator exports — tens of MB each, and reproducible from the source art
+art-in/models-raw/
+
+# raw drops that land at the repo root
+/*.glb
+/*.zip

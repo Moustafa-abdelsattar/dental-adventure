@@ -3,6 +3,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { useState } from 'react'
 import { LazyStage } from './StageLazy'
 import { Chair } from './ClinicScene/Chair'
+import { Model, PIVOT } from './Model'
 
 /**
  * Publishes the renderer's own counters so the harness can check them against
@@ -64,8 +65,12 @@ export function StageDemo() {
   const [focus, setFocus] = useState<[number, number, number] | null>(null)
   const [impact, setImpact] = useState(0)
   const [warm, setWarm] = useState(false)
-  // ?stage3d=chair swaps the stand-ins for the real converted model
-  const chair = new URLSearchParams(location.search).get('stage3d') === 'chair'
+  // ?stage3d=chair drives the real chair; ?stage3d=/models/foo.glb inspects any
+  // converted model, which is how each new export gets eyeballed before it is
+  // wired into a scene
+  const mode = new URLSearchParams(location.search).get('stage3d')
+  const chair = mode === 'chair'
+  const modelUrl = mode && mode.endsWith('.glb') ? mode : null
 
   return (
     <div className="fixed inset-0">
@@ -81,7 +86,9 @@ export function StageDemo() {
           <circleGeometry args={[6, 48]} />
           <meshStandardMaterial color="#dceefb" roughness={0.95} />
         </mesh>
-        {chair ? (
+        {modelUrl ? (
+          <Model url={modelUrl} height={1.6} pivot={PIVOT.base} />
+        ) : chair ? (
           <Chair height={1.2} />
         ) : (
           <>
