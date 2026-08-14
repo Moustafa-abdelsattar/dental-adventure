@@ -27,3 +27,6 @@ shots/
 test-results/
 playwright-report/
 dev-dist/
+
+# one-off artifact bundle output
+demo-artifact/dist/
