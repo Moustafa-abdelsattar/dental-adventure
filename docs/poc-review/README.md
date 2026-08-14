@@ -13,7 +13,7 @@ Prepared 14 August 2026.
 | Task 0 — Enumerate | Done. Findings below. |
 | 1 — Motion foundation | Done — `feat/game-stage` |
 | 2 — GameStage replaces ModuleFrame | Done — `feat/game-stage` |
-| 3 — Milo in Rive | **Blocked** — needs a rig authored in the Rive editor and dedicated Milo character art |
+| 3 — Milo in Rive | Done in SVG — `feat/game-stage`. All seven states, separated layers including eyebrows, and the `trigger`/`setTalking` interface, with lip-sync wired to the baked clips. **The `.riv` file itself still needs authoring in the Rive editor**; it swaps in behind the same interface without callers changing |
 | 4 — Asset conversion | **Blocked** — needs a Meshy or Tripo API key and `blender-mcp`. Gates 6, 7, 8 |
 | 5, 9, 10 | Not started |
 
@@ -21,7 +21,7 @@ Prepared 14 August 2026.
 The baseline in `MIGRATION_PLAN.md` §1 was out of date in both directions. Read it with these:
 
 - **Phase 1 was already largely built.** `app/src/lib/springs.ts` already held the three spring tokens verbatim, and `components/motion/` and `components/ui/` already held the UI kit. Phase 1 became an extraction of the eight remaining inline `stiffness`/`damping` literals, not a build.
-- **Milo already exists as a layered SVG rig** at `app/src/game/milo/Milo.tsx` — blink loop, talking mouth already wired to narration playback, and five of the seven states. Phase 3 is a port plus two states, not a build from nothing.
+- **Milo already existed as a layered SVG rig** — blink loop, talking mouth already wired to narration playback, and five of the seven states, though nothing in the app actually mounted him. Phase 3 was a port plus two states, not a build from nothing; it is now done in SVG at `app/src/game/Milo/Milo.tsx` and awaits only the `.riv` authoring.
 - **Narration was generated with `msedge-tts`**, not ElevenLabs as `ASSET_PIPELINE.md` §4 states. `scripts/generate-audio-edge.mjs` is the live pipeline. The ElevenLabs key in the root `.env` does work and remains the route for the missing SFX.
 - **The grid assertion did not block the full-bleed stage.** §3.2 anticipated a conflict; `app/scripts/measure-layout.mjs` reports all seven screens still landing on one grid in both languages after the rewrite, so no exemption was needed.
 
