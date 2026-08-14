@@ -46,7 +46,12 @@ export function Stage({
         gl.toneMapping = ACESFilmicToneMapping
         gl.toneMappingExposure = 1.05
       }}
-      style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
+      // The canvas stays interactive: hotspots are objects in the world, and
+      // tapping them is the whole game. React UI layers above it in DOM order
+      // and captures its own taps, so the two do not fight — but a full-bleed
+      // transparent div placed over the canvas WILL swallow world taps, so
+      // overlay layers must be sized to their content, not to the stage.
+      style={{ position: 'absolute', inset: 0 }}
     >
       <Lighting warmth={warmth} intensity={lightIntensity} />
       <CameraRig {...rig} />
