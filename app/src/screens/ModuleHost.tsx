@@ -1,11 +1,12 @@
 import { useState } from 'react'
-import { motion } from 'motion/react'
+import { AnimatePresence, motion } from 'motion/react'
 import checkupJson from '../content/paths/checkup.json'
 import treatmentJson from '../content/paths/treatment.json'
 import type { ModuleDef, PathManifest } from '../content/types'
 import { useGame } from '../store/game'
 import { audio } from '../lib/audio'
 import { t, type StringId } from '../lib/i18n'
+import { springs, screenChange, STAGGER } from '../lib/springs'
 import { StarFly } from '../components/motion/StarFly'
 import { StoryBeat } from '../components/ui/StoryBeat'
 import { RewardScreen } from './RewardScreen'
@@ -69,7 +70,7 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
             initial={{ opacity: 0, x: -24 }}
             animate={{ opacity: 1, x: 0 }}
             whileTap={{ scale: 0.96 }}
-            transition={{ type: 'spring', stiffness: 350, damping: 16, delay: i * 0.08 }}
+            transition={{ ...springs.playful, delay: i * STAGGER }}
             className="min-h-[72px] w-full max-w-xs rounded-3xl bg-white shadow-md text-xl font-bold flex items-center gap-4 px-5"
           >
             <img src={kindArt[m.kind]} alt="" className="w-11 h-11 object-contain select-none" draggable={false} />
@@ -82,7 +83,7 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
           initial={{ opacity: 0, x: -24 }}
           animate={{ opacity: 1, x: 0 }}
           whileTap={{ scale: 0.96 }}
-          transition={{ type: 'spring', stiffness: 350, damping: 16, delay: manifest.modules.length * 0.08 }}
+          transition={{ ...springs.playful, delay: manifest.modules.length * STAGGER }}
           className="min-h-[72px] w-full max-w-xs rounded-3xl bg-sunny text-white shadow-md text-xl font-bold flex items-center gap-4 px-5"
         >
           <img src="/art/milo-celebrate.webp" alt="" className="w-11 h-11 object-contain select-none" draggable={false} />
@@ -118,15 +119,25 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
   }
 
   return (
-    <div className="pt-[var(--hud-h)]">
-      <motion.div
-        key={current.id}
-        initial={{ opacity: 0, x: 40 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        <Screen module={current} onComplete={handleComplete} />
-      </motion.div>
+    <div className="relative pt-[var(--hud-h)]">
+      {/* One module hands over to the next: the outgoing screen sinks back and
+          fades while the incoming one rises into its place, overlapping by a
+          beat so the stage is never briefly empty. */}
+      <AnimatePresence mode="popLayout" initial={false}>
+        <motion.div
+          key={current.id}
+          variants={{
+            enter: screenChange.enter,
+            settled: { ...screenChange.settled, transition: { ...screenChange.timing, delay: screenChange.overlap } },
+            exit: { ...screenChange.exit, transition: screenChange.timing },
+          }}
+          initial="enter"
+          animate="settled"
+          exit="exit"
+        >
+          <Screen module={current} onComplete={handleComplete} />
+        </motion.div>
+      </AnimatePresence>
       {flights.map(f => (
         <StarFly key={f.key} from={f.from} onArrive={() => setFlights(fl => fl.filter(x => x.key !== f.key))} />
       ))}

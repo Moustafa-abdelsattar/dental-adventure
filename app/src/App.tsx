@@ -7,7 +7,7 @@ import { LanguageScreen } from './screens/LanguageScreen'
 import { ParentScreen } from './screens/ParentScreen'
 import { WelcomeScreen } from './screens/WelcomeScreen'
 import { ModuleHost } from './screens/ModuleHost'
-import { ProgressHud } from './components/ui/ProgressHud'
+import { HUD } from './game/HUD'
 
 export default function App() {
   const lang = useGame(s => s.lang)
@@ -45,7 +45,7 @@ export default function App() {
   else
     screen = (
       <>
-        <ProgressHud />
+        <HUD />
         <ModuleHost />
       </>
     )

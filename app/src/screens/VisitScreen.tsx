@@ -6,7 +6,8 @@ import { useGame } from '../store/game'
 import { DrNour } from '../game/drnour/DrNour'
 import { Sparkle } from '../game/Sparkle'
 import { GameButton } from '../components/ui/GameButton'
-import { ModuleFrame } from '../components/ui/ModuleFrame'
+import { GameStage } from '../game/GameStage'
+import { loops } from '../lib/springs'
 import type { ModuleProps } from './registry'
 
 type Phase = 'meet' | 'stop' | 'steps' | 'done'
@@ -83,7 +84,7 @@ export function VisitScreen({ onComplete }: ModuleProps) {
   }, [phase])
 
   return (
-    <ModuleFrame
+    <GameStage
       title={t(lang, 'visit.title')}
       onIntroTap={() => void audio.replayLast()}
       intro={
@@ -96,7 +97,9 @@ export function VisitScreen({ onComplete }: ModuleProps) {
       }
       action={<GameButton label={t(lang, 'ui.next')} disabled={phase !== 'done'} onPress={completeOnce} />}
     >
-      <div className="relative w-full max-w-md aspect-[4/5] rounded-3xl bg-white/60 shadow-inner overflow-hidden flex items-end justify-center">
+      {/* The treatment room, not a picture of one: the child and Dr. Nour stand
+          on the stage floor with the light overhead, no frame around them. */}
+      <div className="relative w-full flex-1 min-h-0 max-w-md flex items-end justify-center">
         {/* soft ceiling light — glow fades in over >1s, deliberately no flash */}
         <motion.div
           data-testid="visit-light"
@@ -122,7 +125,7 @@ export function VisitScreen({ onComplete }: ModuleProps) {
             draggable={false}
             className="w-full select-none drop-shadow-md"
             animate={{ y: [0, -3, 0] }}
-            transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+            transition={loops.drift}
           />
           {phase === 'steps' && step >= 2 && (
             <motion.img
@@ -157,7 +160,7 @@ export function VisitScreen({ onComplete }: ModuleProps) {
           data-testid="raise-hand"
           onClick={handTap}
           animate={frozen ? { scale: 1 } : { scale: [1, 1.1, 1] }}
-          transition={{ duration: 1.2, repeat: frozen ? 0 : Infinity }}
+          transition={frozen ? { duration: 0.3 } : loops.breathe}
           className="shrink-0 w-24 h-24 rounded-full bg-sunny shadow-lg flex items-center justify-center"
           aria-label="raise hand"
         >
@@ -178,7 +181,7 @@ export function VisitScreen({ onComplete }: ModuleProps) {
           ))}
         </div>
       )}
-    </ModuleFrame>
+    </GameStage>
   )
 }
 

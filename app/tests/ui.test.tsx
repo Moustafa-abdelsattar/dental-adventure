@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { GameButton } from '../src/components/ui/GameButton'
-import { ProgressHud } from '../src/components/ui/ProgressHud'
+import { HUD } from '../src/game/HUD'
 import { SpeechBubble } from '../src/components/ui/SpeechBubble'
 import { useGame } from '../src/store/game'
 import { audio } from '../src/lib/audio'
@@ -20,18 +20,23 @@ test('GameButton fires onPress and meets touch size', () => {
   expect(btn.className).toMatch(/min-h-\[72px\]/)
 })
 
-test('ProgressHud shows filled stars matching store', () => {
+test('HUD shows filled stars matching store', () => {
   useGame.getState().awardStar('clinic')
   useGame.getState().awardStar('tools')
-  render(<ProgressHud />)
+  render(<HUD />)
   expect(screen.getAllByTestId('star-filled')).toHaveLength(2)
   expect(screen.getAllByTestId('star-empty')).toHaveLength(3)
 })
 
-test('ProgressHud title uses child name', () => {
+test('HUD title uses child name', () => {
   useGame.getState().setChildName('Omar')
-  render(<ProgressHud />)
+  render(<HUD />)
   expect(screen.getByText(/Omar's Adventure/)).toBeInTheDocument()
+})
+
+test('HUD carries Milo on every screen', () => {
+  render(<HUD />)
+  expect(screen.getByTestId('hud-milo')).toBeInTheDocument()
 })
 
 test('SpeechBubble renders translated text and replays audio on tap', () => {

@@ -64,21 +64,114 @@
   }
 }
 
-/* One frame for every module screen: header at a fixed height, action row on
-   the floor, stage in between. Kept here rather than in utility classes so the
-   height maths stays readable next to the tokens it depends on. */
-.module-frame {
-  /* an exact height, not a minimum: the stage has to give ground so the title
-     and the Next button keep their places on a short phone */
+/* The game stage: one room per module, in four layers. World at the back,
+   caption over it, subject standing on the floor, action row on top. Kept here
+   rather than in utility classes so the height maths stays readable next to
+   the tokens it depends on. */
+.game-stage {
+  position: relative;
+  /* an exact height, not a minimum: the subject layer has to give ground so
+     the title and the Next button keep their places on a short phone */
   height: calc(var(--app-h) - var(--hud-h));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-inline: 1rem;
   padding-top: 0.5rem;
   padding-bottom: var(--screen-pb);
+  overflow: hidden;
 }
 
-/* The stage takes whatever is left and the artwork shrinks into it, so the
-   Next button stays on screen on a short phone instead of below the fold. */
-.module-stage > * {
+/* Layer 1 — the world. Escapes the stage's padding so the floor runs edge to
+   edge of the panel, and never takes a tap: everything interactive lives in
+   the subject layer above it. */
+.stage-world {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* The ground the subject stands on. Wider than the panel and curved at the
+   horizon, so the room reads as round rather than as a box with a line in it. */
+.stage-floor {
+  position: absolute;
+  inset-inline: -12%;
+  bottom: 0;
+  height: 36%;
+  border-radius: 50% 50% 0 0 / 26% 26% 0 0;
+  background: linear-gradient(to bottom, #d3ebf9 0%, #bcdff2 55%, #a9d3ec 100%);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.75);
+}
+
+/* Dusk, for the calm counting mission. */
+.game-stage[data-tone='night'] .stage-floor {
+  background: linear-gradient(to bottom, #cdc3ef 0%, #b3a6e3 55%, #9d8ed8 100%);
+}
+
+.game-stage[data-tone='night'] .stage-world::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(139, 111, 216, 0.28), rgba(139, 111, 216, 0.06) 60%, transparent);
+}
+
+/* Layer 2 — the caption. A scrim rather than a card: the words stay legible
+   over whatever scenery is behind them without drawing another box. */
+.stage-caption {
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stage-caption::before {
+  content: '';
+  position: absolute;
+  inset: -1rem -2rem -0.5rem;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(70% 100% at 50% 35%, rgba(254, 249, 240, 0.9) 0%, rgba(254, 249, 240, 0) 78%);
+}
+
+.stage-caption p {
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* Layer 3 — the subject. Takes whatever is left and the artwork shrinks into
+   it, so the Next button stays on screen on a short phone. */
+.stage-subject {
+  position: relative;
+  z-index: 5;
+  flex: 1 1 0%;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding-block: 0.5rem;
+}
+
+.stage-subject > * {
   max-height: 100%;
+}
+
+/* Layer 4 — the action row, resting on the floor. */
+.stage-action {
+  position: relative;
+  z-index: 20;
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 20rem;
+  display: flex;
+  flex-direction: column;
+  padding-top: 0.25rem;
 }
 
 body {

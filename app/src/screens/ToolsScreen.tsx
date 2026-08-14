@@ -5,7 +5,8 @@ import { t } from '../lib/i18n'
 import { useGame } from '../store/game'
 import { ToolCard } from '../game/tools/ToolCard'
 import { GameButton } from '../components/ui/GameButton'
-import { ModuleFrame } from '../components/ui/ModuleFrame'
+import { GameStage } from '../game/GameStage'
+import { screenChange } from '../lib/springs'
 import type { ToolId } from '../game/tools/tools'
 import type { ModuleProps } from './registry'
 
@@ -68,7 +69,7 @@ export function ToolsScreen({ module, onComplete }: ModuleProps) {
   const allMet = roster.every(id => met.has(id))
 
   return (
-    <ModuleFrame
+    <GameStage
       title={t(lang, 'tools.title')}
       intro={t(lang, 'tools.intro', { name: childName })}
       action={<GameButton label={t(lang, 'ui.next')} disabled={!allMet} onPress={completeOnce} />}
@@ -92,9 +93,9 @@ export function ToolsScreen({ module, onComplete }: ModuleProps) {
 
       <motion.div
         key={page}
-        initial={{ opacity: 0, x: 30 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.3 }}
+        initial={screenChange.enter}
+        animate={screenChange.settled}
+        transition={screenChange.timing}
         className={`grid gap-3 w-full ${groups[page]?.length === 2 ? 'grid-cols-2 max-w-sm' : 'grid-cols-3 max-w-md'}`}
         data-testid={`tool-group-${page}`}
       >
@@ -102,6 +103,6 @@ export function ToolsScreen({ module, onComplete }: ModuleProps) {
           <ToolCard key={toolId} toolId={toolId} lang={lang} met={met.has(toolId)} onMet={id => void handleMet(id)} index={i} />
         ))}
       </motion.div>
-    </ModuleFrame>
+    </GameStage>
   )
 }

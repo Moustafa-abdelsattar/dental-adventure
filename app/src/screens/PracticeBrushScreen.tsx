@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'motion/react'
-import { springs } from '../lib/springs'
+import { springs, loops, wiggle, wiggleTiming } from '../lib/springs'
 import { audio } from '../lib/audio'
 import { t } from '../lib/i18n'
 import { useGame } from '../store/game'
@@ -8,7 +8,7 @@ import { BigTooth } from '../game/BigTooth'
 import { TOOLS } from '../game/tools/tools'
 import { StarBurst } from '../components/motion/StarBurst'
 import { GameButton } from '../components/ui/GameButton'
-import { ModuleFrame } from '../components/ui/ModuleFrame'
+import { GameStage } from '../game/GameStage'
 import type { ModuleProps } from './registry'
 
 /**
@@ -21,7 +21,7 @@ export function PracticeBrushScreen({ onComplete }: ModuleProps) {
   const childName = useGame(s => s.childName)
   const [brushSelected, setBrushSelected] = useState(false)
   const [spots, setSpots] = useState([true, true, true, true])
-  const [wiggle, setWiggle] = useState(0)
+  const [wrongTap, setWrongTap] = useState(0)
   const [done, setDone] = useState(false)
   const doneRef = useRef(false)
   // ref mirror so rapid taps in one frame don't read stale state and lose a spot
@@ -43,7 +43,7 @@ export function PracticeBrushScreen({ onComplete }: ModuleProps) {
 
   const tapSpot = async (i: number) => {
     if (!brushSelected) {
-      setWiggle(w => w + 1)
+      setWrongTap(w => w + 1)
       void audio.say(lang, 'milo.hint.tap')
       return
     }
@@ -63,15 +63,15 @@ export function PracticeBrushScreen({ onComplete }: ModuleProps) {
   }
 
   return (
-    <ModuleFrame
+    <GameStage
       title={t(lang, 'practice.brush.title')}
       intro={t(lang, 'practice.brush.intro', { name: childName })}
       action={<GameButton label={t(lang, 'ui.next')} disabled={!done} onPress={completeOnce} />}
     >
       <motion.div
-        key={wiggle}
-        animate={wiggle ? { x: [0, -6, 6, -4, 0] } : {}}
-        transition={{ duration: 0.4 }}
+        key={wrongTap}
+        animate={wrongTap ? wiggle : {}}
+        transition={wiggleTiming}
         className="relative w-full"
       >
         <BigTooth spots={spots} sparkle={done} onSpotTap={i => void tapSpot(i)} onBodyTap={() => void tapSpot(-1)} />
@@ -85,12 +85,12 @@ export function PracticeBrushScreen({ onComplete }: ModuleProps) {
           void audio.say(lang, 'tool.brush.name')
         }}
         animate={brushSelected ? { scale: 1.12, rotate: [-3, 3, -3] } : { scale: [1, 1.06, 1] }}
-        transition={brushSelected ? { rotate: { duration: 1.6, repeat: Infinity }, scale: springs.snappy } : { duration: 1.8, repeat: Infinity }}
+        transition={brushSelected ? { rotate: loops.sway, scale: springs.snappy } : loops.breathe}
         className={`shrink-0 w-28 h-28 rounded-3xl bg-white shadow-lg p-2 ${brushSelected ? 'ring-4 ring-sunny' : ''}`}
         aria-label={t(lang, 'tool.brush.name')}
       >
         <BrushSvg demo={brushSelected} />
       </motion.button>
-    </ModuleFrame>
+    </GameStage>
   )
 }

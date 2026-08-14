@@ -6,17 +6,18 @@ import { useGame } from '../store/game'
 import { Pop } from '../components/motion/Pop'
 import { GameButton } from '../components/ui/GameButton'
 import { DoneBadge } from '../components/ui/DoneBadge'
-import { ModuleFrame } from '../components/ui/ModuleFrame'
+import { GameStage } from '../game/GameStage'
+import { springs, loops, STAGGER } from '../lib/springs'
 import type { ModuleProps } from './registry'
 
 type ItemId = 'chair' | 'light' | 'sink' | 'table'
 
 // four corners of the room, weighted low — small thumbs reach there
 const ITEMS: { id: ItemId; nameId: StringId; descId: StringId; className: string }[] = [
-  { id: 'light', nameId: 'clinic.light.name', descId: 'clinic.light.desc', className: 'top-[6%] start-[7%] w-[42%]' },
-  { id: 'sink', nameId: 'clinic.sink.name', descId: 'clinic.sink.desc', className: 'top-[8%] end-[5%] w-[44%]' },
-  { id: 'chair', nameId: 'clinic.chair.name', descId: 'clinic.chair.desc', className: 'bottom-[5%] start-[4%] w-[47%]' },
-  { id: 'table', nameId: 'clinic.table.name', descId: 'clinic.table.desc', className: 'bottom-[4%] end-[4%] w-[44%]' },
+  { id: 'light', nameId: 'clinic.light.name', descId: 'clinic.light.desc', className: 'top-[11%] start-[2%] w-[42%]' },
+  { id: 'sink', nameId: 'clinic.sink.name', descId: 'clinic.sink.desc', className: 'top-[18%] end-[0%] w-[40%]' },
+  { id: 'chair', nameId: 'clinic.chair.name', descId: 'clinic.chair.desc', className: 'bottom-[0%] start-[0%] w-[52%]' },
+  { id: 'table', nameId: 'clinic.table.name', descId: 'clinic.table.desc', className: 'bottom-[5%] end-[0%] w-[40%]' },
 ]
 
 const IDLE_HINT_MS = 10000
@@ -81,14 +82,15 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
   const openItem = open ? ITEMS.find(i => i.id === open)! : null
 
   return (
-    <ModuleFrame
+    <GameStage
       title={t(lang, 'clinic.title')}
       intro={t(lang, 'clinic.intro', { name: childName })}
+      scene={<ClinicRoom />}
       action={<GameButton label={t(lang, 'ui.next')} disabled={explored.size < ITEMS.length} onPress={completeOnce} />}
     >
-      <div ref={sceneRef} className="relative w-full max-w-md aspect-[4/5] rounded-3xl shadow-inner overflow-hidden bg-gradient-to-b from-sky/25 via-white/70 to-mint/20">
-        {/* room: wall line + floor */}
-        <div className="absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-b from-sky/10 to-sky/25 rounded-t-[40%_18px]" />
+      {/* The room is the interface: four things standing in it, no frame
+          around them. Corners are weighted low so small thumbs reach. */}
+      <div ref={sceneRef} className="relative w-full h-full max-w-md">
         {ITEMS.map((item, idx) => {
           const isExplored = explored.has(item.id)
           return (
@@ -104,11 +106,11 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
                   : { opacity: 1, y: 0, scale: hintFor === item.id ? [1, 1.12, 1] : [1, 1.05, 1] }
               }
               transition={{
-                opacity: { ...{ type: 'spring', stiffness: 350, damping: 16 }, delay: 0.15 + idx * 0.12 },
-                y: { type: 'spring', stiffness: 350, damping: 16, delay: 0.15 + idx * 0.12 },
+                opacity: { ...springs.playful, delay: 0.15 + idx * STAGGER },
+                y: { ...springs.playful, delay: 0.15 + idx * STAGGER },
                 scale: isExplored
-                  ? { type: 'spring', stiffness: 350, damping: 16 }
-                  : { duration: hintFor === item.id ? 0.8 : 2, repeat: Infinity, ease: 'easeInOut', delay: 0.3 + idx * 0.12 },
+                  ? springs.playful
+                  : { ...(hintFor === item.id ? loops.urge : loops.breathe), delay: 0.3 + idx * STAGGER },
               }}
               className={`absolute ${item.className} aspect-square rounded-3xl flex items-center justify-center`}
             >
@@ -122,7 +124,7 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
       {openItem && (
         <div className="fixed inset-0 z-40 bg-ink/30 backdrop-blur-sm flex items-center justify-center p-6" data-testid="zoom-card">
           <Pop className="bg-white rounded-3xl p-6 flex flex-col items-center gap-4 w-full max-w-sm shadow-2xl">
-            <motion.div animate={{ rotate: [0, -3, 3, 0] }} transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }} className="w-40" onClick={() => void audio.replayLast()}>
+            <motion.div animate={{ rotate: [0, -3, 3, 0] }} transition={loops.sway} className="w-40" onClick={() => void audio.replayLast()}>
               <ItemSvg id={openItem.id} large />
             </motion.div>
             <h2 className="text-2xl font-bold text-center">{t(lang, openItem.nameId)}</h2>
@@ -133,7 +135,22 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
           </Pop>
         </div>
       )}
-    </ModuleFrame>
+    </GameStage>
+  )
+}
+
+/**
+ * The room behind the four things: the lamp's pool of light spilling onto the
+ * floor, and the mat they stand on. Both are soft and low-contrast on purpose
+ * — scenery should make the space read as a room without competing with the
+ * objects the child is meant to tap.
+ */
+function ClinicRoom() {
+  return (
+    <>
+      <div className="absolute bottom-[16%] start-1/2 -translate-x-1/2 w-[88%] aspect-[2/1] rounded-[50%] bg-[radial-gradient(circle,rgba(255,244,214,0.75)_0%,rgba(255,244,214,0)_68%)]" />
+      <div className="absolute bottom-[7%] start-1/2 -translate-x-1/2 w-[68%] aspect-[3/1] rounded-[50%] bg-mint/25" />
+    </>
   )
 }
 

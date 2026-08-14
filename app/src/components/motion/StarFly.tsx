@@ -1,6 +1,6 @@
 import { motion } from 'motion/react'
 import { springs } from '../../lib/springs'
-import { hudTarget } from '../ui/ProgressHud'
+import { hudTarget } from '../../game/HUD'
 
 /**
  * A star that flies from `from` (viewport coords) into the HUD star row,

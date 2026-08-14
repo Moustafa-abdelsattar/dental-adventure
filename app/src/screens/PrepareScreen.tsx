@@ -7,8 +7,9 @@ import { BigTooth } from '../game/BigTooth'
 import { TOOLS, type ToolId } from '../game/tools/tools'
 import { StarBurst } from '../components/motion/StarBurst'
 import { DoneBadge } from '../components/ui/DoneBadge'
-import { ModuleFrame } from '../components/ui/ModuleFrame'
 import { GameButton } from '../components/ui/GameButton'
+import { GameStage } from '../game/GameStage'
+import { loops, wiggle, wiggleTiming } from '../lib/springs'
 import type { ModuleProps } from './registry'
 
 const SEQUENCE: { toolId: ToolId; stepId: StringId }[] = [
@@ -67,7 +68,7 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
   }
 
   return (
-    <ModuleFrame
+    <GameStage
       title={t(lang, 'prepare.title')}
       intro={t(lang, 'prepare.intro', { name: childName })}
       action={<GameButton label={t(lang, 'ui.next')} disabled={!done} onPress={completeOnce} />}
@@ -89,12 +90,14 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
               onClick={() => void tapTool(toolId)}
               animate={
                 wiggleId === toolId
-                  ? { x: [0, -6, 6, -4, 0] }
+                  ? wiggle
                   : isNext
                     ? { scale: [1, 1.1, 1] }
                     : { scale: 1 }
               }
-              transition={wiggleId === toolId ? { duration: 0.4 } : { duration: 1.4, repeat: isNext ? Infinity : 0 }}
+              transition={
+                wiggleId === toolId ? wiggleTiming : isNext ? loops.breathe : { duration: loops.breathe.duration }
+              }
               className={`relative aspect-square rounded-3xl bg-white shadow-lg p-2 ${isNext ? 'ring-4 ring-sunny' : ''} ${!isNext && !used ? 'opacity-40' : ''} ${used ? 'ring-2 ring-mint' : ''}`}
             >
               <Svg demo={used} />
@@ -104,6 +107,6 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
         })}
       </div>
 
-    </ModuleFrame>
+    </GameStage>
   )
 }

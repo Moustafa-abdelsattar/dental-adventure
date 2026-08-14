@@ -7,7 +7,7 @@ import { BigTooth } from '../game/BigTooth'
 import { StarBurst } from '../components/motion/StarBurst'
 import { Floating } from '../components/motion/Floating'
 import { GameButton } from '../components/ui/GameButton'
-import { ModuleFrame } from '../components/ui/ModuleFrame'
+import { GameStage } from '../game/GameStage'
 import type { ModuleProps } from './registry'
 
 const PAUSE_MS = 600
@@ -52,26 +52,14 @@ export function SprayScreen({ onComplete }: ModuleProps) {
   }, [])
 
   return (
-    <ModuleFrame
+    <GameStage
       title={t(lang, 'spray.title')}
       intro={t(lang, 'spray.intro', { name: childName })}
       titleClassName="from-grape to-sky-deep"
-      className="bg-gradient-to-b from-grape/30 via-sky/15 to-transparent"
+      tone="night"
+      scene={<NightSky />}
       action={<GameButton label={t(lang, 'ui.next')} disabled={!done} onPress={completeOnce} />}
     >
-      {/* quiet night sky */}
-      <div className="shrink-0 relative w-full max-w-xs h-14" aria-hidden>
-        <Floating duration={5} className="absolute start-4 top-0">
-          <img src="/art/moon.svg" alt="" className="w-10 select-none" draggable={false} />
-        </Floating>
-        <Floating duration={7} className="absolute end-8 top-1">
-          <img src="/art/star.svg" alt="" className="w-7 select-none" draggable={false} />
-        </Floating>
-        <Floating duration={6} className="absolute start-1/2 top-5">
-          <img src="/art/star.svg" alt="" className="w-4 opacity-70 select-none" draggable={false} />
-        </Floating>
-      </div>
-
       <div className="relative w-full">
         <BigTooth sleepy={count > 0} sparkle={done} />
         <StarBurst show={done} />
@@ -91,6 +79,31 @@ export function SprayScreen({ onComplete }: ModuleProps) {
         )}
       </div>
       {done && <p className="text-xl font-bold text-grape">{t(lang, 'spray.done', { name: childName })}</p>}
-    </ModuleFrame>
+    </GameStage>
+  )
+}
+
+/**
+ * The quiet sky the counting happens under. Scenery in the world layer rather
+ * than a row of content, so the tooth gets the whole subject area and the
+ * moon can sit high where a night sky belongs.
+ */
+function NightSky() {
+  return (
+    <>
+      {/* all of it below the caption band, so nothing drifts across the words */}
+      <Floating duration={5} className="absolute start-[5%] top-[26%]">
+        <img src="/art/moon.svg" alt="" className="w-12 select-none" draggable={false} />
+      </Floating>
+      <Floating duration={7} className="absolute end-[8%] top-[22%]">
+        <img src="/art/star.svg" alt="" className="w-7 select-none" draggable={false} />
+      </Floating>
+      <Floating duration={6} className="absolute start-[4%] top-[56%]">
+        <img src="/art/star.svg" alt="" className="w-4 opacity-70 select-none" draggable={false} />
+      </Floating>
+      <Floating duration={8} className="absolute end-[5%] top-[64%]">
+        <img src="/art/star.svg" alt="" className="w-3 opacity-50 select-none" draggable={false} />
+      </Floating>
+    </>
   )
 }
