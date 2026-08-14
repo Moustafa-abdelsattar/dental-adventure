@@ -9,7 +9,7 @@ import { StarBurst } from '../components/motion/StarBurst'
 import { DoneBadge } from '../components/ui/DoneBadge'
 import { GameButton } from '../components/ui/GameButton'
 import { GameStage } from '../game/GameStage'
-import { loops, wiggle, wiggleTiming } from '../lib/springs'
+import { loops, wiggle, wiggleTiming } from '../motion/springs'
 import type { ModuleProps } from './registry'
 
 const SEQUENCE: { toolId: ToolId; stepId: StringId }[] = [

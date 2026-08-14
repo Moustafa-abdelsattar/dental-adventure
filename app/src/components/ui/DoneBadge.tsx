@@ -1,5 +1,5 @@
 import { motion } from 'motion/react'
-import { springs } from '../../lib/springs'
+import { springs } from '../../motion/springs'
 
 /**
  * The game-wide "you did this!" mark: a mint circle with a drawn check that

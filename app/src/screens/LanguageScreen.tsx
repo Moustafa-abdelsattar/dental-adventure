@@ -1,5 +1,5 @@
 import { motion } from 'motion/react'
-import { springs } from '../lib/springs'
+import { springs } from '../motion/springs'
 import { audio } from '../lib/audio'
 import { useGame } from '../store/game'
 import type { Lang } from '../lib/i18n'

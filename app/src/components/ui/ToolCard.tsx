@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { motion } from 'motion/react'
-import { springs } from '../../lib/springs'
+import { springs } from '../../motion/springs'
 import { audio } from '../../lib/audio'
 import { t, type Lang, type StringId } from '../../lib/i18n'
-import { DoneBadge } from '../../components/ui/DoneBadge'
-import { TOOLS, type ToolId } from './tools'
+import { DoneBadge } from './DoneBadge'
+import { TOOLS, type ToolId } from '../../game/tools/tools'
 
 /**
  * One card in the family layout shared by all nine tools:

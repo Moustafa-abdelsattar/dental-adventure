@@ -1,4 +1,4 @@
-import { springs } from '../src/lib/springs'
+import { springs } from '../src/motion/springs'
 
 test('motion tokens match the approach doc verbatim', () => {
   expect(springs.soft).toEqual({ type: 'spring', stiffness: 180, damping: 20 })

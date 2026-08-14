@@ -7,7 +7,7 @@ import { Pop } from '../components/motion/Pop'
 import { GameButton } from '../components/ui/GameButton'
 import { DoneBadge } from '../components/ui/DoneBadge'
 import { GameStage } from '../game/GameStage'
-import { springs, loops, STAGGER } from '../lib/springs'
+import { springs, loops, STAGGER } from '../motion/springs'
 import type { ModuleProps } from './registry'
 
 type ItemId = 'chair' | 'light' | 'sink' | 'table'

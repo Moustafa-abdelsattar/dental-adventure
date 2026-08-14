@@ -7,7 +7,7 @@ import { DrNour } from '../game/drnour/DrNour'
 import { Sparkle } from '../game/Sparkle'
 import { GameButton } from '../components/ui/GameButton'
 import { GameStage } from '../game/GameStage'
-import { loops } from '../lib/springs'
+import { loops } from '../motion/springs'
 import type { ModuleProps } from './registry'
 
 type Phase = 'meet' | 'stop' | 'steps' | 'done'

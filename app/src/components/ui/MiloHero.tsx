@@ -1,5 +1,5 @@
 import { motion, useMotionValue, useSpring, useTransform } from 'motion/react'
-import { springs, springValues } from '../../lib/springs'
+import { springs, springValues } from '../../motion/springs'
 import { audio } from '../../lib/audio'
 
 /**

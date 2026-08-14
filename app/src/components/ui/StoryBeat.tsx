@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react'
 import { audio } from '../../lib/audio'
 import { t, type StringId } from '../../lib/i18n'
 import { useGame } from '../../store/game'
-import { springs } from '../../lib/springs'
+import { springs } from '../../motion/springs'
 
 const LINGER_MS = 1100
 const MIN_SHOW_MS = 2600

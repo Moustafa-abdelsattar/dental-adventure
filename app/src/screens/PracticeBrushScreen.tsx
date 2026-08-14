@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'motion/react'
-import { springs, loops, wiggle, wiggleTiming } from '../lib/springs'
+import { springs, loops, wiggle, wiggleTiming } from '../motion/springs'
 import { audio } from '../lib/audio'
 import { t } from '../lib/i18n'
 import { useGame } from '../store/game'

@@ -1,10 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { useGame, selectStarCount } from '../store/game'
 import { t } from '../lib/i18n'
-import { Milo, type MiloPose } from './milo/Milo'
-
-/** StarFly animates toward this element; registered on mount. */
-export const hudTarget: { current: HTMLElement | null } = { current: null }
+import { ProgressStars } from '../components/ui/ProgressStars'
+import { Milo, type MiloPose } from './Milo/Milo'
 
 const CHEER_MS = 1400
 
@@ -45,23 +43,7 @@ export function HUD() {
       <span className="flex-1 min-w-0 font-bold text-lg truncate mx-1.5">
         {lang ? t(lang, 'ui.hudTitle', { name: childName }) : ''}
       </span>
-      <div
-        ref={el => {
-          hudTarget.current = el
-        }}
-        className="flex gap-0.5 shrink-0"
-      >
-        {Array.from({ length: 5 }, (_, i) => (
-          <img
-            key={i}
-            src="/art/star.svg"
-            alt=""
-            draggable={false}
-            data-testid={i < count ? 'star-filled' : 'star-empty'}
-            className={`w-6 select-none transition-all ${i < count ? 'drop-shadow-[0_0_6px_rgba(255,212,94,0.9)]' : 'opacity-25 grayscale'}`}
-          />
-        ))}
-      </div>
+      <ProgressStars count={count} />
     </div>
   )
 }

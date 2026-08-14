@@ -1,6 +1,6 @@
 import { motion } from 'motion/react'
 import type { ReactNode } from 'react'
-import { springs } from '../../lib/springs'
+import { springs } from '../../motion/springs'
 
 export function Pop({ children, delay = 0, className }: { children: ReactNode; delay?: number; className?: string }) {
   return (

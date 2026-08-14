@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'motion/react'
-import { springs } from '../../lib/springs'
+import { springs } from '../../motion/springs'
 
 /**
  * Dr. Nour — the owner's custom dentist art with a tap-to-reveal mask.

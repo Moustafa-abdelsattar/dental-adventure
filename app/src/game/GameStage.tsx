@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { AudioButton } from '../components/ui/AudioButton'
 
 /**
  * The stage every module plays on.
@@ -54,9 +55,15 @@ export function GameStage({
           {title}
         </h1>
         {intro !== undefined && (
-          <p className="text-ink/70 font-bold text-center mt-1 min-h-14 text-balance" onClick={onIntroTap}>
-            {intro}
-          </p>
+          <>
+            <p className="w-full text-ink/70 font-bold text-center mt-1 min-h-14 text-balance" onClick={onIntroTap}>
+              {intro}
+            </p>
+            {/* Its own row rather than beside the text: crowding the line
+                narrows it enough to add a wrap, and a four-year-old needs the
+                replay target big and obvious anyway. */}
+            <AudioButton onPress={onIntroTap} />
+          </>
         )}
       </header>
 
