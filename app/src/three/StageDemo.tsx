@@ -87,6 +87,7 @@ export function StageDemo() {
   // wired into a scene
   const mode = new URLSearchParams(location.search).get('stage3d')
   const chair = mode === 'chair'
+  const clinic = mode === 'clinic'
   const modelUrl = mode && mode.endsWith('.glb') ? mode : null
 
   return (
@@ -103,6 +104,7 @@ export function StageDemo() {
         // aim a little high: the sheet takes the lower third, so the object it
         // describes has to sit above it
         focus={selected ? [0, 0.95, 0] : focus}
+        frame={clinic ? { width: 2.9, height: 2.6 } : undefined}
         impact={impact}
         warmth={warm ? 4200 : 6500}
         lightIntensity={warm ? 1.15 : 1}
@@ -118,13 +120,16 @@ export function StageDemo() {
             <meshStandardMaterial color="#dceefb" roughness={0.95} />
           )}
         </mesh>
-        {modelUrl ? (
+        {clinic ? (
+          // the Meshy clinic as the scene itself, standing on the stage floor
+          <Model url="/models/clinic-room.glb" height={2.2} pivot={PIVOT.base} />
+        ) : modelUrl ? (
           <Model url={modelUrl} height={1.6} pivot={PIVOT.base} />
         ) : chair ? (
           <Hotspot invite={!explored} active={!!selected} done={explored} urgent={stalled}>
             <Chair
               height={1.2}
-              highlight={selected || hovered ? 0.34 : 0}
+              highlight={selected || hovered ? 0.2 : 0}
               onHover={setHovered}
               onTap={() => {
                 setSelected(true)
@@ -151,7 +156,7 @@ export function StageDemo() {
 
       {/* React owns every word and every control, above the canvas — never
           inside it. The canvas draws the room; it never draws UI. */}
-      {chair && !selected && (
+      {(chair || clinic) && !selected && (
         <div className="absolute top-6 inset-x-0 px-6 text-center pointer-events-none">
           <h1 className="text-3xl font-bold bg-gradient-to-b from-sky-deep to-grape bg-clip-text text-transparent">
             {t('en', 'clinic.title')}

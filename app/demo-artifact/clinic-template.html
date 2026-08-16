@@ -1,0 +1,245 @@
+<title>Meet the Dental Clinic</title>
+<style>
+  /* The game is a phone game, so it is presented as one: a phone-shaped panel
+     on a quiet desk. Dark chrome, lit screen — a deliberate single world, and
+     every colour is painted explicitly so the page holds on either ground. */
+  :root {
+    --ground: #0e1116;
+    --panel: #161a21;
+    --line: #262e3a;
+    --ink: #e7ecf3;
+    --muted: #8a97a8;
+    --accent: #4fa3e3;
+    --signal: #ffd45e;
+    --game-ink: #3a3560;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: clamp(1rem, 3vw, 2.5rem) clamp(1rem, 3vw, 2rem) 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  h1 {
+    font-family: var(--mono);
+    font-size: clamp(1.3rem, 3.4vw, 1.85rem);
+    font-weight: 600;
+    margin: 0.35rem 0 0;
+    text-wrap: balance;
+  }
+
+  .lede { margin: 0; max-width: 62ch; color: var(--muted); line-height: 1.6; }
+
+  .deck { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+
+  /* ── the phone ─────────────────────────────────────────────────────── */
+  .phone {
+    position: relative;
+    width: min(100%, 26rem);
+    aspect-ratio: 9 / 17;
+    border-radius: 2.25rem;
+    overflow: hidden;
+    background-image: url("__ROOM_DATA_URI__");
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 30px 70px -28px rgba(0, 0, 0, 0.75), 0 0 0 1px var(--line);
+    touch-action: manipulation;
+  }
+
+  #stage { position: absolute; inset: 0; }
+  #stage canvas { display: block; width: 100%; height: 100%; }
+
+  .loading {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    font-family: var(--mono); font-size: 0.72rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: #4a6377;
+    background: rgba(255, 255, 255, 0.55);
+  }
+  body.is-ready .loading { display: none; }
+
+  /* the caption, exactly as the game shows it */
+  .caption {
+    position: absolute; top: 0; inset-inline: 0;
+    padding: 1.1rem 1.25rem 2.25rem; text-align: center;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    /* the room behind is busy and colourful, so the words need their own
+       ground — a soft scrim rather than a card, so it still reads as one space */
+    background: linear-gradient(180deg, rgba(254, 249, 240, 0.92) 0%, rgba(254, 249, 240, 0.72) 55%, rgba(254, 249, 240, 0) 100%);
+  }
+  .caption.is-hidden { opacity: 0; }
+  .caption h2 {
+    margin: 0;
+    font-size: 1.7rem; font-weight: 800; color: #4a63c0;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
+  }
+  .caption p {
+    margin: 0.3rem 0 0;
+    font-weight: 700; color: var(--game-ink);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+
+  /* the info sheet — along the floor of the screen, never over the object */
+  .sheet {
+    position: absolute; inset-inline: 0; bottom: 0;
+    padding: 0.9rem;
+    transform: translateY(115%);
+    transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .sheet.is-open { transform: translateY(0); }
+  .sheet-inner {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(6px);
+    border-radius: 1.6rem;
+    padding: 1.1rem 1.25rem 1.25rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
+    box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.5);
+    color: var(--game-ink);
+  }
+  .sheet h3 { margin: 0; font-size: 1.35rem; font-weight: 800; text-align: center; }
+  .sheet p { margin: 0; text-align: center; font-weight: 700; color: rgba(58, 53, 96, 0.72); line-height: 1.45; }
+
+  .game-btn {
+    border: 0; cursor: pointer;
+    min-height: 3.25rem; padding: 0 2rem;
+    border-radius: 999px;
+    background: #f97ba9; color: #fff;
+    font-family: var(--sans); font-size: 1.15rem; font-weight: 800;
+    box-shadow: 0 10px 20px -10px rgba(249, 123, 169, 0.9);
+    transition: transform 0.12s ease;
+  }
+  .game-btn:active { transform: scale(0.96); }
+  .game-btn:focus-visible { outline: 3px solid #4a63c0; outline-offset: 3px; }
+
+  .replay {
+    border: 0; background: none; cursor: pointer;
+    font-family: var(--sans); font-size: 0.85rem; font-weight: 700;
+    color: rgba(58, 53, 96, 0.55);
+    text-decoration: underline; text-underline-offset: 3px;
+  }
+
+  .again {
+    position: absolute; left: 50%; bottom: 1.25rem;
+    transform: translateX(-50%);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s ease;
+    border: 0; cursor: pointer;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--game-ink);
+    font-family: var(--mono); font-size: 0.68rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.6rem 1.1rem; border-radius: 999px;
+  }
+  .again.is-shown { opacity: 1; pointer-events: auto; }
+
+  /* ── notes ─────────────────────────────────────────────────────────── */
+  .notes { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 0.75rem; overflow: hidden; }
+  @media (min-width: 46rem) { .notes { grid-template-columns: 1fr 1fr; } }
+  .note { background: var(--panel); padding: 1rem 1.15rem; }
+  .note h4 {
+    margin: 0 0 0.4rem;
+    font-family: var(--mono); font-size: 0.66rem;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
+  }
+  .note p { margin: 0; font-size: 0.9rem; line-height: 1.6; color: var(--ink); }
+  .note.is-open h4 { color: var(--signal); }
+
+  @media (prefers-reduced-motion: reduce) { * { transition-duration: 0.01ms !important; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Dental Adventure · clinic scene</p>
+    <h1>Tap the chair</h1>
+  </header>
+
+  <p class="lede">
+    The clinic room from the storyboard, with the converted chair standing in it.
+    A ring of light asks to be touched; leave it alone for ten seconds and it asks harder.
+  </p>
+
+  <div class="deck">
+    <div class="phone">
+      <div id="stage"></div>
+      <div class="loading">Loading</div>
+
+      <div class="caption" id="caption">
+        <h2>Meet the Dental Clinic</h2>
+        <p>This is the dental clinic, Omar! Tap everything to see what it does.</p>
+      </div>
+
+      <div class="sheet" id="sheet">
+        <div class="sheet-inner">
+          <h3>The Big Comfy Chair</h3>
+          <p>This chair moves up and down like a slow ride. You sit here while the dentist helps your teeth.</p>
+          <button class="game-btn" id="next" type="button">Next</button>
+          <button class="replay" id="replay" type="button">Hear it again</button>
+        </div>
+      </div>
+
+      <button class="again" id="again" type="button">Reset</button>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note">
+      <h4>What is 3D here</h4>
+      <p>
+        Only the chair. The room is a picture — 111 KB and no geometry at all — because nothing in it
+        moves. The chair is real geometry, so it can teeter, glow and be walked around.
+      </p>
+    </div>
+    <div class="note">
+      <h4>The teeter</h4>
+      <p>
+        A damped spring, not keyframes. The storyboard keys five beats 200ms apart at ±2°; this reaches
+        ±7° and lands the beats on that cadence by physics. Tap twice quickly and the swing builds.
+      </p>
+    </div>
+    <div class="note">
+      <h4>Where the words live</h4>
+      <p>
+        Every word is HTML above the canvas, never drawn inside it — so it stays selectable, translatable
+        and readable by a screen reader. The voice is the same recording already in the game.
+      </p>
+    </div>
+    <div class="note is-open">
+      <h4>Still open</h4>
+      <p>
+        The chair painted into the room is still there beside the real one. The room plate needs the
+        chair, lamp, stool and cart erased out of it — then the lamp and trolley join as their own
+        hotspots.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script id="model" type="text/plain">__MODEL_DATA_URI__</script>
+<script id="narration" type="text/plain">__NARRATION_DATA_URI__</script>
+<script>__VIEWER_JS__</script>
