@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei'
 import { useLayoutEffect, useMemo } from 'react'
-import { Box3, Mesh, Vector3, type Group } from 'three'
+import { Box3, Mesh, Vector3, type Group, type MeshStandardMaterial } from 'three'
 import type { ThreeElements } from '@react-three/fiber'
 
 /**
@@ -37,6 +37,8 @@ export function Model({
   pivot = PIVOT.base,
   height,
   onTap,
+  onHover,
+  highlight = 0,
   colliderPadding = 1.12,
   ...props
 }: Omit<ThreeElements['group'], 'pivot'> & {
@@ -44,6 +46,13 @@ export function Model({
   pivot?: Pivot
   /** Scale the model so it stands this many units tall. */
   height?: number
+  /**
+   * 0–1 glow, for saying "this one, touch this one". Done by lifting the
+   * material's own emissive rather than an outline pass: outlines need
+   * post-processing, which is the first thing the performance budget cuts.
+   */
+  highlight?: number
+  onHover?: (over: boolean) => void
   /**
    * Tap handler. Fires from an invisible box collider rather than the mesh
    * itself: a four-year-old's aim is generous and so should the target be, and
@@ -62,12 +71,25 @@ export function Model({
 
   useLayoutEffect(() => {
     model.traverse(o => {
-      if ((o as Mesh).isMesh) {
-        o.castShadow = true
-        o.receiveShadow = true
-      }
+      const mesh = o as Mesh
+      if (!mesh.isMesh) return
+      mesh.castShadow = true
+      mesh.receiveShadow = true
+      // clone(true) shares materials, so highlighting one copy would light up
+      // every copy — give this instance its own
+      if (Array.isArray(mesh.material)) mesh.material = mesh.material.map(m => m.clone())
+      else if (mesh.material) mesh.material = mesh.material.clone()
     })
   }, [model])
+
+  useLayoutEffect(() => {
+    model.traverse(o => {
+      const mat = (o as Mesh).material as MeshStandardMaterial | undefined
+      if (!mat || !('emissive' in mat)) return
+      mat.emissive.setRGB(highlight * 0.55, highlight * 0.62, highlight * 0.72)
+      mat.emissiveIntensity = 1
+    })
+  }, [model, highlight])
 
   const { offset, scale, collider } = useMemo(() => {
     const box = new Box3().setFromObject(model)
@@ -102,7 +124,16 @@ export function Model({
         <primitive object={model} />
       </group>
       {onTap && (
-        <mesh position={collider.centre} onClick={onTap} name="tap-collider">
+        <mesh
+          position={collider.centre}
+          onClick={onTap}
+          onPointerOver={e => {
+            e.stopPropagation()
+            onHover?.(true)
+          }}
+          onPointerOut={() => onHover?.(false)}
+          name="tap-collider"
+        >
           <boxGeometry args={collider.size} />
           {/* the MATERIAL is hidden, not the mesh: an invisible Object3D can be
               skipped by the raycaster, but a mesh with a hidden material still

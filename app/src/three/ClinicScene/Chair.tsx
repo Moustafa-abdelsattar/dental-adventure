@@ -69,12 +69,15 @@ const REST = 0.0004
 
 export function Chair({
   onSettle,
+  onTap,
   groupRef,
   ...props
 }: {
   onSettle?: () => void
+  /** Fires alongside the teeter, so the screen can open its panel. */
+  onTap?: () => void
   groupRef?: Ref<Group>
-} & Omit<React.ComponentProps<typeof Model>, 'url' | 'pivot'>) {
+} & Omit<React.ComponentProps<typeof Model>, 'url' | 'pivot' | 'onTap'>) {
   const pivot = useRef<Group>(null)
   const theta = useRef(0)
   const omega = useRef(0)
@@ -110,6 +113,7 @@ export function Chair({
     // than fight — a child will tap it many times
     omega.current += theta.current >= 0 ? IMPULSE : -IMPULSE
     moving.current = true
+    onTap?.()
   }
 
   return (
