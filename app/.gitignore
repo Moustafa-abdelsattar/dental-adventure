@@ -29,4 +29,4 @@ playwright-report/
 dev-dist/
 
 # one-off artifact bundle output
-demo-artifact/dist/
+demo-artifact/dist*/
