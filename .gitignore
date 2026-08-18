@@ -13,3 +13,9 @@ art-in/models-raw/
 # raw drops that land at the repo root
 /*.glb
 /*.zip
+
+# generated helper lines (audition output, never shipped as-is)
+voice-lines/
+
+# visual-gate screenshots (regenerate with scripts/shots.mjs)
+shots/

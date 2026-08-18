@@ -8,6 +8,39 @@ into `app/public/` by a script, so originals stay untouched and re-runnable.
 The client's renders and anything extracted from the PPTX. Background knocked
 out, alpha trimmed, semantically named.
 
+### `source-art/clinic/` — layered scene art
+
+Anything that has to move in parts goes here instead, and is imported by a
+different script:
+
+```bash
+cd app
+node scripts/import-layers.mjs --dry   # validate a drop, write nothing
+node scripts/import-layers.mjs         # import it
+```
+
+A folder is a **layer set** — one object delivered as several pieces. A loose
+PNG is a single image.
+
+```
+source-art/clinic/
+├── room-empty.png        single   → public/art/clinic-room-empty.webp
+└── chair/                set      → public/art/clinic-chair-base.webp
+    ├── base.png                     public/art/clinic-chair-headrest.webp
+    └── headrest.png
+```
+
+**Every file inside a set folder must share one canvas size**, with each part
+sitting where it belongs on that canvas. Do not crop the pieces and do not
+re-centre them.
+
+This is the whole reason the script exists. `import-art.mjs` trims each image to
+its own content box, which is correct for a standalone prop and destroys a layer
+set — trim a base and a headrest separately and each lands at a different
+offset, so the headrest no longer meets the backrest. `import-layers.mjs` never
+trims, scales every layer in a set by one shared factor, and rejects a set whose
+layers disagree about the canvas rather than importing it crooked.
+
 ## `models-raw/` — GLB straight from the generator
 
 Unoptimised exports from Meshy or Tripo. Expect them to be huge; that is fine,

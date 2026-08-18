@@ -18,9 +18,12 @@ A web game that helps children aged 4–8 be less afraid of going to the dentist
   strings.
 - **Deployment:** installable PWA, must work with no network at all. Live on Railway.
 - **Devices:** phones. The stated floor is a low-end Android.
-- **Clinical angle:** includes a Facial Image Scale module that records a child's
-  self-reported anxiety before and after play, so effectiveness can be evidenced. Its
-  scoring, storage and CSV export are explicitly out of scope for any redesign.
+- **Clinical angle:** the product is *specified* to include a Facial Image Scale module
+  recording a child's self-reported anxiety before and after play, so effectiveness can
+  be evidenced. **It has not been built.** Corrected 16 August 2026: earlier revisions of
+  this brief described it as existing with scoring, storage and CSV export out of scope
+  for redesign. There is no such module, no anxiety state, no storage and no export — see
+  `MIGRATION_PLAN.md` §1. Treat it as unscheduled scope with its own requirements pass.
 
 ### The nine activities
 

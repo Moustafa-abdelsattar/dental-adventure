@@ -35,7 +35,9 @@ The two open items in the last section of this file are unchanged and still bloc
 ### 1. `MIGRATION_PLAN.md` — **start here**
 The plan for the existing repo. Corrected baseline of what is already built, the two-line diagnosis, the file-by-file migration map, ten phases with gates, what must not be touched, and a risk register.
 
-Key finding: the app is content-complete and presentation-poor. Narration, RTL, the Facial Image Scale, Zustand, Motion and two test suites already exist. The migration is two things — replace the `ModuleFrame` card shell with a staged game shell, and replace flat art with real geometry.
+Key finding: the app is content-complete and presentation-poor. Narration, RTL, Zustand, Motion and two test suites already exist. The migration is two things — replace the `ModuleFrame` card shell with a staged game shell, and replace flat art with real geometry.
+
+**Correction, 16 August 2026:** an earlier version of this line also listed the Facial Image Scale as already existing. It does not exist anywhere in the codebase. See `MIGRATION_PLAN.md` §1 for the verification, and `../blueprint-phase-0-inspection.md` §1.1 for the consequences.
 
 ### 2. `MOTION_SPEC.md`
 Every animation in the product. Sections 1–3 are extracted from the `p:timing` XML of `tooth game.pptx`, so the timings are the client's literal intent rather than an interpretation:

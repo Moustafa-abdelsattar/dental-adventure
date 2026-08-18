@@ -8,9 +8,11 @@ Everything below was measured, not estimated.
 ## 1. What the project is
 
 A bilingual Arabic/English offline mobile web game that helps children aged 4–8 feel
-less afraid of the dentist. It includes a Facial Image Scale module that measures a
-child's anxiety before and after playing, so the effect can be evidenced rather than
-claimed.
+less afraid of the dentist. It is *specified* to include a Facial Image Scale module
+measuring a child's anxiety before and after playing, so the effect can be evidenced
+rather than claimed — but **that module has not been built**. Corrected 16 August 2026;
+earlier revisions of this walkthrough stated it was already in the product. See
+`MIGRATION_PLAN.md` §1.
 
 It is live on Railway and it works. Nine activities, narration recorded for every line
 in both languages, full right-to-left support, installable and playable with no network.

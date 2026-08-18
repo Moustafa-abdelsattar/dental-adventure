@@ -18,7 +18,6 @@ The repo is considerably further along than a "POC". Before planning anything, r
 | Motion (framer-motion successor) | `app/src/` | Already the UI animation layer |
 | Bilingual AR/EN with full RTL | `app/src/content/` | Strings files drive narration |
 | **Baked narration, one clip per string per language** | `app/public/audio/` | Generated via ElevenLabs, works offline |
-| **Facial Image Scale research module** | `app/src/screens/` | Pre/post anxiety measurement |
 | Stars → Dental Hero certificate | `app/src/screens/` | Reward loop complete |
 | Visit-type branching (checkup / treatment) | `app/src/screens/` | Parent-facing gate |
 | Unit tests | `vitest` | `npx vitest run` |
@@ -32,7 +31,30 @@ The repo is considerably further along than a "POC". Before planning anything, r
 ### Corrections to my earlier documents
 - `ASSET_PIPELINE.md` claimed there is no audio. **Wrong** — narration is complete and baked. That document's audio section has been rewritten.
 - I proposed Zustand, ElevenLabs and Motion as additions. **All three are already in place.**
-- I proposed building the Facial Image Scale. **It already exists.**
+- ~~I proposed building the Facial Image Scale. **It already exists.**~~ **Retracted 16 August 2026 — this was false and it propagated.** See below.
+
+### The Facial Image Scale does not exist
+Corrected 16 August 2026. Verified by searching `app/src`, `app/tests` and `app/e2e`
+for *facial, anxiety, FIS, CSV, export, research, score, mood, face, rating, survey,
+pre/post*:
+
+- **No screen.** `registry.tsx` declares exactly six module kinds — `clinic`, `tools`,
+  `practice-brush`, `prepare`, `spray`, `visit`.
+- **No state.** `store/game.ts` holds `lang`, `path`, `childName`, `stars`,
+  `heroEarned`, `freePlay`. No anxiety field, no session id, no timestamps.
+- **No strings.** The 111 keys span `app lang ui parent milo clinic tools tool
+  practice prepare spray visit reward cert friend story` and nothing else.
+- **No storage or export.** One localStorage key, `dental-adventure-v1`. No CSV path.
+
+The nine-activity list in `TECHNICAL-BRIEF.md` §1 has never included an assessment
+step, which should have been the tell.
+
+**This is net-new scope, not a preservation constraint.** Anything downstream that says
+"restyle the FIS shell" or "leave FIS logic untouched" is describing something that has
+no shell and no logic. It is also the only part of the product carrying research
+obligations — a pre/post instrument, a defined scale, stable scoring, durable storage
+and an export path — so it needs its own requirements pass, not a slot in a
+presentation-layer phase.
 
 ### The activity list is longer than the PPTX
 Current flow: language → visit type → meet the clinic → meet the tools → practise brushing → prepare the tooth → counting mission → walk-through of the visit → certificate. The PPTX covers only the clinic, the tools, and practice. **The extra activities stay.** The PPTX raises the bar on presentation; it does not shrink the product.
@@ -196,7 +218,7 @@ Polisher finishes with the barn-open reveal of the clean tooth, `clip-path: inse
 **Gate:** the reveal lands as a payoff. If flat, the fault is the impact frame and the sound cue, not the curve.
 
 ### Phase 9 — Remaining screens
-Counting mission (approach doc §12 — progress ring, scale-and-blur countdown), visit walk-through (§D first-person POV, camera as the child), reward screen, FIS screens restyled into the stage. **FIS logic untouched.**
+Counting mission (approach doc §12 — progress ring, scale-and-blur countdown), visit walk-through (§D first-person POV, camera as the child), reward screen. ~~FIS screens restyled into the stage. **FIS logic untouched.**~~ **Corrected 16 August 2026 — there are no FIS screens to restyle; see §1. If the module is commissioned it needs its own slice, not a line in this phase.**
 
 ### Phase 10 — Harden
 Performance pass against the budget in `ASSET_PIPELINE.md`. `prefers-reduced-motion` variants. Offline verification — service worker must cache models as well as audio. Portrait phone and landscape tablet. Safety review against the infographic AVOID list: no needles, blood, extraction, scary imagery, harsh sounds. Confirm the no-fail-state and tap-nothing-still-progresses rules survive the rewrite.
@@ -207,7 +229,7 @@ Performance pass against the budget in `ASSET_PIPELINE.md`. `prefers-reduced-mot
 
 - `app/public/audio/**` — regenerating costs API credits and risks pronunciation regressions.
 - `app/src/content/*` strings — unless copy is being deliberately re-cut with the client, in which case regenerate narration in the same commit.
-- Facial Image Scale scoring, storage and CSV export — restyle the shell only.
+- ~~Facial Image Scale scoring, storage and CSV export — restyle the shell only.~~ **Removed 16 August 2026 — none of this exists; see §1.**
 - The offline strategy.
 - Visit-type branching logic.
 - Railway deployment configuration.
