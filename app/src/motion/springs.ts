@@ -57,7 +57,79 @@ export const screenChange = {
   timing: { duration: 0.28, ease: 'easeOut' } as Transition,
   /** Seconds the incoming screen starts before the outgoing one has left. */
   overlap: 0.06,
+  /**
+   * Seconds the stage refuses taps while one screen hands over to the next.
+   *
+   * A child presses twice. The first press finishes the module; the second
+   * arrives a moment later, by which time the screen it was aimed at has gone
+   * and the next one is sliding into that exact spot — so the stray tap lands
+   * on whatever the new screen put there. Long enough to cover the crossing,
+   * short enough that nobody deliberate ever notices it.
+   */
+  lock: 0.4,
 }
 
 /** How far apart siblings enter, so a row arrives as a run rather than a wall. */
 export const STAGGER = 0.12
+
+/**
+ * Secondary motion. A child element never moves with its parent — it follows.
+ * `MOTION_SPEC.md` §0.5 puts the lag at 60–100ms; these are the two the client's
+ * own file specifies: the chair's headrest at 80ms, the light's arm joints at
+ * 90ms apart with the distal joint last.
+ */
+export const SECONDARY_LAG = 0.08
+export const JOINT_STAGGER = 0.09
+
+/**
+ * The clinic beats, taken from the `p:timing` XML of the client's PowerPoint
+ * and recorded in `MOTION_SPEC.md` §1. These are the client's literal intent,
+ * so they live here as one shared set rather than being re-typed per screen.
+ *
+ * The one deliberate departure: the source rotates ±2°, which is invisible on
+ * a phone. `MOTION_SPEC.md` amplifies it to ±7° while preserving the five-beat
+ * rhythm — hit, hold, and three decreasing swings back to rest.
+ */
+export const TEETER_DEG = 7
+
+/**
+ * Chair and light teeter to the same shape at different speeds, so the shape is
+ * expressed once in normalised time and the duration says which object it is.
+ * Beats: rise by 100/180ms, hold to 200/360ms, then swing at even intervals.
+ */
+export const teeter = {
+  keyframes: [0, TEETER_DEG, TEETER_DEG, -TEETER_DEG, TEETER_DEG, -TEETER_DEG, 0],
+  times: [0, 0.1, 0.2, 0.4, 0.6, 0.8, 1],
+} as const
+
+/** Seconds for one full teeter. The client used a slower one for the light. */
+export const TEETER_S = { chair: 1.0, light: 1.8 } as const
+
+/** The chair reclining once the teeter has settled: 14° about its hinge. */
+export const recline = {
+  degrees: 14,
+  transition: { type: 'spring', stiffness: 160, damping: 24 } as Transition,
+  /** Seconds after the teeter finishes before the recline starts. */
+  delay: 0.09,
+}
+
+/**
+ * The light coming on: 0 → 1 over 400ms with a 60ms flicker at 120ms. The dip
+ * is what makes it read as a real fluorescent striking rather than a fade.
+ */
+export const lightWarmUp = {
+  keyframes: [0, 0.55, 0.15, 0.7, 1],
+  times: [0, 0.3, 0.375, 0.45, 1],
+  transition: { duration: 0.4, ease: 'easeOut' } as Transition,
+}
+
+/**
+ * Trolley pulse — `presetID="6"` grow/shrink over 2000ms. Deliberately not a
+ * symmetric ease: it reaches peak at 40%, holds for 10%, and takes the whole
+ * back half to return, which is what gives it weight.
+ */
+export const pulse = {
+  keyframes: [1, 1.14, 1.14, 1],
+  times: [0, 0.4, 0.5, 1],
+  transition: { duration: 2, ease: 'easeInOut' } as Transition,
+}

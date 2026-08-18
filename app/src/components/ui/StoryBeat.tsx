@@ -7,6 +7,16 @@ import { springs } from '../../motion/springs'
 
 const LINGER_MS = 1100
 const MIN_SHOW_MS = 2600
+/**
+ * How long Milo is deaf to taps after he appears.
+ *
+ * He arrives on the press that finished the module, and a child of four presses
+ * twice. The second press lands a fraction of a second later, on a screen that
+ * has already changed underneath it — and dismisses the line before a word of
+ * it has been heard. Anything this soon after he appears was aimed at whatever
+ * used to be there.
+ */
+const SETTLE_MS = 450
 
 /**
  * A story moment between modules: Milo appears and tells the child how he
@@ -18,6 +28,13 @@ export function StoryBeat({ stringId, calm, onDone }: { stringId: StringId; calm
   const lang = useGame(s => s.lang)!
   const childName = useGame(s => s.childName)
   const doneRef = useRef(false)
+  const shownAtRef = useRef(Date.now())
+
+  /** Dismiss on purpose. The auto-dismiss goes through `finish` instead. */
+  const dismiss = () => {
+    if (Date.now() - shownAtRef.current < SETTLE_MS) return
+    finish()
+  }
 
   const finish = () => {
     if (doneRef.current) return
@@ -27,6 +44,7 @@ export function StoryBeat({ stringId, calm, onDone }: { stringId: StringId; calm
 
   useEffect(() => {
     const shownAt = Date.now()
+    shownAtRef.current = shownAt
     let alive = true
     void audio.say(lang, stringId).then(() => {
       if (!alive) return
@@ -50,7 +68,7 @@ export function StoryBeat({ stringId, calm, onDone }: { stringId: StringId; calm
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        onClick={finish}
+        onClick={dismiss}
         className="fixed inset-0 z-50 bg-ink/25 backdrop-blur-[2px] flex flex-col items-center justify-center gap-4 px-6 cursor-pointer"
       >
         <motion.img

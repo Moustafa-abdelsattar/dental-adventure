@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import checkupJson from '../content/paths/checkup.json'
 import treatmentJson from '../content/paths/treatment.json'
@@ -31,6 +31,13 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
   const [flights, setFlights] = useState<{ key: number; from: { x: number; y: number } }[]>([])
   const [freeChoice, setFreeChoice] = useState<string | null>(null)
   const [beat, setBeat] = useState<{ stringId: string; calm: number } | null>(null)
+  /** True while one screen is crossing over the next; the stage takes no taps. */
+  const [handingOver, setHandingOver] = useState(false)
+  const handoverTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  /** The module id whose completion has already been handled. */
+  const completedFor = useRef<string | null>(null)
+
+  useEffect(() => () => clearTimeout(handoverTimer.current), [])
 
   if (!lang || !path) return null
   const manifest = manifests[path]
@@ -101,6 +108,15 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
   if (!Screen) return null
 
   const handleComplete = (origin?: { x: number; y: number }) => {
+    // A module finishes once. A screen that fires twice — a double press on its
+    // own Next, a completion that races the fallback button — would otherwise
+    // award the next module's stars as well and skip it entirely.
+    if (completedFor.current === current.id) return
+    completedFor.current = current.id
+    setHandingOver(true)
+    clearTimeout(handoverTimer.current)
+    handoverTimer.current = setTimeout(() => setHandingOver(false), screenChange.lock * 1000)
+
     // Milo's arc: modules with a story beat speak it (and show him calming);
     // the rest keep the plain star-earned cheer.
     if (current.beatId) {
@@ -128,21 +144,24 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
           test ids every stage carries — `game-stage`, `next-fallback` — briefly
           resolve to two elements. Playwright's strict mode will throw if a spec
           queries one mid-handover; wait for the incoming screen's own id first. */}
-      <AnimatePresence mode="popLayout" initial={false}>
-        <motion.div
-          key={current.id}
-          variants={{
-            enter: screenChange.enter,
-            settled: { ...screenChange.settled, transition: { ...screenChange.timing, delay: screenChange.overlap } },
-            exit: { ...screenChange.exit, transition: screenChange.timing },
-          }}
-          initial="enter"
-          animate="settled"
-          exit="exit"
-        >
-          <Screen module={current} onComplete={handleComplete} />
-        </motion.div>
-      </AnimatePresence>
+      {/* Deaf to taps while the crossing is in progress: see `screenChange.lock`. */}
+      <div data-testid="module-stack" style={{ pointerEvents: handingOver ? 'none' : undefined }}>
+        <AnimatePresence mode="popLayout" initial={false}>
+          <motion.div
+            key={current.id}
+            variants={{
+              enter: screenChange.enter,
+              settled: { ...screenChange.settled, transition: { ...screenChange.timing, delay: screenChange.overlap } },
+              exit: { ...screenChange.exit, transition: screenChange.timing },
+            }}
+            initial="enter"
+            animate="settled"
+            exit="exit"
+          >
+            <Screen module={current} onComplete={handleComplete} />
+          </motion.div>
+        </AnimatePresence>
+      </div>
       {flights.map(f => (
         <StarFly key={f.key} from={f.from} onArrive={() => setFlights(fl => fl.filter(x => x.key !== f.key))} />
       ))}
