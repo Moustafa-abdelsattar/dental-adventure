@@ -26,15 +26,33 @@ async function completeClinic(page: Page) {
   }
 }
 
+// Each tool hides under a cover the child scratches away. Dragging is the real
+// gesture, so this drags — a tap works too, but exercising the cheap path in
+// the only browser test would leave the scratching itself unproven.
 async function completeTools(page: Page, ids: string[]) {
   await settle(page)
-  // the last tool of a group advances the page immediately, unmounting its
-  // met-badge — only assert the badge for non-final tools of the group
-  for (let i = 0; i < ids.length; i++) {
-    const tool = page.getByTestId(`tool-${ids[i]}`)
-    await expect(tool).toBeVisible({ timeout: 15_000 })
-    await tool.click()
-    if (i < ids.length - 1) await expect(page.getByTestId(`met-${ids[i]}`)).toBeVisible({ timeout: 15_000 })
+  for (const id of ids) {
+    const cell = page.getByTestId(`tool-${id}`)
+    await expect(cell).toBeVisible({ timeout: 15_000 })
+    const box = (await cell.boundingBox())!
+
+    // A cell only gives up once seven tenths of it has come away, so this has
+    // to sweep the whole thing the way a child would, not nick one corner.
+    await page.mouse.move(box.x + box.width * 0.06, box.y + box.height * 0.15)
+    await page.mouse.down()
+    for (const row of [0.15, 0.38, 0.62, 0.85]) {
+      for (const col of [0.06, 0.3, 0.55, 0.78, 0.94]) {
+        await page.mouse.move(box.x + box.width * col, box.y + box.height * row, { steps: 2 })
+      }
+      await page.mouse.move(box.x + box.width * 0.06, box.y + box.height * row, { steps: 2 })
+    }
+    await page.mouse.up()
+
+    // revealing raises a card with the tool's name, description and fun fact
+    const card = page.getByTestId('zoom-card')
+    await expect(card).toBeVisible({ timeout: 15_000 })
+    await card.getByRole('button').click()
+    await expect(page.getByTestId(`met-${id}`)).toBeVisible({ timeout: 15_000 })
   }
 }
 
@@ -72,8 +90,9 @@ test.describe('Dental Adventure happy paths', () => {
 
     await completeClinic(page)
     await expect(page.getByTestId('tool-mirror')).toBeVisible({ timeout: 20_000 })
-    await completeTools(page, ['mirror', 'suction'])
-    await completeTools(page, ['syringe', 'brush'])
+    await completeTools(page, ['mirror', 'explorer', 'suction'])
+    await completeTools(page, ['syringe', 'brush', 'xray'])
+    await completeTools(page, ['ring', 'umbrella', 'spray'])
     await expect(page.getByTestId('pick-brush')).toBeVisible({ timeout: 20_000 })
     await completeBrush(page)
     await expect(page.getByTestId('drnour-mask')).toBeVisible({ timeout: 20_000 })

@@ -1,10 +1,11 @@
-import { render, screen, fireEvent, act, cleanup } from '@testing-library/react'
+import { render, screen, fireEvent, act, cleanup, within } from '@testing-library/react'
 import { TOOLS, type ToolId } from '../src/game/tools/tools'
 import { ToolsScreen } from '../src/screens/ToolsScreen'
 import { useGame } from '../src/store/game'
 import { audio } from '../src/lib/audio'
 import checkup from '../src/content/paths/checkup.json'
 import treatment from '../src/content/paths/treatment.json'
+import board from '../src/content/tools-board.json'
 import type { ModuleDef } from '../src/content/types'
 
 const ALL_IDS: ToolId[] = ['mirror', 'explorer', 'suction', 'syringe', 'brush', 'xray', 'ring', 'umbrella', 'spray']
@@ -29,31 +30,84 @@ test('every tool id has an entry and renders its art asset', () => {
   }
 })
 
+/**
+ * Scratch one cell open.
+ *
+ * jsdom has no 2D canvas context, so the cover cannot actually be rubbed away
+ * here — `ScratchCell` falls back to opening on a tap, which is the same escape
+ * hatch a child who will not scratch gets. The scratching itself is exercised
+ * in a real browser.
+ */
+async function scratch(id: ToolId) {
+  await act(async () => {
+    const cell = screen.getByTestId(`tool-${id}`)
+    fireEvent.pointerDown(cell, { clientX: 10, clientY: 10 })
+    fireEvent.pointerUp(cell, { clientX: 10, clientY: 10 })
+  })
+}
+
+async function dismiss() {
+  await act(async () => {
+    fireEvent.click(within(screen.getByTestId('zoom-card')).getByRole('button', { name: 'Next' }))
+  })
+}
+
 async function meetAll(roster: ToolId[]) {
   for (const id of roster) {
-    await act(async () => {
-      fireEvent.click(screen.getByTestId(`tool-${id}`))
-    })
+    await scratch(id)
+    await dismiss()
   }
 }
 
-test('checkup roster shows the 4 essential tools in 2 balanced groups and completes after meeting all', async () => {
-  const module = checkup.modules.find(m => m.kind === 'tools')! as ModuleDef
-  const onComplete = vi.fn()
-  render(<ToolsScreen module={module} onComplete={onComplete} />)
-  expect(screen.getByTestId('tool-group-0').querySelectorAll('button')).toHaveLength(2)
-  await meetAll(module.toolIds! as ToolId[])
-  expect(onComplete).toHaveBeenCalledTimes(1)
-  expect(audio.say).toHaveBeenCalledWith('en', 'tools.done')
+test('every cell on the board is covered, on either journey', () => {
+  for (const path of [checkup, treatment]) {
+    const module = path.modules.find(m => m.kind === 'tools')! as ModuleDef
+    const { unmount } = render(<ToolsScreen module={module} onComplete={vi.fn()} />)
+    // a board with some cells already open reads as half-loaded, not as a game
+    for (const id of ALL_IDS) expect(screen.getByTestId(`tool-${id}`)).toBeInTheDocument()
+    unmount()
+  }
 })
 
-test('treatment roster spans 3 groups including care tools', async () => {
+test('every cover is placed from the measured board, not from hand-tuned numbers', () => {
   const module = treatment.modules.find(m => m.kind === 'tools')! as ModuleDef
+  render(<ToolsScreen module={module} onComplete={vi.fn()} />)
+  for (const id of ALL_IDS) {
+    const cell = board.cells[id as keyof typeof board.cells]
+    const el = screen.getByTestId(`tool-${id}`)
+    expect(el.style.left).toBe(`${cell.left}%`)
+    expect(el.style.top).toBe(`${cell.top}%`)
+    expect(el.style.width).toBe(`${cell.width}%`)
+    expect(el.style.height).toBe(`${cell.height}%`)
+  }
+})
+
+test('scratching a cell reveals the tool, narrates description then fun fact, and marks it met', async () => {
+  const module = checkup.modules.find(m => m.kind === 'tools')! as ModuleDef
+  render(<ToolsScreen module={module} onComplete={vi.fn()} />)
+
+  await scratch('mirror')
+  const card = screen.getByTestId('zoom-card')
+  expect(within(card).getByText('Dental Mirror')).toBeInTheDocument()
+  expect(audio.say).toHaveBeenCalledWith('en', 'tool.mirror.desc')
+  expect(audio.say).toHaveBeenCalledWith('en', 'tool.mirror.fact')
+
+  await dismiss()
+  expect(screen.getByTestId('met-mirror')).toBeInTheDocument()
+  // a met cell has no cover left to scratch
+  expect(screen.queryByTestId('tool-mirror')).not.toBeInTheDocument()
+})
+
+test('the module completes once every tool on the roster has been found', async () => {
+  const module = treatment.modules.find(m => m.kind === 'tools')! as ModuleDef
+  const roster = module.toolIds! as ToolId[]
   const onComplete = vi.fn()
   render(<ToolsScreen module={module} onComplete={onComplete} />)
-  expect(screen.getByTestId('group-progress').children).toHaveLength(3)
-  await meetAll(module.toolIds! as ToolId[])
+
+  expect(roster).toHaveLength(9)
+  await meetAll(roster)
   expect(onComplete).toHaveBeenCalledTimes(1)
+  expect(audio.say).toHaveBeenCalledWith('en', 'tools.done')
 })
 
 test('fallback Next is disabled until every tool is met, then completes exactly once', async () => {
@@ -66,17 +120,6 @@ test('fallback Next is disabled until every tool is met, then completes exactly 
   expect(onComplete).not.toHaveBeenCalled()
   await meetAll(module.toolIds! as ToolId[])
   expect(next).toBeEnabled()
-  fireEvent.click(next) // auto path already completed; the guard must swallow this
+  fireEvent.click(next) // the auto path already completed; the guard must swallow this
   expect(onComplete).toHaveBeenCalledTimes(1)
-})
-
-test('tapping a tool narrates description then fun fact', async () => {
-  const module = checkup.modules.find(m => m.kind === 'tools')! as ModuleDef
-  render(<ToolsScreen module={module} onComplete={vi.fn()} />)
-  await act(async () => {
-    fireEvent.click(screen.getByTestId('tool-mirror'))
-  })
-  expect(audio.say).toHaveBeenCalledWith('en', 'tool.mirror.desc')
-  expect(audio.say).toHaveBeenCalledWith('en', 'tool.mirror.fact')
-  expect(screen.getByTestId('met-mirror')).toBeInTheDocument()
 })

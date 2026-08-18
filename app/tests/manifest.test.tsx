@@ -28,10 +28,11 @@ for (const m of manifests) {
   })
 }
 
-test('checkup teaches only the four essential tools; treatment carries the rest', () => {
+test('both journeys hand the tools board its full nine, so no cell is left uncovered', () => {
   const ids = (m: typeof checkup) => m.modules.find(x => x.kind === 'tools')!.toolIds!
-  expect(ids(checkup)).toEqual(['mirror', 'suction', 'syringe', 'brush'])
-  expect(ids(treatment)).toEqual(expect.arrayContaining(['ring', 'umbrella', 'spray']))
+  const nine = ['mirror', 'explorer', 'suction', 'syringe', 'brush', 'xray', 'ring', 'umbrella', 'spray']
+  expect(ids(checkup)).toEqual(nine)
+  expect(ids(treatment)).toEqual(nine)
 })
 
 test('starIdsFor expands multi-star modules', () => {
@@ -79,6 +80,8 @@ describe('ModuleHost engine', () => {
     fireEvent.click(screen.getByText('done-clinic'))
     const beat = screen.getByTestId('story-beat')
     expect(beat.textContent).toContain('My wiggles are getting smaller')
+    // past the moment where a tap is still the tail of the press that got here
+    act(() => vi.advanceTimersByTime(600))
     fireEvent.click(beat)
     act(() => vi.advanceTimersByTime(1000))
     expect(screen.queryByTestId('story-beat')).not.toBeInTheDocument()

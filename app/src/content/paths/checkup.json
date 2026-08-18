@@ -15,9 +15,14 @@
       "titleId": "tools.title",
       "toolIds": [
         "mirror",
+        "explorer",
         "suction",
         "syringe",
-        "brush"
+        "brush",
+        "xray",
+        "ring",
+        "umbrella",
+        "spray"
       ],
       "beatId": "story.calmer2"
     },
