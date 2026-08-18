@@ -201,12 +201,18 @@ export function ScratchCell({
     last.current = null
     // A tap, not a drag.
     //
-    // The bite has to grow each time. A fixed one is idempotent — tap the same
-    // spot twice and the second does nothing, so a child who taps the middle of
-    // a cell over and over sits at the same coverage forever and the cell can
-    // never open. That is a dead end, and this game does not have those.
-    // Growing it means three or four taps always gets there, while dragging
-    // stays the better way to do it.
+    // A press takes a bite out of the cover; it cannot take the cover off. The
+    // game asks the child to scratch, so pressing a cell four times must not be
+    // a way past that — it looks like the mechanic working when it is the
+    // mechanic being sidestepped, and the child never does the thing the screen
+    // is for.
+    //
+    // The bite still grows a little, and it still has to: a fixed one is
+    // idempotent, so a child pressing the same spot over and over would sit at
+    // the same coverage forever, and this game has no dead ends. Capped where
+    // a circle cannot reach seven tenths of a cell on its own — presses spread
+    // around the cell will still get there, one press in one place never will,
+    // and dragging remains far and away the quickest way to do it.
     if (!moved.current) {
       const host = hostRef.current
       const p = point(e)
@@ -218,7 +224,7 @@ export function ScratchCell({
       if (p) {
         taps.current++
         const reach = Math.min(host.clientWidth, host.clientHeight)
-        const r = reach * (0.24 + taps.current * 0.09)
+        const r = reach * Math.min(0.2 + taps.current * 0.03, 0.5)
         ctx.globalCompositeOperation = 'destination-out'
         ctx.beginPath()
         ctx.arc(p.x, p.y, r, 0, Math.PI * 2)

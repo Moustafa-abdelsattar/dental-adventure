@@ -191,13 +191,20 @@ export function ToolsScreen({ module, onComplete }: ModuleProps) {
   )
 }
 
-/** "Scratch here." Sits on an unopened cover so a child knows it comes off. */
+/**
+ * "Scratch here." Sits on an unopened cover so a child knows it comes off.
+ *
+ * It rubs rather than pulses. A dot breathing in place says press me, and
+ * pressing is the one thing that will not take this cover off — the marker has
+ * to show the gesture the cell wants, because a four-year-old copies what they
+ * see long before they work anything out.
+ */
 function ScratchHint({ idx }: { idx: number }) {
   return (
     <motion.span
       aria-hidden
       className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white/85 border-2 border-sunny shadow-[0_2px_6px_rgba(58,53,96,0.3)]"
-      animate={{ scale: [1, 1.18, 1], opacity: [0.75, 1, 0.75] }}
+      animate={{ x: [-10, 10, -10], scale: [1, 1.12, 1], opacity: [0.75, 1, 0.75] }}
       transition={{ ...loops.breathe, delay: idx * STAGGER }}
     />
   )
