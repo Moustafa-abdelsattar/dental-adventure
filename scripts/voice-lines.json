@@ -1,0 +1,97 @@
+{
+  "voice": "vWDp3PLsTWjIhBxxUKh9",
+  "note": "Every helper introduces itself in the first person, one short line, one emoji. The first eight are the owner's own script, exactly as written; the last five are the rest of the game's cast written to match it, so the whole board speaks with one voice. The emoji are for the humans reading this file — the generator strips them before speaking.",
+  "lines": [
+    {
+      "id": "clinic.chair",
+      "label": "The Dental Chair",
+      "source": "owner",
+      "ar": "أنا كرسي الأسنان! زي المرجيحة، بطلع وأنزل عشان تبقى مرتاح ومبسوط. 🪑",
+      "en": "I'm the dental chair! I'm like a swing — I go up and down to help you feel comfortable and happy. 🪑"
+    },
+    {
+      "id": "clinic.light",
+      "label": "The Light",
+      "source": "owner",
+      "ar": "أنا زي الشمس! بنوّر عشان الدكتور يقدر يشوف سنانك كويس. ☀️",
+      "en": "I'm like the sun! I shine bright so the dentist can see your teeth really well. ☀️"
+    },
+    {
+      "id": "clinic.sink",
+      "label": "The Little Sink",
+      "source": "written to match",
+      "ar": "أنا الحوض الصغير! تعالى مضمض وابصق عندي عشان بُقّك يفضل نضيف. 🚰",
+      "en": "I'm the little sink! Come rinse and spit right here to keep your mouth nice and clean. 🚰"
+    },
+    {
+      "id": "clinic.table",
+      "label": "The Tool Table",
+      "source": "written to match",
+      "ar": "أنا ترابيزة الأدوات! كل الأدوات بتقعد عليّا نضيفة وجاهزة لحد ما ييجي دورها. 🧰",
+      "en": "I'm the tool table! All the little helpers sit on me, clean and ready, until it's their turn. 🧰"
+    },
+    {
+      "id": "tool.mirror",
+      "label": "The Mirror",
+      "source": "owner",
+      "ar": "أنا المراية! بساعد الدكتور يشوف سنانك من كل ناحية. 🪞",
+      "en": "I'm the mirror! I help the dentist see your teeth from every side. 🪞"
+    },
+    {
+      "id": "tool.explorer",
+      "label": "The Probe",
+      "source": "owner",
+      "ar": "أنا اللي بعدّ سنانك واحدة واحدة عشان الدكتور يعرف يطمن عليها. 🔎",
+      "en": "I'm the little tooth checker! I help the dentist check your teeth one by one. 🔎"
+    },
+    {
+      "id": "tool.suction",
+      "label": "The Suction",
+      "source": "owner",
+      "ar": "أنا زي الشاليموه! بشرب الميّه اللي بتتجمع في بوقك عشان تفضل مرتاح. 🥤",
+      "en": "I'm like a straw! I suck up the water in your mouth to help you stay nice and comfortable. 🥤"
+    },
+    {
+      "id": "tool.syringe",
+      "label": "The Air-Water Syringe",
+      "source": "owner",
+      "ar": "أنا برش ميّه وهوا عشان أغسل سنانك وأنشفها. 💦",
+      "en": "I spray water and air to wash your teeth and dry them. 💦"
+    },
+    {
+      "id": "tool.brush",
+      "label": "The Handpiece",
+      "source": "owner",
+      "ar": "أنا زي الدش! برش ميّه وأنا بنضّف السوسة عشان سنانك تبقى نضيفة. 🚿",
+      "en": "I'm like a little shower! I spray water while I clean the cavity and help keep your tooth nice and clean. 🚿"
+    },
+    {
+      "id": "tool.xray",
+      "label": "The Tooth Camera",
+      "source": "written to match",
+      "ar": "أنا كاميرا السنان! باخد صورة سريعة عشان الدكتور يشوف جوّه السن. 📸",
+      "en": "I'm the tooth camera! I take a quick picture so the dentist can see inside your tooth. 📸"
+    },
+    {
+      "id": "tool.ring",
+      "label": "The Tooth Hugger Ring",
+      "source": "written to match",
+      "ar": "أنا حلقة السن! بحضن السن حضنة خفيفة عشان يفضل ثابت وناشف. 💍",
+      "en": "I'm the tooth hugger! I give your tooth a gentle hug so it stays still and dry. 💍"
+    },
+    {
+      "id": "tool.umbrella",
+      "label": "The Tooth Umbrella",
+      "source": "written to match",
+      "ar": "أنا شمسية السن! بفتح نفسي حوالين السن عشان يفضل ناشف ومرتاح. ☂️",
+      "en": "I'm the tooth umbrella! I open up around your tooth to keep it dry and cozy. ☂️"
+    },
+    {
+      "id": "tool.spray",
+      "label": "The Local Anesthetic",
+      "source": "owner",
+      "ar": "أنا العصير السحري! بنوّم السوسة شوية عشان الدكتور يقدر يشيلها وإنت مرتاح. 🧃✨",
+      "en": "I'm the magic juice! I make the tooth sleepy so the dentist can clean the cavity while you stay comfortable. 🧃✨"
+    }
+  ]
+}

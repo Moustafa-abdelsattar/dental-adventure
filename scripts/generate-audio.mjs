@@ -19,11 +19,21 @@ const KEY = env.match(/ELEVENLABS_API_KEY=(\S+)/)[1]
 // that reads as a different, less warm character to an English-speaking child.
 // Both match the same direction: friendly older brother, calm playful energy,
 // never overly excited (voice direction: docs/arabic-audio-script.md).
-const VOICE_IDS = {
-  ar: 'UR972wNGq3zluze0LoIp',
-  en: 'bIHbv24MWmeRgasZH58o', // "Will" — young American male, warm, conversational
-}
-const MODEL = 'eleven_turbo_v2_5'
+//
+// One voice now does both. The owner picked it
+// (elevenlabs.io/voices/vWDp3PLsTWjIhBxxUKh9) and it carries Egyptian Arabic
+// and English alike, which the earlier pairing could not: two voices meant Milo
+// was one character in Arabic and another in English, and a family that plays
+// in both heard two different narrators.
+//
+// The pair that shipped before, kept in case that call is reversed:
+//   ar: 'UR972wNGq3zluze0LoIp'
+//   en: 'bIHbv24MWmeRgasZH58o'  ("Will" — young American male)
+const OWNER_VOICE = 'vWDp3PLsTWjIhBxxUKh9'
+const VOICE_IDS = { ar: OWNER_VOICE, en: OWNER_VOICE }
+// Multilingual over turbo: turbo clips Egyptian colloquial short of its last
+// syllable often enough to hear it across a hundred lines.
+const MODEL = 'eleven_multilingual_v2'
 
 const SETTINGS = {
   en: { stability: 0.45, similarity_boost: 0.75, style: 0.35 },
