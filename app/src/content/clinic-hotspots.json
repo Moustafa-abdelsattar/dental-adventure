@@ -1,0 +1,30 @@
+{
+  "scene": {
+    "width": 1000,
+    "height": 1083
+  },
+  "chair": {
+    "left": 10.1,
+    "top": 25.1,
+    "width": 68.3,
+    "height": 68.4
+  },
+  "light": {
+    "left": 30.5,
+    "top": 8.9,
+    "width": 21.7,
+    "height": 14.6
+  },
+  "table": {
+    "left": 60.7,
+    "top": 48.4,
+    "width": 29.6,
+    "height": 14.7
+  },
+  "sink": {
+    "left": 41.7,
+    "top": 31,
+    "width": 26.3,
+    "height": 15.6
+  }
+}

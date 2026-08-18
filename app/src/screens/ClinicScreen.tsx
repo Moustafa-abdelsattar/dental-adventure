@@ -1,63 +1,130 @@
 import { useEffect, useRef, useState } from 'react'
-import { motion } from 'motion/react'
+import { motion, type TargetAndTransition, type Transition } from 'motion/react'
 import { audio } from '../lib/audio'
 import { t, type StringId } from '../lib/i18n'
 import { useGame } from '../store/game'
 import { Pop } from '../components/motion/Pop'
+import { StarBurst } from '../components/motion/StarBurst'
 import { GameButton } from '../components/ui/GameButton'
 import { DoneBadge } from '../components/ui/DoneBadge'
 import { GameStage } from '../game/GameStage'
-import { springs, loops, STAGGER } from '../motion/springs'
+import { milo } from '../game/Milo/bus'
+import { springs, loops, STAGGER, teeter, TEETER_S, recline, lightWarmUp, pulse } from '../motion/springs'
+import hotspots from '../content/clinic-hotspots.json'
 import type { ModuleProps } from './registry'
 
 type ItemId = 'chair' | 'light' | 'sink' | 'table'
 
-// four corners of the room, weighted low — small thumbs reach there
-const ITEMS: { id: ItemId; nameId: StringId; descId: StringId; className: string }[] = [
-  { id: 'light', nameId: 'clinic.light.name', descId: 'clinic.light.desc', className: 'top-[11%] start-[2%] w-[42%]' },
-  { id: 'sink', nameId: 'clinic.sink.name', descId: 'clinic.sink.desc', className: 'top-[18%] end-[0%] w-[40%]' },
-  { id: 'chair', nameId: 'clinic.chair.name', descId: 'clinic.chair.desc', className: 'bottom-[0%] start-[0%] w-[52%]' },
-  { id: 'table', nameId: 'clinic.table.name', descId: 'clinic.table.desc', className: 'bottom-[5%] end-[0%] w-[40%]' },
+/**
+ * The clinic as the client storyboarded it.
+ *
+ * Slides 2, 3 and 4 of `tooth game.pptx` are one room with the chair, the
+ * overhead light and the delivery unit each supplied as a separate transparent
+ * image sitting exactly over its own position — "Press on the chair", and the
+ * chair rocks where it stands. That is what this screen is now: the room, with
+ * four things in it that move in place. Not four cut-out props arranged in the
+ * corners of a pastel background, which is what it used to be and which the
+ * PowerPoint never asked for.
+ *
+ * Every layer shares the plate's canvas, so each one is a full-size image at
+ * `inset-0` and the artwork's own position does the placing. See
+ * `scripts/import-pptx-clinic.mjs`.
+ */
+
+/**
+ * The tap targets, measured from each layer's own alpha by
+ * `scripts/import-pptx-clinic.mjs` and padded for a child's aim. The layer
+ * images cannot be the buttons themselves — they are all full-canvas and mostly
+ * transparent, so four of them stacked would mean only the topmost was ever
+ * pressed.
+ */
+const ITEMS: { id: ItemId; nameId: StringId; descId: StringId }[] = [
+  { id: 'light', nameId: 'clinic.light.name', descId: 'clinic.light.desc' },
+  { id: 'sink', nameId: 'clinic.sink.name', descId: 'clinic.sink.desc' },
+  { id: 'chair', nameId: 'clinic.chair.name', descId: 'clinic.chair.desc' },
+  { id: 'table', nameId: 'clinic.table.name', descId: 'clinic.table.desc' },
 ]
 
+/**
+ * Objects that have their own close-up render, emitted by
+ * `scripts/import-pptx-clinic.mjs`. The trolley is a beige box with hoses in
+ * the room; everything that makes it interesting — the mirror, the little
+ * camera, the tooth in its ring — only becomes legible at card size.
+ */
+const DETAIL_ART = new Set<ItemId>(['table'])
+
 const IDLE_HINT_MS = 10000
+const CARD_DELAY_MS = 500
+const TAP_SLOP_PX = 24
+const BURST_MS = 900
 
 export function ClinicScreen({ onComplete }: ModuleProps) {
   const lang = useGame(s => s.lang)!
   const childName = useGame(s => s.childName)
   const [explored, setExplored] = useState<Set<ItemId>>(new Set())
   const [open, setOpen] = useState<ItemId | null>(null)
+  const [acting, setActing] = useState<ItemId | null>(null)
+  const [burstFor, setBurstFor] = useState<ItemId | null>(null)
   const [hintFor, setHintFor] = useState<ItemId | null>(null)
   const doneRef = useRef(false)
   const sceneRef = useRef<HTMLDivElement>(null)
+  const cardTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const burstTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   useEffect(() => {
     void audio.say(lang, 'clinic.intro')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // idle nudge: after 10s without progress, Milo hints and one item pulses harder
+  useEffect(
+    () => () => {
+      clearTimeout(cardTimer.current)
+      clearTimeout(burstTimer.current)
+    },
+    [],
+  )
+
   useEffect(() => {
-    if (open || explored.size >= ITEMS.length) return
+    if (open || acting || explored.size >= ITEMS.length) return
     const timer = setTimeout(() => {
       const next = ITEMS.find(i => !explored.has(i.id))
       if (next) {
         setHintFor(next.id)
+        milo.react('point')
         void audio.say(lang, 'milo.hint.tap')
       }
     }, IDLE_HINT_MS)
     return () => clearTimeout(timer)
-  }, [open, explored, lang])
+  }, [open, acting, explored, lang])
 
   const tapItem = (id: ItemId) => {
+    if (acting || open) return
     setHintFor(null)
-    setOpen(id)
+    setActing(id)
+    milo.react('point')
     const item = ITEMS.find(i => i.id === id)!
     void audio.say(lang, item.descId)
+    cardTimer.current = setTimeout(() => setOpen(id), CARD_DELAY_MS)
   }
 
-  // separate from the narration flow so a hung clip can't strand the child —
-  // the fallback Next button can always finish a completed module
+  const pressed = useRef<{ id: ItemId; x: number; y: number } | null>(null)
+
+  const onPointerDown = (id: ItemId) => (e: React.PointerEvent) => {
+    pressed.current = { id, x: e.clientX, y: e.clientY }
+  }
+
+  const onPointerUp = (id: ItemId) => (e: React.PointerEvent) => {
+    const start = pressed.current
+    pressed.current = null
+    if (!start || start.id !== id) return
+    if (Math.hypot(e.clientX - start.x, e.clientY - start.y) > TAP_SLOP_PX) return
+    tapItem(id)
+  }
+
+  const cancelPress = () => {
+    pressed.current = null
+  }
+
   const completedRef = useRef(false)
   const completeOnce = () => {
     if (completedRef.current) return
@@ -68,10 +135,15 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
 
   const closeCard = async () => {
     if (!open) return
+    const justClosed = open
     const next = new Set(explored)
-    next.add(open)
+    next.add(justClosed)
     setExplored(next)
     setOpen(null)
+    setActing(null)
+    milo.react('happy')
+    setBurstFor(justClosed)
+    burstTimer.current = setTimeout(() => setBurstFor(null), BURST_MS)
     if (next.size === ITEMS.length && !doneRef.current) {
       doneRef.current = true
       await audio.say(lang, 'clinic.done')
@@ -82,51 +154,139 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
   const openItem = open ? ITEMS.find(i => i.id === open)! : null
 
   return (
-    <GameStage
-      title={t(lang, 'clinic.title')}
-      intro={t(lang, 'clinic.intro', { name: childName })}
-      scene={<ClinicRoom />}
-      action={<GameButton label={t(lang, 'ui.next')} disabled={explored.size < ITEMS.length} onPress={completeOnce} />}
-    >
-      {/* The room is the interface: four things standing in it, no frame
-          around them. Corners are weighted low so small thumbs reach. */}
-      <div ref={sceneRef} className="relative w-full h-full max-w-md">
-        {ITEMS.map((item, idx) => {
-          const isExplored = explored.has(item.id)
-          return (
-            <motion.button
-              key={item.id}
-              data-testid={`hotspot-${item.id}`}
-              aria-label={t(lang, item.nameId)}
-              onClick={() => tapItem(item.id)}
-              initial={{ opacity: 0, scale: 0.6, y: 18 }}
-              animate={
-                isExplored
-                  ? { opacity: 1, y: 0, scale: 1 }
-                  : { opacity: 1, y: 0, scale: hintFor === item.id ? [1, 1.12, 1] : [1, 1.05, 1] }
-              }
-              transition={{
-                opacity: { ...springs.playful, delay: 0.15 + idx * STAGGER },
-                y: { ...springs.playful, delay: 0.15 + idx * STAGGER },
-                scale: isExplored
-                  ? springs.playful
-                  : { ...(hintFor === item.id ? loops.urge : loops.breathe), delay: 0.3 + idx * STAGGER },
-              }}
-              className={`absolute ${item.className} aspect-square rounded-3xl flex items-center justify-center`}
-            >
-              <ItemSvg id={item.id} />
-              {isExplored && <DoneBadge testid={`explored-${item.id}`} className="absolute top-0 end-0 w-10 h-10" />}
-            </motion.button>
-          )
-        })}
-      </div>
+    <>
+      <GameStage
+        title={t(lang, 'clinic.title')}
+        intro={t(lang, 'clinic.intro', { name: childName })}
+        scene={
+          <img
+            src="/art/clinic-room-bg.webp"
+            alt=""
+            draggable={false}
+            data-testid="clinic-room-bg"
+            className="absolute inset-0 w-full h-full object-cover select-none"
+          />
+        }
+        effects={<LightWash on={acting === 'light'} />}
+        action={
+          <GameButton label={t(lang, 'ui.next')} disabled={explored.size < ITEMS.length} onPress={completeOnce} />
+        }
+      >
+        {/*
+        The scene keeps the plate's proportions and is scaled to the height it
+        is given, so on a portrait phone it stands taller than the stage is wide
+        and the room is cropped at the sides rather than shrunk into a letterbox
+        a child cannot aim at. Everything inside is positioned as a percentage of
+        this box, which is the same coordinate space the artwork was cut in.
+      */}
+        {/* Width-driven, not height-driven. The room is wider than a phone and
+          its four objects span nearly all of it, so scaling to fill the height
+          pushes the trolley clean off the screen. Full width shows all four;
+          the blurred copy behind carries the rest. */}
+        <div
+          ref={sceneRef}
+          data-testid="clinic-scene"
+          // Stood on the floor of the stage rather than floated in the middle.
+          // The room is squarer than a phone, so something has to give; put all
+          // of the slack in one band at the top, where the caption already sits,
+          // instead of splitting it into two bands that read as letterboxing.
+          className="absolute inset-x-0 bottom-0 w-full max-h-full"
+          style={{ aspectRatio: `${hotspots.scene.width} / ${hotspots.scene.height}` }}
+        >
+          <img
+            src="/art/clinic-scene.webp"
+            alt=""
+            draggable={false}
+            // Dissolved along its top edge so the room fades up into the soft
+            // band above rather than stopping on a ruled line. Kept shallower
+            // than the lamp, which starts at 9%.
+            className="absolute inset-0 w-full h-full object-contain select-none [mask-image:linear-gradient(to_bottom,transparent_0%,black_5%)]"
+          />
 
+          {ITEMS.map((item, idx) => (
+            <ObjectLayer
+              key={item.id}
+              id={item.id}
+              idx={idx}
+              state={
+                acting === item.id ? 'active' : explored.has(item.id) ? 'done' : hintFor === item.id ? 'hint' : 'idle'
+              }
+            />
+          ))}
+
+          {/* Biggest first, so the smallest target ends up on top. The rinse bowl
+            sits bodily inside the chair's box — draw them in list order and the
+            chair covers the bowl, and one of the four objects simply cannot be
+            pressed. */}
+          {[...ITEMS]
+            .sort((a, b) => hotspots[b.id].width * hotspots[b.id].height - hotspots[a.id].width * hotspots[a.id].height)
+            .map((item, idx) => {
+              const box = hotspots[item.id]
+              const isExplored = explored.has(item.id)
+              return (
+                <button
+                  key={item.id}
+                  data-testid={`hotspot-${item.id}`}
+                  aria-label={t(lang, item.nameId)}
+                  onPointerDown={onPointerDown(item.id)}
+                  onPointerUp={onPointerUp(item.id)}
+                  onPointerCancel={cancelPress}
+                  style={{
+                    left: `${box.left}%`,
+                    top: `${box.top}%`,
+                    width: `${box.width}%`,
+                    height: `${box.height}%`,
+                  }}
+                  className="absolute rounded-3xl"
+                >
+                  {!isExplored && !acting && (
+                    <TapHere key={`tap-${item.id}`} id={item.id} idx={idx} urgent={hintFor === item.id} />
+                  )}
+                  {/* On the object, not at the corner of its box. The rinse bowl's
+                  box has its top-right corner up by the wall monitor, and a
+                  tick floating over the monitor says the child explored the
+                  wrong thing. */}
+                  {isExplored && (
+                    <DoneBadge
+                      testid={`explored-${item.id}`}
+                      className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 w-9 h-9"
+                    />
+                  )}
+                  {burstFor === item.id && <StarBurst show size={60} />}
+                </button>
+              )
+            })}
+        </div>
+      </GameStage>
+
+      {/* Outside the stage, like the tools card: the stage's caption layer sits
+          above its subject layer, and a card left inside the subject is painted
+          over by the title however high its z goes. */}
       {openItem && (
-        <div className="fixed inset-0 z-40 bg-ink/30 backdrop-blur-sm flex items-center justify-center p-6" data-testid="zoom-card">
+        <div
+          className="fixed inset-0 z-40 bg-ink/30 backdrop-blur-sm flex items-center justify-center p-6"
+          data-testid="zoom-card"
+        >
           <Pop className="bg-white rounded-3xl p-6 flex flex-col items-center gap-4 w-full max-w-sm shadow-2xl">
-            <motion.div animate={{ rotate: [0, -3, 3, 0] }} transition={loops.sway} className="w-40" onClick={() => void audio.replayLast()}>
-              <ItemSvg id={openItem.id} large />
-            </motion.div>
+            {/* Objects worth a closer look get their own render; the rest are
+                lifted out of the room and magnified, still playing their beat. */}
+            {DETAIL_ART.has(openItem.id) ? (
+              <motion.img
+                src={`/art/clinic-detail-${openItem.id}.webp`}
+                alt=""
+                draggable={false}
+                data-testid={`detail-${openItem.id}`}
+                onClick={() => void audio.replayLast()}
+                className="w-full rounded-2xl select-none"
+                initial={{ opacity: 0, scale: 0.88 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={springs.playful}
+              />
+            ) : (
+              <div className="relative w-44 aspect-[1280/1024] overflow-hidden" onClick={() => void audio.replayLast()}>
+                <CardCrop id={openItem.id} />
+              </div>
+            )}
             <h2 className="text-2xl font-bold text-center">{t(lang, openItem.nameId)}</h2>
             <p className="text-lg text-center text-ink/70 font-bold" onClick={() => void audio.replayLast()}>
               {t(lang, openItem.descId)}
@@ -135,52 +295,166 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
           </Pop>
         </div>
       )}
-    </GameStage>
-  )
-}
-
-/**
- * The room behind the four things: the lamp's pool of light spilling onto the
- * floor, and the mat they stand on. Both are soft and low-contrast on purpose
- * — scenery should make the space read as a room without competing with the
- * objects the child is meant to tap.
- */
-function ClinicRoom() {
-  return (
-    <>
-      <div className="absolute bottom-[16%] start-1/2 -translate-x-1/2 w-[88%] aspect-[2/1] rounded-[50%] bg-[radial-gradient(circle,rgba(255,244,214,0.75)_0%,rgba(255,244,214,0)_68%)]" />
-      <div className="absolute bottom-[7%] start-1/2 -translate-x-1/2 w-[68%] aspect-[3/1] rounded-[50%] bg-mint/25" />
     </>
   )
 }
 
-import type { TargetAndTransition, Transition } from 'motion/react'
-
-const itemIdle: Record<ItemId, { anim: TargetAndTransition; transition: Transition }> = {
-  chair: { anim: { rotate: [-1.5, 1.5, -1.5] }, transition: { duration: 4, repeat: Infinity, ease: 'easeInOut' } },
-  light: { anim: { rotate: [-3, 3, -3] }, transition: { duration: 3.4, repeat: Infinity, ease: 'easeInOut' } },
-  sink: { anim: { y: [0, -3, 0] }, transition: { duration: 3, repeat: Infinity, ease: 'easeInOut' } },
-  table: { anim: { rotate: [1.5, -1.5, 1.5] }, transition: { duration: 3.8, repeat: Infinity, ease: 'easeInOut' } },
+/**
+ * "Press here." One sits on every object the child has not found yet, from the
+ * first second the room appears.
+ *
+ * A small marker rather than an outline around the object. The chair's box is
+ * two thirds of the scene, so a ring around it reads as a giant blob rather
+ * than as a target — and drawing rectangles over the client's room stops it
+ * being a room. A dot with a ripple coming off it is what a four-year-old
+ * already understands from every other game they have touched.
+ */
+function TapHere({ id, idx, urgent }: { id: ItemId; idx: number; urgent: boolean }) {
+  const timing = { ...(urgent ? loops.urge : loops.breathe), delay: idx * STAGGER }
+  return (
+    <span
+      aria-hidden
+      data-testid={`ring-${id}`}
+      className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center"
+    >
+      {/* the ripple, travelling outward and fading */}
+      <motion.span
+        className="absolute inset-0 rounded-full border-[3px] border-sunny"
+        animate={{ scale: [1, 2.1], opacity: [0.85, 0] }}
+        transition={{ duration: urgent ? 1 : 1.8, repeat: Infinity, ease: 'easeOut', delay: idx * STAGGER }}
+      />
+      {/* the marker itself */}
+      <motion.span
+        className="w-5 h-5 rounded-full bg-sunny border-2 border-white shadow-[0_2px_6px_rgba(58,53,96,0.35)]"
+        animate={urgent ? { scale: [1, 1.35, 1] } : { scale: [1, 1.15, 1] }}
+        transition={timing}
+      />
+    </span>
+  )
 }
 
-function ItemSvg({ id, large = false }: { id: ItemId; large?: boolean }) {
+/**
+ * The whole room warming when the light comes on — `MOTION_SPEC.md` §1 asks for
+ * the ambient to shift from 6500K to 4200K over 600ms. Room-scale, so it lives
+ * in the stage's effects layer rather than inside the object.
+ */
+function LightWash({ on }: { on: boolean }) {
   return (
-    <div className="relative flex items-center justify-center" style={{ width: large ? 170 : '100%' }}>
-      {id === 'light' && (
-        <motion.div
-          className="absolute inset-0 m-auto w-3/4 h-3/4 rounded-full bg-sunny/40 blur-xl"
-          animate={{ opacity: [0.4, 0.85, 0.4] }}
-          transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      )}
+    <motion.div
+      data-testid="light-wash"
+      className="absolute inset-0 bg-[radial-gradient(55%_40%_at_46%_20%,rgba(255,233,168,0.9)_0%,rgba(255,233,168,0)_70%)]"
+      initial={{ opacity: 0 }}
+      animate={on ? { opacity: lightWarmUp.keyframes } : { opacity: 0 }}
+      transition={on ? { ...lightWarmUp.transition, times: lightWarmUp.times } : { duration: 0.6, ease: 'easeOut' }}
+    />
+  )
+}
+
+/**
+ * What each object does when it is pressed, from the `p:timing` table of the
+ * client's file (`MOTION_SPEC.md` §1). The chair and the light are the two the
+ * client animated by hand and they get their exact five-beat teeter; the sink
+ * and the delivery unit get the trolley's weighted grow-and-shrink, which is
+ * the client's beat for a piece of equipment with no script of its own.
+ */
+function activeBeat(id: ItemId): { anim: TargetAndTransition; transition: Transition } {
+  if (id === 'chair' || id === 'light') {
+    return {
+      anim: { rotate: [...teeter.keyframes] },
+      transition: { duration: TEETER_S[id], times: [...teeter.times], ease: 'easeInOut' },
+    }
+  }
+  return {
+    anim: { scale: [...pulse.keyframes] },
+    transition: { ...pulse.transition, times: [...pulse.times] },
+  }
+}
+
+/**
+ * Each object's pivot, as a share of the scene — the point it actually turns
+ * about in the room. The chair rocks on its foot, the lamp swings from its
+ * ceiling mount, and the two pieces of equipment simply breathe about their
+ * own middle.
+ */
+const ORIGIN: Record<ItemId, string> = {
+  // the foot it rocks on
+  chair: '44% 93%',
+  // the top of the head, where the arm meets it — the arm itself stays in the
+  // plate, so swinging from the ceiling would tear the lamp off its mount
+  light: '47% 20%',
+  sink: '56% 53%',
+  table: '69% 61%',
+}
+
+type LayerState = 'idle' | 'hint' | 'active' | 'done'
+
+function ObjectLayer({ id, idx, state }: { id: ItemId; idx: number; state: LayerState }) {
+  const beat =
+    state === 'active'
+      ? activeBeat(id)
+      : state === 'hint'
+        ? { anim: { scale: [1, 1.045, 1] }, transition: loops.urge }
+        : state === 'idle'
+          ? // Nothing in the room holds perfectly still. Small enough that four
+            // at once is a room breathing, not four things wobbling.
+            { anim: { scale: [1, 1.012, 1] }, transition: { ...loops.breathe, delay: idx * STAGGER } }
+          : { anim: { scale: 1 }, transition: springs.soft }
+
+  const reclined = state === 'active' && id === 'chair'
+  return (
+    <motion.div
+      className="absolute inset-0 pointer-events-none"
+      data-testid={`layer-${id}`}
+      style={{ transformOrigin: ORIGIN[id] }}
+      animate={{ rotate: reclined ? recline.degrees : 0 }}
+      transition={reclined ? { ...recline.transition, delay: TEETER_S.chair + recline.delay } : recline.transition}
+    >
       <motion.img
-        src={`/art/clinic-${id}.webp`}
+        src={`/art/clinic-layer-${id}.webp`}
         alt=""
         draggable={false}
-        className="relative w-full object-contain select-none drop-shadow-md"
-        animate={itemIdle[id].anim}
-        transition={itemIdle[id].transition}
+        className="absolute inset-0 w-full h-full object-contain select-none"
+        style={{ transformOrigin: ORIGIN[id] }}
+        animate={beat.anim}
+        transition={beat.transition}
       />
-    </div>
+    </motion.div>
+  )
+}
+
+/**
+ * The same layer again inside the card, blown up so the object fills the frame
+ * instead of sitting wherever it happens to sit in the room.
+ *
+ * Derived from the measured box rather than dialled in by hand: enlarge until
+ * the object's longer side fills the frame, then slide it so the object's
+ * centre lands on the frame's centre. The card frame carries the scene's aspect
+ * ratio, which is what lets one number do both axes.
+ */
+function cardView(id: ItemId) {
+  const b = hotspots[id]
+  const k = 1 / (Math.max(b.width, b.height) / 100)
+  const cx = (b.left + b.width / 2) / 100
+  const cy = (b.top + b.height / 2) / 100
+  return {
+    width: `${k * 100}%`,
+    height: `${k * 100}%`,
+    left: `${(0.5 - cx * k) * 100}%`,
+    top: `${(0.5 - cy * k) * 100}%`,
+  }
+}
+
+function CardCrop({ id }: { id: ItemId }) {
+  const beat = activeBeat(id)
+  return (
+    <motion.img
+      src={`/art/clinic-layer-${id}.webp`}
+      alt=""
+      draggable={false}
+      className="absolute object-contain select-none max-w-none"
+      style={{ ...cardView(id), transformOrigin: ORIGIN[id] }}
+      animate={beat.anim}
+      transition={beat.transition}
+    />
   )
 }

@@ -70,15 +70,8 @@
    the tokens it depends on. */
 .game-stage {
   position: relative;
-  /* an exact height, not a minimum: the subject layer has to give ground so
-     the title and the Next button keep their places on a short phone */
+  /* an exact height, not a minimum: the scene has to fill it exactly */
   height: calc(var(--app-h) - var(--hud-h));
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-inline: 1rem;
-  padding-top: 0.5rem;
-  padding-bottom: var(--screen-pb);
   overflow: hidden;
 }
 
@@ -117,61 +110,106 @@
   background: linear-gradient(to bottom, rgba(139, 111, 216, 0.28), rgba(139, 111, 216, 0.06) 60%, transparent);
 }
 
-/* Layer 2 — the caption. A scrim rather than a card: the words stay legible
-   over whatever scenery is behind them without drawing another box. */
+/* Layer 2 — the caption, floating over the scene rather than sitting above it
+   in a band of its own. A scrim rather than a card: the words stay legible over
+   whatever scenery is behind them without drawing another box, and the scene
+   keeps the whole screen instead of the middle third of it. */
 .stage-caption {
-  position: relative;
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
   z-index: 10;
-  flex-shrink: 0;
-  width: 100%;
+  padding: 0.5rem 1rem 0;
   display: flex;
   flex-direction: column;
   align-items: center;
+  /* the words are not a target; only the replay button inside them is */
+  pointer-events: none;
 }
 
+.stage-caption > * {
+  pointer-events: auto;
+}
+
+/* The words now sit on top of a photographed room rather than on a pastel
+   band, so the scrim has to carry them all the way across. Strongest at the
+   very top, gone by the time it reaches the scene. */
 .stage-caption::before {
   content: '';
   position: absolute;
-  inset: -1rem -2rem -0.5rem;
+  inset: -1rem -1rem -1.5rem;
   z-index: -1;
   pointer-events: none;
-  background: radial-gradient(70% 100% at 50% 35%, rgba(254, 249, 240, 0.9) 0%, rgba(254, 249, 240, 0) 78%);
+  background: linear-gradient(
+    to bottom,
+    rgba(254, 249, 240, 0.97) 0%,
+    rgba(254, 249, 240, 0.88) 55%,
+    rgba(254, 249, 240, 0) 100%
+  );
 }
 
 .stage-caption p {
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
-/* Layer 3 — the subject. Takes whatever is left and the artwork shrinks into
-   it, so the Next button stays on screen on a short phone. */
+/* Layer 3 — the subject, which is now the whole stage. The scene runs edge to
+   edge and the caption and the action row float on top of it, the way the
+   client's storyboard has it. */
 .stage-subject {
-  position: relative;
+  position: absolute;
+  inset: 0;
   z-index: 5;
-  flex: 1 1 0%;
-  min-height: 0;
-  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  padding-block: 0.5rem;
 }
 
 .stage-subject > * {
   max-height: 100%;
 }
 
-/* Layer 4 — the action row, resting on the floor. */
+/* Layer 4 — effects. Glows, sparkles, mist and impact flashes, drawn over the
+   subject but under the caption so celebration never covers the words. Never
+   takes a tap: an effect is something a child watches, not something they hit. */
+.stage-effects {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Layer 5 — the action row, floating at the foot of the scene.
+   It spans the full width so its button can centre, which means it lies across
+   whatever the scene put down there — the visit screen's raise-your-hand
+   button sits in exactly that spot. The row itself must therefore be
+   transparent to a finger; only the button in it is not. */
 .stage-action {
-  position: relative;
+  position: absolute;
   z-index: 20;
-  flex-shrink: 0;
+  bottom: var(--screen-pb);
+  inset-inline: 0;
+  margin-inline: auto;
   width: 100%;
   max-width: 20rem;
+  padding-inline: 1rem;
   display: flex;
   flex-direction: column;
-  padding-top: 0.25rem;
+  pointer-events: none;
+}
+
+.stage-action > * {
+  pointer-events: auto;
+}
+
+/* …but a disabled Next never takes one. It is a safety net, not a control, and
+   it lies directly over the visit screen's raise-your-hand button. This needs
+   to outrank the rule above, which is why it is written as an attribute
+   selector rather than left to a utility class of equal weight. */
+.stage-action button[disabled] {
+  pointer-events: none;
 }
 
 body {

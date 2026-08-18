@@ -36,5 +36,11 @@ export default defineConfig({
     globals: true,
     setupFiles: './tests/setup.ts',
     include: ['tests/**/*.test.{ts,tsx}'],
+    // Run test files one at a time. Most of these screens are driven by timers
+    // and animation frames, and under parallel execution they lose races to
+    // CPU contention — the suite failed 7-10 tests per run with a different
+    // set failing each time, while every file passed on its own. Serially it
+    // is 72/72. A green suite that is honest is worth more than a fast one.
+    fileParallelism: false,
   },
 })

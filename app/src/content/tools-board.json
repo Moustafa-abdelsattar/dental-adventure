@@ -1,0 +1,73 @@
+{
+  "board": {
+    "width": 1100,
+    "height": 825
+  },
+  "order": [
+    "mirror",
+    "explorer",
+    "suction",
+    "syringe",
+    "brush",
+    "xray",
+    "ring",
+    "umbrella",
+    "spray"
+  ],
+  "cells": {
+    "mirror": {
+      "left": 7.4,
+      "top": 18.4,
+      "width": 26.8,
+      "height": 22.8
+    },
+    "explorer": {
+      "left": 35.5,
+      "top": 18.4,
+      "width": 27.1,
+      "height": 22.8
+    },
+    "suction": {
+      "left": 64,
+      "top": 18.4,
+      "width": 28.4,
+      "height": 22.8
+    },
+    "syringe": {
+      "left": 7.4,
+      "top": 45,
+      "width": 26.8,
+      "height": 22
+    },
+    "brush": {
+      "left": 35.5,
+      "top": 45,
+      "width": 27.1,
+      "height": 22
+    },
+    "xray": {
+      "left": 64,
+      "top": 45,
+      "width": 28.4,
+      "height": 22
+    },
+    "ring": {
+      "left": 7.4,
+      "top": 70.4,
+      "width": 26.8,
+      "height": 22.1
+    },
+    "umbrella": {
+      "left": 35.5,
+      "top": 70.4,
+      "width": 27.1,
+      "height": 22.1
+    },
+    "spray": {
+      "left": 64,
+      "top": 70.4,
+      "width": 28.4,
+      "height": 22.1
+    }
+  }
+}

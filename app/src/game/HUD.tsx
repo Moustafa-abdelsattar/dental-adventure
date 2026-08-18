@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { useGame, selectStarCount } from '../store/game'
 import { t } from '../lib/i18n'
 import { ProgressStars } from '../components/ui/ProgressStars'
-import { Milo, type MiloPose } from './Milo/Milo'
+import { Milo, type MiloHandle, type MiloPose } from './Milo/Milo'
+import { milo } from './Milo/bus'
 
 const CHEER_MS = 1400
 
@@ -13,6 +14,11 @@ const CHEER_MS = 1400
  *
  * Milo cheers when the count goes up — he reacts to the reward rather than
  * the tap, so the celebration lands on the moment that earned it.
+ *
+ * Smaller reactions arrive over the bus: a screen says what just happened and
+ * this forwards it to the rig. A star is still the loudest thing he does, so
+ * the celebrate pose is driven by the count and overrides whatever the bus
+ * last asked for.
  */
 export function HUD() {
   const count = useGame(selectStarCount)
@@ -20,6 +26,9 @@ export function HUD() {
   const childName = useGame(s => s.childName)
   const [pose, setPose] = useState<MiloPose>('idle')
   const seen = useRef(count)
+  const rig = useRef<MiloHandle>(null)
+
+  useEffect(() => milo.onReact(state => rig.current?.trigger(state)), [])
 
   useEffect(() => {
     if (count <= seen.current) {
@@ -38,7 +47,7 @@ export function HUD() {
       style={{ paddingTop: 'calc(0.5rem + env(safe-area-inset-top, 0px))' }}
     >
       <div className="shrink-0 flex items-center" data-testid="hud-milo">
-        <Milo pose={pose} size={32} />
+        <Milo ref={rig} pose={pose} size={32} />
       </div>
       <span className="flex-1 min-w-0 font-bold text-lg truncate mx-1.5">
         {lang ? t(lang, 'ui.hudTitle', { name: childName }) : ''}

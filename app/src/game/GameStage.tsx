@@ -23,6 +23,7 @@ export function GameStage({
   intro,
   onIntroTap,
   scene,
+  effects,
   children,
   action,
   tone = 'day',
@@ -34,6 +35,11 @@ export function GameStage({
   onIntroTap?: () => void
   /** Scenery for the world layer: drawn behind the subject and never tappable. */
   scene?: ReactNode
+  /**
+   * Glows, sparkles, mist, impact flashes. Drawn over the subject and under the
+   * caption, and never tappable — an effect is watched, not hit.
+   */
+  effects?: ReactNode
   children: ReactNode
   action?: ReactNode
   /** `night` dims the floor and cools the light, for the calm counting mission. */
@@ -68,6 +74,12 @@ export function GameStage({
       </header>
 
       <div className="stage-subject">{children}</div>
+
+      {effects && (
+        <div className="stage-effects" aria-hidden data-testid="stage-effects">
+          {effects}
+        </div>
+      )}
 
       {action && (
         <div data-testid="next-fallback" className="stage-action">

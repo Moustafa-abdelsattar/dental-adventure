@@ -1,43 +1,53 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'motion/react'
 import { audio } from '../lib/audio'
-import { t } from '../lib/i18n'
+import { t, type StringId } from '../lib/i18n'
 import { useGame } from '../store/game'
-import { ToolCard } from '../components/ui/ToolCard'
+import { Pop } from '../components/motion/Pop'
+import { StarBurst } from '../components/motion/StarBurst'
+import { DoneBadge } from '../components/ui/DoneBadge'
 import { GameButton } from '../components/ui/GameButton'
 import { GameStage } from '../game/GameStage'
-import { screenChange } from '../motion/springs'
+import { ScratchCell } from '../game/tools/ScratchCell'
+import { milo } from '../game/Milo/bus'
+import { loops, STAGGER } from '../motion/springs'
+import board from '../content/tools-board.json'
 import type { ToolId } from '../game/tools/tools'
 import type { ModuleProps } from './registry'
 
-/** Chunk the roster into balanced pages of at most three (4 → 2+2, not 3+1). */
-function groupsOf3(ids: ToolId[]): ToolId[][] {
-  const pages = Math.ceil(ids.length / 3)
-  const out: ToolId[][] = []
-  let start = 0
-  for (let p = 0; p < pages; p++) {
-    const size = Math.ceil((ids.length - start) / (pages - p))
-    out.push(ids.slice(start, start + size))
-    start += size
-  }
-  return out
-}
+/**
+ * The tools board — nine instruments in nine cells, each one hidden under a
+ * cover a child scratches away.
+ *
+ * The screen used to be a grid of white cards on a pastel background. It is now
+ * the client's board, and finding a tool is something the child does with their
+ * finger rather than something that happens when they press a button.
+ *
+ * Every cell on the board is covered, on both journeys. A half-scratched board
+ * reads as broken to a child — the open cells look like the ones that failed to
+ * load — so a check-up now meets all nine instruments too, and the board is
+ * either all foil or all found.
+ */
+
+const CELLS = board.cells as Record<ToolId, { left: number; top: number; width: number; height: number }>
 
 export function ToolsScreen({ module, onComplete }: ModuleProps) {
   const lang = useGame(s => s.lang)!
   const childName = useGame(s => s.childName)
   const roster = (module.toolIds ?? []) as ToolId[]
-  const groups = groupsOf3(roster)
   const [met, setMet] = useState<Set<ToolId>>(new Set())
-  const [page, setPage] = useState(0)
+  const [open, setOpen] = useState<ToolId | null>(null)
+  const [burstFor, setBurstFor] = useState<ToolId | null>(null)
   const doneRef = useRef(false)
+  const burstTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   useEffect(() => {
     void audio.say(lang, 'tools.intro')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // guarded completion so the fallback Next works even if narration hangs
+  useEffect(() => () => clearTimeout(burstTimer.current), [])
+
   const completedRef = useRef(false)
   const completeOnce = () => {
     if (completedRef.current) return
@@ -45,64 +55,150 @@ export function ToolsScreen({ module, onComplete }: ModuleProps) {
     onComplete()
   }
 
-  const handleMet = async (toolId: ToolId) => {
-    if (doneRef.current) return
-    const next = new Set(met)
-    const wasNew = !next.has(toolId)
-    next.add(toolId)
-    setMet(next)
-    if (!wasNew) return
+  /** A cover has come away: show the tool and tell the child about it. */
+  const reveal = (toolId: ToolId) => {
+    if (met.has(toolId) || open) return
+    milo.react('happy')
+    setBurstFor(toolId)
+    burstTimer.current = setTimeout(() => setBurstFor(null), 900)
+    setOpen(toolId)
+    void (async () => {
+      await audio.say(lang, `tool.${toolId}.desc` as StringId)
+      await audio.say(lang, `tool.${toolId}.fact` as StringId)
+    })()
+  }
 
-    const group = groups[page]
-    const groupDone = group.every(id => next.has(id))
-    const allDone = roster.every(id => next.has(id))
-    if (allDone) {
+  const closeCard = async () => {
+    if (!open) return
+    const justMet = open
+    const next = new Set(met)
+    next.add(justMet)
+    setMet(next)
+    setOpen(null)
+    if (roster.every(id => next.has(id)) && !doneRef.current) {
       doneRef.current = true
       await audio.say(lang, 'tools.done')
       completeOnce()
-    } else if (groupDone) {
-      await audio.say(lang, 'tools.groupDone')
-      setPage(p => Math.min(p + 1, groups.length - 1))
     }
   }
 
   const allMet = roster.every(id => met.has(id))
+  const openTool = open
 
   return (
-    <GameStage
-      title={t(lang, 'tools.title')}
-      intro={t(lang, 'tools.intro', { name: childName })}
-      action={<GameButton label={t(lang, 'ui.next')} disabled={!allMet} onPress={completeOnce} />}
-    >
-      {/* group progress: a tooth that gets shinier per finished group */}
-      <div className="shrink-0 flex gap-2" data-testid="group-progress">
-        {groups.map((g, i) => {
-          const finished = g.every(id => met.has(id))
-          return (
-            <motion.img
-              key={i}
-              src="/art/tooth-happy.webp"
+    <>
+      <GameStage
+        title={t(lang, 'tools.title')}
+        intro={t(lang, 'tools.intro', { name: childName })}
+        scene={
+          <img
+            src="/art/tools-board-bg.webp"
+            alt=""
+            draggable={false}
+            className="absolute inset-0 w-full h-full object-cover select-none"
+          />
+        }
+        action={<GameButton label={t(lang, 'ui.next')} disabled={!allMet} onPress={completeOnce} />}
+      >
+        <div
+          data-testid="tools-board"
+          className="relative w-full max-h-full"
+          style={{ aspectRatio: `${board.board.width} / ${board.board.height}` }}
+        >
+          <img
+            src="/art/tools-board.webp"
+            alt=""
+            draggable={false}
+            className="absolute inset-0 w-full h-full object-contain select-none"
+          />
+
+          {roster.map((toolId, i) => {
+            const cell = CELLS[toolId]
+            if (!cell) return null
+            const style = {
+              left: `${cell.left}%`,
+              top: `${cell.top}%`,
+              width: `${cell.width}%`,
+              height: `${cell.height}%`,
+            }
+            const isMet = met.has(toolId)
+            return (
+              <div key={toolId} className="contents">
+                {!isMet && (
+                  <>
+                    <ScratchCell
+                      testid={`tool-${toolId}`}
+                      label={t(lang, `tool.${toolId}.name` as StringId)}
+                      onRevealed={() => reveal(toolId)}
+                      style={style}
+                      // by position on the board, not by position in this
+                      // journey's roster, so a cell keeps its foil whichever
+                      // visit type the child is playing
+                      variant={board.order.indexOf(toolId)}
+                      disabled={!!open}
+                    />
+                    {/* the cover carries its own position; the marker sits on it */}
+                    <span className="absolute pointer-events-none" style={style}>
+                      <ScratchHint idx={i} />
+                    </span>
+                  </>
+                )}
+                {isMet && (
+                  <span className="absolute pointer-events-none" style={style}>
+                    <DoneBadge testid={`met-${toolId}`} className="absolute top-0 end-0 w-7 h-7" />
+                    {burstFor === toolId && <StarBurst show size={54} />}
+                  </span>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      </GameStage>
+
+      {/* Outside the stage on purpose. The stage's own layers are a stacking
+          context — the caption floats above the subject — and a card rendered
+          inside the subject cannot climb over the title however high its z
+          goes. Hoisted here, it covers the whole screen, which is what a card
+          a child has to dismiss should do. */}
+      {openTool && (
+        <div
+          className="fixed inset-0 z-40 bg-ink/30 backdrop-blur-sm flex items-center justify-center p-6"
+          data-testid="zoom-card"
+        >
+          <Pop className="bg-white rounded-3xl p-6 flex flex-col items-center gap-3 w-full max-w-sm shadow-2xl">
+            {/* the instrument lies along its cell, so it wants a landscape box:
+                in a square one a wide tool shrinks to a third of the height it
+                could have had */}
+            <img
+              src={`/art/tool-${openTool}.webp`}
               alt=""
               draggable={false}
-              animate={finished ? { scale: [1, 1.3, 1] } : {}}
-              className={`w-8 select-none ${finished ? 'drop-shadow-[0_0_8px_rgba(255,212,94,0.9)]' : i === page ? 'opacity-70' : 'opacity-30 grayscale'}`}
+              className="w-full h-36 object-contain select-none"
+              onClick={() => void audio.replayLast()}
             />
-          )
-        })}
-      </div>
+            <h2 className="text-2xl font-bold text-center">{t(lang, `tool.${openTool}.name` as StringId)}</h2>
+            <p className="text-lg text-center text-ink/70 font-bold" onClick={() => void audio.replayLast()}>
+              {t(lang, `tool.${openTool}.desc` as StringId)}
+            </p>
+            <p className="text-base text-center text-ink/55 font-bold">
+              {t(lang, `tool.${openTool}.fact` as StringId)}
+            </p>
+            <GameButton label={t(lang, 'ui.next')} onPress={() => void closeCard()} />
+          </Pop>
+        </div>
+      )}
+    </>
+  )
+}
 
-      <motion.div
-        key={page}
-        initial={screenChange.enter}
-        animate={screenChange.settled}
-        transition={screenChange.timing}
-        className={`grid gap-3 w-full ${groups[page]?.length === 2 ? 'grid-cols-2 max-w-sm' : 'grid-cols-3 max-w-md'}`}
-        data-testid={`tool-group-${page}`}
-      >
-        {groups[page]?.map((toolId, i) => (
-          <ToolCard key={toolId} toolId={toolId} lang={lang} met={met.has(toolId)} onMet={id => void handleMet(id)} index={i} />
-        ))}
-      </motion.div>
-    </GameStage>
+/** "Scratch here." Sits on an unopened cover so a child knows it comes off. */
+function ScratchHint({ idx }: { idx: number }) {
+  return (
+    <motion.span
+      aria-hidden
+      className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white/85 border-2 border-sunny shadow-[0_2px_6px_rgba(58,53,96,0.3)]"
+      animate={{ scale: [1, 1.18, 1], opacity: [0.75, 1, 0.75] }}
+      transition={{ ...loops.breathe, delay: idx * STAGGER }}
+    />
   )
 }

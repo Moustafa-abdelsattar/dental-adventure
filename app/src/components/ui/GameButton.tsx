@@ -33,7 +33,18 @@ export function GameButton({
       }
       transition={pulsing && !disabled ? { duration: 1.6, repeat: Infinity, ease: 'easeOut' } : springs.snappy}
       onClick={() => !disabled && onPress()}
-      className={`min-h-[72px] px-8 rounded-full text-2xl font-bold shadow-lg flex items-center justify-center gap-3 ${colors} ${disabled ? 'opacity-40 saturate-50' : ''}`}
+      // A disabled Next is a safety net — it exists so a hung narration clip can
+      // never strand a child on a finished module — but it used to be the
+      // largest and loudest thing on every screen while doing nothing at all.
+      // Off, it shrinks to a quiet ghost; on, it is unmistakable.
+      className={`rounded-full font-bold flex items-center justify-center gap-3 transition-all ${
+        disabled
+          ? // and transparent to a finger: it floats over the scene now, and a
+            // dead button that still swallows taps was covering the visit
+            // screen's raise-your-hand target
+            'min-h-[44px] px-5 text-base bg-white/50 text-ink/35 shadow-none self-center pointer-events-none'
+          : `min-h-[72px] px-8 text-2xl shadow-lg ${colors}`
+      }`}
     >
       {icon}
       <span>{label}</span>
