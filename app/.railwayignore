@@ -1,0 +1,13 @@
+# What Railway does not need to build this app.
+#
+# The upload is the slow half of a deploy from a laptop on a clinic-grade
+# connection, and everything here is either rebuilt on the server or has no
+# business on it: the local build output, the test suites, the browser
+# journeys, the art-import scripts, and the review bundle.
+dist/
+test-results/
+playwright-report/
+tests/
+e2e/
+scripts/
+demo-artifact/
