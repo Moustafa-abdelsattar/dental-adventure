@@ -55,6 +55,21 @@ async function tts(text, lang) {
   return Buffer.from(await res.arrayBuffer())
 }
 
+/**
+ * The words, without the picture at the end of them.
+ *
+ * The tool and clinic lines end in an emoji — it is part of the copy and it
+ * belongs on the card. It does not belong in the child's ear: hand a TTS engine
+ * a mirror glyph and it will either announce the word "mirror" after the
+ * sentence has finished or make a small noise where the silence should be.
+ * Every clip is the sentence and nothing after it.
+ */
+const speakable = s =>
+  s
+    .replace(/[\p{Extended_Pictographic}\u{1F3FB}-\u{1F3FF}️‍]/gu, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim()
+
 const WIPE = process.argv.includes('--wipe')
 const ONLY = process.argv.find(a => a.startsWith('--lang='))?.slice(7)
 const LANGS = ONLY ? [ONLY] : ['en', 'ar']
@@ -79,7 +94,7 @@ for (const lang of LANGS) {
       skipped++
       continue
     }
-    const text = template.replaceAll('{name}', vocativeFor(id))
+    const text = speakable(template.replaceAll('{name}', vocativeFor(id)))
     let attempts = 0
     for (;;) {
       try {
