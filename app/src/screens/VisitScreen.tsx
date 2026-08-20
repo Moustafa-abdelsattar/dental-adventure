@@ -4,7 +4,6 @@ import { audio } from '../lib/audio'
 import { t, type StringId } from '../lib/i18n'
 import { useGame } from '../store/game'
 import { DrNour } from '../game/drnour/DrNour'
-import { Sparkle } from '../game/Sparkle'
 import { GameButton } from '../components/ui/GameButton'
 import { GameStage } from '../game/GameStage'
 import { loops } from '../motion/springs'
@@ -18,6 +17,17 @@ const STEPS: { id: string; stringId: StringId }[] = [
   { id: 'mirror', stringId: 'visit.step.mirror' },
   { id: 'clean', stringId: 'visit.step.clean' },
 ]
+
+/** The shared canvas `scripts/import-visit-steps.mjs` aligns every frame onto. */
+const ART_W = 820
+const ART_H = 1168
+
+/** The five cut frames, stacked in that order. */
+const FRAMES = ['chair', 'light', 'mirror', 'clean', 'hand'] as const
+type Frame = (typeof FRAMES)[number]
+
+/** The frame each narrated step plays under, in step order. */
+const STEP_FRAMES: Frame[] = ['chair', 'light', 'mirror', 'clean']
 
 const STEP_PAUSE_MS = 900
 const FREEZE_MS = 1500
@@ -83,6 +93,12 @@ export function VisitScreen({ onComplete }: ModuleProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase])
 
+  // Which of the five frames is on screen. The stop signal gets the boy with
+  // his hand up, so the child sees the thing they are being asked to do rather
+  // than only a button offering it.
+  const art: Frame =
+    phase === 'meet' ? 'chair' : phase === 'stop' ? 'hand' : phase === 'done' ? 'clean' : (STEP_FRAMES[step] ?? 'chair')
+
   return (
     <GameStage
       title={t(lang, 'visit.title')}
@@ -96,88 +112,144 @@ export function VisitScreen({ onComplete }: ModuleProps) {
         </>
       }
       action={<GameButton label={t(lang, 'ui.next')} disabled={phase !== 'done'} onPress={completeOnce} />}
-    >
-      {/* The treatment room, not a picture of one: the child and Dr. Nour stand
-          on the stage floor with the light overhead, no frame around them. */}
-      <div className="relative w-full flex-1 min-h-0 max-w-md flex items-end justify-center">
-        {/* soft ceiling light — glow fades in over >1s, deliberately no flash */}
+      scene={
+        <>
+          {/* The room the child has already explored, thrown out of focus.
+              Every other module hands `GameStage` a scene; this one used to
+              hand it nothing and played the climax of the whole game against
+              the bare sky-and-clouds default. The blurred plate puts the visit
+              back indoors without competing with the two figures in front of
+              it â€” it is depth, not detail. */}
+          <img
+            src="/art/clinic-room-bg.webp"
+            alt=""
+            draggable={false}
+            data-testid="visit-room-bg"
+            className="absolute inset-0 w-full h-full object-cover select-none scale-105"
+          />
+          {/* Warm wash so the caption stays readable at the top and the figures
+              read as lit from above rather than pasted on. */}
+          <div className="absolute inset-0 bg-gradient-to-b from-cream/85 via-cream/25 to-cream/55" />
+          {/* The floor they stand on. The plate's own floor is a blur; this is
+              the line that tells a child the chair is resting on something. */}
+          <div className="absolute inset-x-[-12%] bottom-0 h-[30%] rounded-t-[50%/26%] bg-gradient-to-b from-[#e6f3fb] via-[#cfe6f5] to-[#b7d8ee] [mask-image:linear-gradient(to_bottom,transparent_0%,black_22%)]" />
+        </>
+      }
+      effects={
+        // The overhead light coming on — a slow warm bloom, deliberately no
+        // flash. It lives on the stage's effects layer rather than inside the
+        // artwork's box: a linear wash in there was exactly as wide as the
+        // frames and its two vertical edges drew a visible rectangle across the
+        // room. A radial falloff over the whole stage has no edges to see.
         <motion.div
           data-testid="visit-light"
           data-glow-duration="1.2"
-          className="absolute top-0 inset-x-0 h-1/3 bg-gradient-to-b from-sunny/50 to-transparent"
+          className="absolute inset-0"
+          style={{
+            background:
+              'radial-gradient(120% 65% at 50% 6%, rgba(255,209,102,0.55) 0%, rgba(255,209,102,0.22) 38%, rgba(255,209,102,0) 72%)',
+          }}
           initial={{ opacity: 0 }}
           animate={{ opacity: phase === 'steps' && step >= 1 && !frozen ? 1 : 0 }}
           transition={{ duration: 1.2, ease: 'easeInOut' }}
         />
-        {/* the clinic light peeks from the top */}
-        <img
-          src="/art/clinic-light.webp"
-          alt=""
-          draggable={false}
-          className="absolute -top-3 start-[8%] w-[30%] select-none opacity-95"
-        />
+      }
+    >
+      {/* The treatment room, not a picture of one: the child and Dr. Nour stand
+          on one floor line with the lamp directly over the chair.
 
-        {/* peer child reclining on the chair — custom art */}
-        <div className="absolute bottom-3 start-0 w-[64%]" data-testid="peer-child">
-          <motion.img
-            src="/art/visit-child-chair.webp"
-            alt=""
-            draggable={false}
-            className="w-full select-none drop-shadow-md"
-            animate={{ y: [0, -3, 0] }}
-            transition={loops.drift}
-          />
-          {phase === 'steps' && step >= 2 && (
-            <motion.img
-              data-testid="mirror-near"
-              src="/art/tool-mirror.webp"
-              alt=""
-              draggable={false}
-              className="absolute top-[8%] start-[30%] w-[22%] select-none"
-              initial={{ opacity: 0, x: 24, rotate: 20 }}
-              animate={{ opacity: 1, x: 0, rotate: [0, -8, 0] }}
-              transition={{ duration: 1.2 }}
-            />
-          )}
-          {phase === 'steps' && step >= 3 && (
-            <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full pointer-events-none">
-              <g data-testid="clean-sparkles">
-                <Sparkle x={34} y={26} size={5} />
-                <Sparkle x={48} y={38} delay={0.4} size={4} />
-                <Sparkle x={26} y={44} delay={0.8} size={4} />
-              </g>
-            </svg>
-          )}
-        </div>
+          The group is bottom-anchored *above* the action row rather than at the
+          foot of the stage. Sitting it on the very bottom edge cropped the base
+          of the chair and left the Next button lying across Dr. Nour's face. */}
+      <div
+        data-testid="visit-scene"
+        className="absolute inset-x-0 top-[22%] bottom-[10%] flex items-end justify-center px-2"
+      >
+        {/* The box carries the frames' own aspect ratio and is driven by
+            height, not width. Sized by width it stood taller than the space it
+            was given, so the boy overflowed the stage at nearly twice the size
+            he should be and Dr. Nour beside him looked doll-sized. Matching the
+            ratio also means every percentage below is a coordinate in the
+            artwork itself. */}
+        <div className="relative h-full max-w-full" style={{ aspectRatio: `${ART_W} / ${ART_H}` }}>
+          {/* The walkthrough itself.
+              All five frames are cut from the same render and aligned on one
+              shared canvas by `scripts/import-visit-steps.mjs`, so they stack
+              exactly and a cross-fade between any two reads as the room
+              changing rather than the picture being swapped. That is the whole
+              reason they are absolutely positioned on top of each other instead
+              of being one <img> with a changing `src`. */}
+          <div className="absolute inset-0 grid" data-testid="peer-child">
+            {FRAMES.map(frame => (
+              <motion.img
+                key={frame}
+                src={`/art/visit-step-${frame}.webp`}
+                alt=""
+                draggable={false}
+                data-testid={`visit-frame-${frame}`}
+                data-active={frame === art || undefined}
+                className="w-full h-full object-contain select-none drop-shadow-lg [grid-area:1/1]"
+                initial={false}
+                animate={{ opacity: phase !== 'meet' && frame === art ? 1 : 0 }}
+                transition={{ duration: 0.45, ease: 'easeInOut' }}
+              />
+            ))}
+          </div>
 
-        <div className="absolute bottom-2 end-1 w-[44%]">
-          <DrNour masked={masked} onMaskTap={() => void maskTap()} idle={!frozen} />
+          {/* Dr. Nour has the meeting to herself.
+              She is drawn as a small-headed full figure; the walkthrough frames
+              are a tight crop on the boy with a big-headed dentist leaning in
+              painted into them. The two framings cannot share a floor — stood
+              beside the chair she reads as doll-sized, and scaled to match his
+              head she covers him. So this beat is hers alone, which is what the
+              line asks for anyway ("This is Dr. Nour — tap the mask"), and the
+              chair frames take the stage from the stop signal onward. */}
+          <motion.div
+            className="absolute bottom-[4%] start-1/2 -translate-x-1/2 w-[62%]"
+            initial={false}
+            animate={{ opacity: phase === 'meet' ? 1 : 0 }}
+            transition={{ duration: 0.45, ease: 'easeInOut' }}
+            style={{ pointerEvents: phase === 'meet' ? undefined : 'none' }}
+          >
+            <DrNour masked={masked} onMaskTap={() => void maskTap()} idle={!frozen} />
+          </motion.div>
         </div>
       </div>
 
+      {/* The three overlays below are placed against the stage rather than left
+          to the subject layer's flex flow, which centred them in the middle of
+          the room and dropped the step dots on the very bottom edge. */}
       {phase === 'stop' && (
         <motion.button
           data-testid="raise-hand"
           onClick={handTap}
           animate={frozen ? { scale: 1 } : { scale: [1, 1.1, 1] }}
           transition={frozen ? { duration: 0.3 } : loops.breathe}
-          className="shrink-0 w-24 h-24 rounded-full bg-sunny shadow-lg flex items-center justify-center"
+          className="absolute bottom-[13%] start-1/2 -translate-x-1/2 z-10 w-24 h-24 rounded-full bg-sunny shadow-xl ring-4 ring-white/70 flex items-center justify-center"
           aria-label="raise hand"
         >
           <RaisedHand className="w-14" />
         </motion.button>
       )}
       {frozen && (
-        <svg viewBox="0 0 24 24" className="w-8 h-8" data-testid="paused-label" aria-label="paused">
+        <svg
+          viewBox="0 0 24 24"
+          className="absolute bottom-[30%] start-1/2 -translate-x-1/2 z-10 w-10 h-10 drop-shadow"
+          data-testid="paused-label"
+          aria-label="paused"
+        >
           <rect x="5" y="4" width="5" height="16" rx="2.5" fill="#8b6fd8" />
           <rect x="14" y="4" width="5" height="16" rx="2.5" fill="#8b6fd8" />
         </svg>
       )}
 
       {phase === 'steps' && (
-        <div className="shrink-0 flex gap-2" aria-hidden>
+        <div className="absolute bottom-[12%] start-1/2 -translate-x-1/2 z-10 flex gap-2" aria-hidden>
           {STEPS.map((s, i) => (
-            <span key={s.id} className={`w-3 h-3 rounded-full ${i <= step ? 'bg-grape' : 'bg-grape/20'}`} />
+            <span
+              key={s.id}
+              className={`w-3 h-3 rounded-full transition-colors ${i <= step ? 'bg-grape' : 'bg-grape/25'}`}
+            />
           ))}
         </div>
       )}
@@ -190,7 +262,7 @@ function RaisedHand({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 64 64" className={className} aria-hidden>
       <g fill="#ee9250">
-        {/* pinky → index */}
+        {/* pinky â†’ index */}
         <rect x="12" y="21" width="7.5" height="22" rx="3.75" />
         <rect x="21" y="13" width="8" height="28" rx="4" />
         <rect x="30.5" y="10" width="8" height="31" rx="4" />
