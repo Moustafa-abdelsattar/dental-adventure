@@ -62,10 +62,12 @@ export function ToolsScreen({ module, onComplete }: ModuleProps) {
     setBurstFor(toolId)
     burstTimer.current = setTimeout(() => setBurstFor(null), 900)
     setOpen(toolId)
-    void (async () => {
-      await audio.say(lang, `tool.${toolId}.desc` as StringId)
-      await audio.say(lang, `tool.${toolId}.fact` as StringId)
-    })()
+    // One line, not two. The fun fact used to play straight after the
+    // description, so a child met each of the nine tools by listening to two
+    // sentences about it — in Arabic that is a long time to hold a four-year-old
+    // still before the next cover can be scratched. The clip and the string are
+    // both still there if it is ever wanted back.
+    void audio.say(lang, `tool.${toolId}.desc` as StringId)
   }
 
   const closeCard = async () => {
@@ -177,11 +179,13 @@ export function ToolsScreen({ module, onComplete }: ModuleProps) {
               onClick={() => void audio.replayLast()}
             />
             <h2 className="text-2xl font-bold text-center">{t(lang, `tool.${openTool}.name` as StringId)}</h2>
+            {/* The tool says one thing about itself. The second paragraph under
+                this one carried the fun fact, which made every card in the set
+                a wall of text a non-reading child cannot skim — and the clinic
+                cards, which have always been name-plus-a-line, looked nothing
+                like it. */}
             <p className="text-lg text-center text-ink/70 font-bold" onClick={() => void audio.replayLast()}>
               {t(lang, `tool.${openTool}.desc` as StringId)}
-            </p>
-            <p className="text-base text-center text-ink/55 font-bold">
-              {t(lang, `tool.${openTool}.fact` as StringId)}
             </p>
             <GameButton label={t(lang, 'ui.next')} onPress={() => void closeCard()} />
           </Pop>

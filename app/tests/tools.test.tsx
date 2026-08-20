@@ -82,7 +82,7 @@ test('every cover is placed from the measured board, not from hand-tuned numbers
   }
 })
 
-test('scratching a cell reveals the tool, narrates description then fun fact, and marks it met', async () => {
+test('scratching a cell reveals the tool, narrates one line about it, and marks it met', async () => {
   const module = checkup.modules.find(m => m.kind === 'tools')! as ModuleDef
   render(<ToolsScreen module={module} onComplete={vi.fn()} />)
 
@@ -90,7 +90,13 @@ test('scratching a cell reveals the tool, narrates description then fun fact, an
   const card = screen.getByTestId('zoom-card')
   expect(within(card).getByText('Dental Mirror')).toBeInTheDocument()
   expect(audio.say).toHaveBeenCalledWith('en', 'tool.mirror.desc')
-  expect(audio.say).toHaveBeenCalledWith('en', 'tool.mirror.fact')
+
+  // One line per tool, not two. The fun fact used to be spoken straight after
+  // the description and printed under it, which meant meeting all nine tools
+  // was eighteen sentences. The string and its clip still exist; nothing should
+  // be playing or printing them.
+  expect(audio.say).not.toHaveBeenCalledWith('en', 'tool.mirror.fact')
+  expect(within(card).queryByText(/smooth and cool/i)).not.toBeInTheDocument()
 
   await dismiss()
   expect(screen.getByTestId('met-mirror')).toBeInTheDocument()
