@@ -8,7 +8,9 @@ import treatment from '../src/content/paths/treatment.json'
 import board from '../src/content/tools-board.json'
 import type { ModuleDef } from '../src/content/types'
 
-const ALL_IDS: ToolId[] = ['mirror', 'explorer', 'suction', 'syringe', 'brush', 'xray', 'ring', 'umbrella', 'spray']
+/** Every instrument the board has a cell for — not a list that has to be kept
+ *  in step with it by hand. */
+const ALL_IDS = Object.keys(board.cells) as ToolId[]
 
 beforeEach(() => {
   cleanup()
@@ -92,8 +94,8 @@ test('scratching a cell reveals the tool, narrates one line about it, and marks 
   expect(audio.say).toHaveBeenCalledWith('en', 'tool.mirror.desc')
 
   // One line per tool, not two. The fun fact used to be spoken straight after
-  // the description and printed under it, which meant meeting all nine tools
-  // was eighteen sentences. The string and its clip still exist; nothing should
+  // the description and printed under it, which meant meeting every tool
+  // took two sentences each. The string and its clip still exist; nothing should
   // be playing or printing them.
   expect(audio.say).not.toHaveBeenCalledWith('en', 'tool.mirror.fact')
   expect(within(card).queryByText(/smooth and cool/i)).not.toBeInTheDocument()
@@ -110,7 +112,7 @@ test('the module completes once every tool on the roster has been found', async 
   const onComplete = vi.fn()
   render(<ToolsScreen module={module} onComplete={onComplete} />)
 
-  expect(roster).toHaveLength(9)
+  expect(roster).toEqual(ALL_IDS)
   await meetAll(roster)
   expect(onComplete).toHaveBeenCalledTimes(1)
   expect(audio.say).toHaveBeenCalledWith('en', 'tools.done')

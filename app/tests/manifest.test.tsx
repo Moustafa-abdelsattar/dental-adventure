@@ -1,4 +1,5 @@
 import { render, screen, fireEvent, act, cleanup } from '@testing-library/react'
+import board from '../src/content/tools-board.json'
 import checkup from '../src/content/paths/checkup.json'
 import treatment from '../src/content/paths/treatment.json'
 import en from '../src/content/strings/en.json'
@@ -28,11 +29,16 @@ for (const m of manifests) {
   })
 }
 
-test('both journeys hand the tools board its full nine, so no cell is left uncovered', () => {
+test('both journeys hand the tools board every cell it has, so none is left uncovered', () => {
   const ids = (m: typeof checkup) => m.modules.find(x => x.kind === 'tools')!.toolIds!
-  const nine = ['mirror', 'explorer', 'suction', 'syringe', 'brush', 'xray', 'ring', 'umbrella', 'spray']
-  expect(ids(checkup)).toEqual(nine)
-  expect(ids(treatment)).toEqual(nine)
+  // The board is whatever scripts/make-tools-board.mjs drew, and the rule is
+  // that a journey covers all of it. An open cell beside a covered one reads to
+  // a child as the one that failed to load, so this asserts the relationship
+  // rather than a number — the board went from nine cells to four and the thing
+  // that must stay true did not change.
+  const cells = Object.keys(board.cells)
+  expect(ids(checkup)).toEqual(cells)
+  expect(ids(treatment)).toEqual(cells)
 })
 
 test('starIdsFor expands multi-star modules', () => {

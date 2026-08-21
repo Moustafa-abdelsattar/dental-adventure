@@ -90,9 +90,7 @@ test.describe('Dental Adventure happy paths', () => {
 
     await completeClinic(page)
     await expect(page.getByTestId('tool-mirror')).toBeVisible({ timeout: 20_000 })
-    await completeTools(page, ['mirror', 'explorer', 'suction'])
-    await completeTools(page, ['syringe', 'brush', 'xray'])
-    await completeTools(page, ['ring', 'umbrella', 'spray'])
+    await completeTools(page, ['mirror', 'explorer', 'spray', 'brush'])
     await expect(page.getByTestId('pick-brush')).toBeVisible({ timeout: 20_000 })
     await completeBrush(page)
     await expect(page.getByTestId('drnour-mask')).toBeVisible({ timeout: 20_000 })
@@ -114,9 +112,7 @@ test.describe('Dental Adventure happy paths', () => {
 
     await completeClinic(page)
     await expect(page.getByTestId('tool-mirror')).toBeVisible({ timeout: 20_000 })
-    await completeTools(page, ['mirror', 'explorer', 'suction'])
-    await completeTools(page, ['syringe', 'brush', 'xray'])
-    await completeTools(page, ['ring', 'umbrella', 'spray'])
+    await completeTools(page, ['mirror', 'explorer', 'spray', 'brush'])
     // prepare: ring → umbrella → spray
     await expect(page.getByTestId('prep-ring')).toBeVisible({ timeout: 20_000 })
     await settle(page)
