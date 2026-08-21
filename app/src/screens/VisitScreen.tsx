@@ -29,27 +29,21 @@ interface Step {
   pauseMs?: number
 }
 
-const CHECKUP_STEPS: Step[] = [
-  { id: 'chair', stringId: 'visit.step.chair', frame: 'chair' },
-  { id: 'light', stringId: 'visit.step.light', frame: 'light' },
-  { id: 'mirror', stringId: 'visit.step.mirror', frame: 'mirror' },
-  { id: 'clean', stringId: 'visit.step.clean', frame: 'clean' },
-]
-
 /**
- * The treatment journey walks two more beats between the mirror and the
- * handpiece: the sleepy juice, and counting to ten while it works.
+ * The whole visit, in order, for every child.
  *
- * They are deliberately not in the check-up. A child coming in for a check-up
- * who is shown numbing gel learns to expect something they are not going to be
- * given, and teaching a child to expect the wrong visit is the one thing this
- * app exists to prevent. The module reads the journey off the store to decide.
+ * The sleepy juice and the counting were briefly shown only on the treatment
+ * journey, on the reasoning that a check-up child shown numbing gel would learn
+ * to expect something they were not going to be given. The owner's call is that
+ * every child sees all six, so both journeys run this one list. To put the
+ * split back, branch on `useGame(s => s.path)` here and restore the two tests
+ * in `visit.test.tsx` that assert each direction.
  *
  * The counting beat holds on two frames — eyes shut mid-count, then both hands
  * up on ten — so the pause while a child actually counts has something moving
  * in it rather than a still picture waiting them out.
  */
-const TREATMENT_STEPS: Step[] = [
+const STEPS: Step[] = [
   { id: 'chair', stringId: 'visit.step.chair', frame: 'chair' },
   { id: 'light', stringId: 'visit.step.light', frame: 'light' },
   { id: 'mirror', stringId: 'visit.step.mirror', frame: 'mirror' },
@@ -67,8 +61,6 @@ const FREEZE_MS = 1500
  */
 export function VisitScreen({ onComplete }: ModuleProps) {
   const lang = useGame(s => s.lang)!
-  const path = useGame(s => s.path)
-  const STEPS = path === 'treatment' ? TREATMENT_STEPS : CHECKUP_STEPS
   const [phase, setPhase] = useState<Phase>('meet')
   const [masked, setMasked] = useState(true)
   const [frozen, setFrozen] = useState(false)

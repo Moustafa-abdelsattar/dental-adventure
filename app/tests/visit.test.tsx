@@ -29,7 +29,7 @@ test('mask tap reveals the smile underneath', async () => {
   expect(audio.say).toHaveBeenCalledWith('en', 'visit.maskOff')
 })
 
-test('full flow: mask → stop signal → four steps → complete, exactly once', async () => {
+test('full flow: mask → stop signal → six steps → complete, exactly once', async () => {
   vi.useFakeTimers()
   const onComplete = vi.fn()
   render(<VisitScreen module={mod} onComplete={onComplete} />)
@@ -44,9 +44,17 @@ test('full flow: mask → stop signal → four steps → complete, exactly once'
     await vi.advanceTimersByTimeAsync(2000) // freeze ends
   })
   await act(async () => {
-    await vi.advanceTimersByTimeAsync(6000) // four steps auto-advance
+    await vi.advanceTimersByTimeAsync(30_000) // six steps auto-advance
   })
-  for (const id of ['visit.step.chair', 'visit.step.light', 'visit.step.mirror', 'visit.step.clean', 'visit.done'])
+  for (const id of [
+    'visit.step.chair',
+    'visit.step.light',
+    'visit.step.mirror',
+    'visit.step.sleepy',
+    'visit.step.count',
+    'visit.step.clean',
+    'visit.done',
+  ])
     expect(audio.say).toHaveBeenCalledWith('en', id)
   expect(onComplete).toHaveBeenCalledTimes(1)
   // manual Next after auto-complete must not double-fire
@@ -78,30 +86,29 @@ async function runSimulation() {
   return vi.mocked(audio.say).mock.calls.map(c => c[1])
 }
 
-test('the treatment visit walks the sleepy juice and the counting', async () => {
-  vi.useFakeTimers()
-  useGame.getState().setPath('treatment')
-  const spoken = await runSimulation()
+// Both journeys walk the same six beats. This was briefly split — the sleepy
+// juice and the counting on the treatment path only — and the owner's call is
+// that every child sees all six, so the test asserts that for each path rather
+// than one each way.
+for (const path of ['checkup', 'treatment'] as const) {
+  test(`the ${path} visit walks all six steps in order`, async () => {
+    vi.useFakeTimers()
+    useGame.getState().setPath(path)
+    const spoken = await runSimulation()
 
-  expect(spoken).toContain('visit.step.sleepy')
-  expect(spoken).toContain('visit.step.count')
-  // between the mirror and the handpiece, in that order — the sleepy juice goes
-  // on before the counting, and the drilling only after both
-  expect(spoken.indexOf('visit.step.mirror')).toBeLessThan(spoken.indexOf('visit.step.sleepy'))
-  expect(spoken.indexOf('visit.step.sleepy')).toBeLessThan(spoken.indexOf('visit.step.count'))
-  expect(spoken.indexOf('visit.step.count')).toBeLessThan(spoken.indexOf('visit.step.clean'))
-})
+    const steps = [
+      'visit.step.chair',
+      'visit.step.light',
+      'visit.step.mirror',
+      'visit.step.sleepy',
+      'visit.step.count',
+      'visit.step.clean',
+    ]
+    for (const id of steps) expect(spoken).toContain(id)
 
-test('the check-up visit never mentions the sleepy juice', async () => {
-  vi.useFakeTimers()
-  useGame.getState().setPath('checkup')
-  const spoken = await runSimulation()
-
-  // A child coming in for a check-up is not getting numbing gel. Showing it to
-  // them teaches them to expect the wrong visit, which is the single thing this
-  // whole app exists to prevent — so this is a correctness test, not a nicety.
-  expect(spoken).not.toContain('visit.step.sleepy')
-  expect(spoken).not.toContain('visit.step.count')
-  for (const id of ['visit.step.chair', 'visit.step.light', 'visit.step.mirror', 'visit.step.clean'])
-    expect(spoken).toContain(id)
-})
+    // Order is the part that matters clinically: the sleepy juice goes on
+    // before the counting, and the handpiece only after both.
+    const spokenSteps = spoken.filter(id => steps.includes(id as string))
+    expect(spokenSteps).toEqual(steps)
+  })
+}
