@@ -119,7 +119,7 @@ export function VisitScreen({ onComplete }: ModuleProps) {
               hand it nothing and played the climax of the whole game against
               the bare sky-and-clouds default. The blurred plate puts the visit
               back indoors without competing with the two figures in front of
-              it â€” it is depth, not detail. */}
+              it — it is depth, not detail. */}
           <img
             src="/art/clinic-room-bg.webp"
             alt=""
@@ -257,24 +257,37 @@ export function VisitScreen({ onComplete }: ModuleProps) {
   )
 }
 
-/** Soft rounded raised hand, drawn to sit on the sunny button. */
+/**
+ * An open palm, held up: the stop signal the child is being taught.
+ *
+ * Drawn to survive being 56 pixels wide, which is the only size it is ever
+ * shown at. The version before this one set the four fingers barely a unit and
+ * a half apart, so at that size the gaps closed and the hand became one orange
+ * slab; a shadow ellipse and a highlight ellipse laid over the palm turned the
+ * middle of it to mud; and the thumb was pinned outside the palm, where it read
+ * as a stray blob rather than part of the hand.
+ *
+ * So: fingers a clear 2.8 units apart, no shading at all, and the thumb rotated
+ * about a pivot inside the palm so it grows out of it.
+ *
+ * White rather than a skin tone. It has the most contrast on the sunny button
+ * of anything tried, it matches the white the rest of the interface uses for
+ * controls — and a hand that stands for *this* child's hand is better off not
+ * picking a colour for it.
+ */
 function RaisedHand({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 64 64" className={className} aria-hidden>
-      <g fill="#ee9250">
-        {/* pinky â†’ index */}
-        <rect x="12" y="21" width="7.5" height="22" rx="3.75" />
-        <rect x="21" y="13" width="8" height="28" rx="4" />
-        <rect x="30.5" y="10" width="8" height="31" rx="4" />
-        <rect x="40" y="15" width="7.5" height="26" rx="3.75" />
-        {/* thumb */}
-        <rect x="44.5" y="31" width="7.5" height="17" rx="3.75" transform="rotate(-34 48 36)" />
-        {/* palm */}
-        <path d="M12 37 h35.5 v7 a17.75 13.5 0 0 1 -35.5 0 Z" />
+      <g fill="#fffdf7">
+        {/* pinky, ring, middle, index */}
+        <rect x="7" y="26" width="6.6" height="20" rx="3.3" />
+        <rect x="16.4" y="19" width="6.6" height="27" rx="3.3" />
+        <rect x="25.8" y="16" width="6.6" height="30" rx="3.3" />
+        <rect x="35.2" y="20" width="6.6" height="26" rx="3.3" />
+        {/* thumb — pivot sits inside the palm so the two read as one hand */}
+        <rect x="36.5" y="31" width="6.6" height="17" rx="3.3" transform="rotate(40 39.8 48)" />
+        <rect x="7" y="34" width="34.8" height="19" rx="9.5" />
       </g>
-      {/* soft shading + highlight so it reads on the sunny button */}
-      <ellipse cx="30" cy="49" rx="14" ry="6" fill="#d1773b" opacity="0.35" />
-      <ellipse cx="29" cy="39" rx="11" ry="5" fill="#ffd9ae" opacity="0.55" />
     </svg>
   )
 }
