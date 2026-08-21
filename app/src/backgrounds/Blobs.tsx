@@ -7,7 +7,7 @@ export function Blobs() {
   return (
     <>
       <div className="absolute inset-0 bg-gradient-to-b from-sky/45 via-cream to-cream" />
-      <div className="absolute top-[14%] start-1/2 -translate-x-1/2 w-[130%] aspect-square rounded-full bg-[radial-gradient(circle,rgba(255,244,214,0.85)_0%,rgba(255,244,214,0)_60%)]" />
+      <div className="absolute top-[14%] left-1/2 -translate-x-1/2 w-[130%] aspect-square rounded-full bg-[radial-gradient(circle,rgba(255,244,214,0.85)_0%,rgba(255,244,214,0)_60%)]" />
     </>
   )
 }

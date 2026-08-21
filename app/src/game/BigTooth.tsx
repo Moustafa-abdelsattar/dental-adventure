@@ -56,7 +56,7 @@ export function BigTooth({
           src="/art/tool-umbrella.webp"
           alt=""
           draggable={false}
-          className="absolute -top-[10%] start-1/2 -translate-x-1/2 w-[64%] z-10 pointer-events-none select-none drop-shadow"
+          className="absolute -top-[10%] left-1/2 -translate-x-1/2 w-[64%] z-10 pointer-events-none select-none drop-shadow"
           initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0, rotate: [-3, 3, -3] }}
           transition={{ rotate: { duration: 2.4, repeat: Infinity, ease: 'easeInOut' } }}

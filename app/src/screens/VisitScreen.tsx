@@ -241,7 +241,7 @@ export function VisitScreen({ onComplete }: ModuleProps) {
               line asks for anyway ("This is Dr. Nour — tap the mask"), and the
               chair frames take the stage from the stop signal onward. */}
           <motion.div
-            className="absolute bottom-[4%] start-1/2 -translate-x-1/2 w-[62%]"
+            className="absolute bottom-[4%] left-1/2 -translate-x-1/2 w-[62%]"
             initial={false}
             animate={{ opacity: phase === 'meet' ? 1 : 0 }}
             transition={{ duration: 0.45, ease: 'easeInOut' }}
@@ -261,7 +261,7 @@ export function VisitScreen({ onComplete }: ModuleProps) {
           onClick={handTap}
           animate={frozen ? { scale: 1 } : { scale: [1, 1.1, 1] }}
           transition={frozen ? { duration: 0.3 } : loops.breathe}
-          className="absolute bottom-[13%] start-1/2 -translate-x-1/2 z-10 w-24 h-24 rounded-full bg-sunny shadow-xl ring-4 ring-white/70 flex items-center justify-center"
+          className="absolute bottom-[13%] left-1/2 -translate-x-1/2 z-10 w-24 h-24 rounded-full bg-sunny shadow-xl ring-4 ring-white/70 flex items-center justify-center"
           aria-label="raise hand"
         >
           <RaisedHand className="w-14" />
@@ -270,7 +270,7 @@ export function VisitScreen({ onComplete }: ModuleProps) {
       {frozen && (
         <svg
           viewBox="0 0 24 24"
-          className="absolute bottom-[30%] start-1/2 -translate-x-1/2 z-10 w-10 h-10 drop-shadow"
+          className="absolute bottom-[30%] left-1/2 -translate-x-1/2 z-10 w-10 h-10 drop-shadow"
           data-testid="paused-label"
           aria-label="paused"
         >
@@ -280,7 +280,7 @@ export function VisitScreen({ onComplete }: ModuleProps) {
       )}
 
       {phase === 'steps' && (
-        <div className="absolute bottom-[12%] start-1/2 -translate-x-1/2 z-10 flex gap-2" aria-hidden>
+        <div className="absolute bottom-[12%] left-1/2 -translate-x-1/2 z-10 flex gap-2" aria-hidden>
           {STEPS.map((s, i) => (
             <span
               key={s.id}

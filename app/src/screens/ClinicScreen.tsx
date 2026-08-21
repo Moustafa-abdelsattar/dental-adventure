@@ -260,7 +260,7 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
                   {isExplored && (
                     <DoneBadge
                       testid={`explored-${item.id}`}
-                      className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 w-9 h-9"
+                      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-9 h-9"
                     />
                   )}
                   {burstFor === item.id && <StarBurst show size={60} />}
@@ -326,7 +326,11 @@ function TapHere({ id, idx, urgent }: { id: ItemId; idx: number; urgent: boolean
     <span
       aria-hidden
       data-testid={`ring-${id}`}
-      className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center"
+      // Never takes a tap. The ripple grows to twice its own width and spills
+      // outside the object it belongs to, so on a screen where two objects
+      // stand close together it lies across its neighbour's middle. It is
+      // decoration — the press has to reach the button underneath.
+      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center pointer-events-none"
     >
       {/* the ripple, travelling outward and fading */}
       <motion.span
