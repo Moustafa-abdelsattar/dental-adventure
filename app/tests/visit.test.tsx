@@ -59,3 +59,49 @@ test('light glow is a slow fade, never a flash', () => {
   const glow = screen.getByTestId('visit-light')
   expect(Number(glow.getAttribute('data-glow-duration'))).toBeGreaterThanOrEqual(1)
 })
+
+/** Walk the whole simulation and collect the lines it spoke, in order. */
+async function runSimulation() {
+  render(<VisitScreen module={mod} onComplete={vi.fn()} />)
+  await act(async () => {
+    fireEvent.click(screen.getByTestId('drnour-mask'))
+  })
+  await act(async () => {
+    fireEvent.click(screen.getByTestId('raise-hand'))
+  })
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(2000)
+  })
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(30_000)
+  })
+  return vi.mocked(audio.say).mock.calls.map(c => c[1])
+}
+
+test('the treatment visit walks the sleepy juice and the counting', async () => {
+  vi.useFakeTimers()
+  useGame.getState().setPath('treatment')
+  const spoken = await runSimulation()
+
+  expect(spoken).toContain('visit.step.sleepy')
+  expect(spoken).toContain('visit.step.count')
+  // between the mirror and the handpiece, in that order — the sleepy juice goes
+  // on before the counting, and the drilling only after both
+  expect(spoken.indexOf('visit.step.mirror')).toBeLessThan(spoken.indexOf('visit.step.sleepy'))
+  expect(spoken.indexOf('visit.step.sleepy')).toBeLessThan(spoken.indexOf('visit.step.count'))
+  expect(spoken.indexOf('visit.step.count')).toBeLessThan(spoken.indexOf('visit.step.clean'))
+})
+
+test('the check-up visit never mentions the sleepy juice', async () => {
+  vi.useFakeTimers()
+  useGame.getState().setPath('checkup')
+  const spoken = await runSimulation()
+
+  // A child coming in for a check-up is not getting numbing gel. Showing it to
+  // them teaches them to expect the wrong visit, which is the single thing this
+  // whole app exists to prevent — so this is a correctness test, not a nicety.
+  expect(spoken).not.toContain('visit.step.sleepy')
+  expect(spoken).not.toContain('visit.step.count')
+  for (const id of ['visit.step.chair', 'visit.step.light', 'visit.step.mirror', 'visit.step.clean'])
+    expect(spoken).toContain(id)
+})

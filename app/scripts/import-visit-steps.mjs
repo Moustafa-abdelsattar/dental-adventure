@@ -15,18 +15,30 @@ import sharp from 'sharp'
 import { readdir } from 'node:fs/promises'
 import path from 'node:path'
 
-const SRC = process.argv[2] ?? 'C:/Users/moust/Downloads'
+const SRC = process.argv[2] ?? '../art-in/source-art/visit-steps'
 const OUT = 'public/art'
 const OUT_WIDTH = 820
 const QUALITY = 82
 
-/** Source stamp → the step it plays under. */
+/**
+ * The renders, in the order they play, and the frame each becomes.
+ *
+ * Named by file rather than by the timestamp the generator happened to stamp
+ * on them: the masters live in the repo now, so the set no longer depends on
+ * whatever is still sitting in a Downloads folder.
+ *
+ * `sleepy` and `count` are the treatment-only beats. `clean` is the handpiece —
+ * it was already here and did not need drawing again.
+ */
 const FRAMES = [
-  { stamp: '01_11_26', name: 'visit-step-chair' },
-  { stamp: '01_13_32', name: 'visit-step-light' },
-  { stamp: '01_16_27', name: 'visit-step-mirror' },
-  { stamp: '01_18_12', name: 'visit-step-clean' },
-  { stamp: '01_23_21', name: 'visit-step-hand' },
+  { file: '1-chair.png', name: 'visit-step-chair' },
+  { file: '2-light.png', name: 'visit-step-light' },
+  { file: '3-mirror.png', name: 'visit-step-mirror' },
+  { file: '6-sleepy.png', name: 'visit-step-sleepy' },
+  { file: '7-count.png', name: 'visit-step-count' },
+  { file: '7b-count-ten.png', name: 'visit-step-count-ten' },
+  { file: '4-handpiece.png', name: 'visit-step-clean' },
+  { file: '5-hand.png', name: 'visit-step-hand' },
 ]
 
 /** Anything this light, reached from the border, is background. */
@@ -198,16 +210,16 @@ function findOffset(ref, refW, refH, cur, curW, curH) {
 }
 
 const files = await readdir(SRC)
-const find = stamp => {
-  const hit = files.find(f => f.includes(stamp) && f.toLowerCase().endsWith('.png'))
-  if (!hit) throw new Error(`no PNG in ${SRC} matching ${stamp}`)
+const find = wanted => {
+  const hit = files.find(f => f === wanted)
+  if (!hit) throw new Error(`no ${wanted} in ${SRC}`)
   return path.join(SRC, hit)
 }
 
 // 1 — cut every frame out of its background
 const loaded = []
 for (const frame of FRAMES) {
-  const file = find(frame.stamp)
+  const file = find(frame.file)
   const { data, info } = await sharp(file).removeAlpha().raw().toBuffer({ resolveWithObject: true })
   const { width: w, height: h } = info
   const alpha = trimEdge(cutOut(data, w, h), w, h)

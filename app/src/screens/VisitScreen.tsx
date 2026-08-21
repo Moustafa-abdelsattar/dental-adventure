@@ -11,23 +11,52 @@ import type { ModuleProps } from './registry'
 
 type Phase = 'meet' | 'stop' | 'steps' | 'done'
 
-const STEPS: { id: string; stringId: StringId }[] = [
-  { id: 'chair', stringId: 'visit.step.chair' },
-  { id: 'light', stringId: 'visit.step.light' },
-  { id: 'mirror', stringId: 'visit.step.mirror' },
-  { id: 'clean', stringId: 'visit.step.clean' },
-]
-
 /** The shared canvas `scripts/import-visit-steps.mjs` aligns every frame onto. */
 const ART_W = 820
 const ART_H = 1168
 
-/** The five cut frames, stacked in that order. */
-const FRAMES = ['chair', 'light', 'mirror', 'clean', 'hand'] as const
+/** Every cut frame, all on that one canvas. */
+const FRAMES = ['chair', 'light', 'mirror', 'sleepy', 'count', 'count-ten', 'clean', 'hand'] as const
 type Frame = (typeof FRAMES)[number]
 
-/** The frame each narrated step plays under, in step order. */
-const STEP_FRAMES: Frame[] = ['chair', 'light', 'mirror', 'clean']
+interface Step {
+  id: string
+  stringId: StringId
+  frame: Frame
+  /** Swapped in once the line has finished, for a beat that has two moments. */
+  thenFrame?: Frame
+  /** Overrides `STEP_PAUSE_MS` where the picture needs longer to be read. */
+  pauseMs?: number
+}
+
+const CHECKUP_STEPS: Step[] = [
+  { id: 'chair', stringId: 'visit.step.chair', frame: 'chair' },
+  { id: 'light', stringId: 'visit.step.light', frame: 'light' },
+  { id: 'mirror', stringId: 'visit.step.mirror', frame: 'mirror' },
+  { id: 'clean', stringId: 'visit.step.clean', frame: 'clean' },
+]
+
+/**
+ * The treatment journey walks two more beats between the mirror and the
+ * handpiece: the sleepy juice, and counting to ten while it works.
+ *
+ * They are deliberately not in the check-up. A child coming in for a check-up
+ * who is shown numbing gel learns to expect something they are not going to be
+ * given, and teaching a child to expect the wrong visit is the one thing this
+ * app exists to prevent. The module reads the journey off the store to decide.
+ *
+ * The counting beat holds on two frames — eyes shut mid-count, then both hands
+ * up on ten — so the pause while a child actually counts has something moving
+ * in it rather than a still picture waiting them out.
+ */
+const TREATMENT_STEPS: Step[] = [
+  { id: 'chair', stringId: 'visit.step.chair', frame: 'chair' },
+  { id: 'light', stringId: 'visit.step.light', frame: 'light' },
+  { id: 'mirror', stringId: 'visit.step.mirror', frame: 'mirror' },
+  { id: 'sleepy', stringId: 'visit.step.sleepy', frame: 'sleepy' },
+  { id: 'count', stringId: 'visit.step.count', frame: 'count', thenFrame: 'count-ten', pauseMs: 2200 },
+  { id: 'clean', stringId: 'visit.step.clean', frame: 'clean' },
+]
 
 const STEP_PAUSE_MS = 900
 const FREEZE_MS = 1500
@@ -38,10 +67,14 @@ const FREEZE_MS = 1500
  */
 export function VisitScreen({ onComplete }: ModuleProps) {
   const lang = useGame(s => s.lang)!
+  const path = useGame(s => s.path)
+  const STEPS = path === 'treatment' ? TREATMENT_STEPS : CHECKUP_STEPS
   const [phase, setPhase] = useState<Phase>('meet')
   const [masked, setMasked] = useState(true)
   const [frozen, setFrozen] = useState(false)
   const [step, setStep] = useState(-1)
+  /** True once the current step's line has finished, for `thenFrame`. */
+  const [lineDone, setLineDone] = useState(false)
   const startedSteps = useRef(false)
   const doneRef = useRef(false)
 
@@ -82,8 +115,10 @@ export function VisitScreen({ onComplete }: ModuleProps) {
     const run = async () => {
       for (let i = 0; i < STEPS.length; i++) {
         setStep(i)
+        setLineDone(false)
         await audio.say(lang, STEPS[i].stringId)
-        await new Promise(r => setTimeout(r, STEP_PAUSE_MS))
+        setLineDone(true)
+        await new Promise(r => setTimeout(r, STEPS[i].pauseMs ?? STEP_PAUSE_MS))
       }
       setPhase('done')
       await audio.say(lang, 'visit.done')
@@ -93,11 +128,20 @@ export function VisitScreen({ onComplete }: ModuleProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase])
 
-  // Which of the five frames is on screen. The stop signal gets the boy with
-  // his hand up, so the child sees the thing they are being asked to do rather
-  // than only a button offering it.
+  // Which frame is on screen. The stop signal gets the boy with his hand up, so
+  // the child sees the thing they are being asked to do rather than only a
+  // button offering it.
+  const current = step >= 0 ? STEPS[step] : undefined
   const art: Frame =
-    phase === 'meet' ? 'chair' : phase === 'stop' ? 'hand' : phase === 'done' ? 'clean' : (STEP_FRAMES[step] ?? 'chair')
+    phase === 'meet'
+      ? 'chair'
+      : phase === 'stop'
+        ? 'hand'
+        : phase === 'done'
+          ? 'clean'
+          : !current
+            ? 'chair'
+            : ((lineDone && current.thenFrame) || current.frame)
 
   return (
     <GameStage

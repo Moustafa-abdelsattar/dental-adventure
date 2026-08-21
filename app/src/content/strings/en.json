@@ -93,6 +93,8 @@
   "visit.step.chair": "First you sit in the big comfy chair. It leans back slowly, like a lazy chair ride.",
   "visit.step.light": "Then the sunshine light turns on so Dr. Nour can see your teeth.",
   "visit.step.mirror": "Dr. Nour looks at your teeth with the little mirror and counts them.",
+  "visit.step.sleepy": "Next comes the magic juice. It makes your tooth sleepy.",
+  "visit.step.count": "Now close your eyes and count to ten!",
   "visit.step.clean": "Then the brush tickles your teeth clean until they're shiny!",
   "visit.done": "And that's the whole visit, {name}! You knew every single step!",
   "reward.congrats": "Congratulations, {name}!",
