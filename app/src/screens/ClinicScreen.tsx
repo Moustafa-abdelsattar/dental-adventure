@@ -13,7 +13,7 @@ import { springs, loops, STAGGER, teeter, TEETER_S, recline, lightWarmUp, pulse 
 import hotspots from '../content/clinic-hotspots.json'
 import type { ModuleProps } from './registry'
 
-type ItemId = 'chair' | 'light' | 'sink' | 'table'
+type ItemId = 'chair' | 'light' | 'suction' | 'syringe'
 
 /**
  * The clinic as the client storyboarded it.
@@ -21,10 +21,18 @@ type ItemId = 'chair' | 'light' | 'sink' | 'table'
  * Slides 2, 3 and 4 of `tooth game.pptx` are one room with the chair, the
  * overhead light and the delivery unit each supplied as a separate transparent
  * image sitting exactly over its own position — "Press on the chair", and the
- * chair rocks where it stands. That is what this screen is now: the room, with
- * four things in it that move in place. Not four cut-out props arranged in the
+ * chair rocks where it stands. That is what this screen is: the room, with four
+ * things in it that move in place. Not four cut-out props arranged in the
  * corners of a pastel background, which is what it used to be and which the
  * PowerPoint never asked for.
+ *
+ * The four are the chair, the light, the suction and the air-water syringe. The
+ * rinse bowl and the delivery unit were here instead of the two instruments,
+ * and both are still in the room — they are simply no longer things a child is
+ * asked to press. The instruments came out of the unit's own hoses, which are
+ * the right objects at hopelessly the wrong size: five near-identical grey
+ * lines, none of them a target a four-year-old could hit. They are stood up as
+ * their own props by `scripts/place-clinic-tools.mjs`.
  *
  * Every layer shares the plate's canvas, so each one is a full-size image at
  * `inset-0` and the artwork's own position does the placing. See
@@ -40,9 +48,9 @@ type ItemId = 'chair' | 'light' | 'sink' | 'table'
  */
 const ITEMS: { id: ItemId; nameId: StringId; descId: StringId }[] = [
   { id: 'light', nameId: 'clinic.light.name', descId: 'clinic.light.desc' },
-  { id: 'sink', nameId: 'clinic.sink.name', descId: 'clinic.sink.desc' },
+  { id: 'suction', nameId: 'clinic.suction.name', descId: 'clinic.suction.desc' },
   { id: 'chair', nameId: 'clinic.chair.name', descId: 'clinic.chair.desc' },
-  { id: 'table', nameId: 'clinic.table.name', descId: 'clinic.table.desc' },
+  { id: 'syringe', nameId: 'clinic.syringe.name', descId: 'clinic.syringe.desc' },
 ]
 
 /**
@@ -51,7 +59,10 @@ const ITEMS: { id: ItemId; nameId: StringId; descId: StringId }[] = [
  * the room; everything that makes it interesting — the mirror, the little
  * camera, the tooth in its ring — only becomes legible at card size.
  */
-const DETAIL_ART = new Set<ItemId>(['table'])
+// Both instruments are lifted straight out of the room at tap-target size, so
+// the card shows the prop's own full-resolution render instead of a magnified
+// crop of a two-hundred-pixel layer.
+const DETAIL_ART = new Set<ItemId>(['suction', 'syringe'])
 
 const IDLE_HINT_MS = 10000
 const CARD_DELAY_MS = 500
@@ -382,8 +393,9 @@ const ORIGIN: Record<ItemId, string> = {
   // the top of the head, where the arm meets it — the arm itself stays in the
   // plate, so swinging from the ceiling would tear the lamp off its mount
   light: '47% 20%',
-  sink: '56% 53%',
-  table: '69% 61%',
+  // both stand in the unit's holder, so they tip about where they are gripped
+  suction: '50% 88%',
+  syringe: '50% 88%',
 }
 
 type LayerState = 'idle' | 'hint' | 'active' | 'done'

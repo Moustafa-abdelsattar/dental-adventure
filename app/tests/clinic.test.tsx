@@ -49,7 +49,7 @@ afterEach(() => {
 test('exploring all four objects completes the module', async () => {
   const onComplete = vi.fn()
   render(<ClinicScreen module={module} onComplete={onComplete} />)
-  for (const id of ['light', 'chair', 'sink', 'table']) await meet(id)
+  for (const id of ['light', 'chair', 'suction', 'syringe']) await meet(id)
   expect(onComplete).toHaveBeenCalledTimes(1)
   expect(audio.say).toHaveBeenCalledWith('en', 'clinic.done')
 })
@@ -111,7 +111,7 @@ test('a cancelled press does not open it', async () => {
 
 test('the room is one plate with a layer per object on top of it', () => {
   render(<ClinicScreen module={module} onComplete={vi.fn()} />)
-  for (const id of ['light', 'chair', 'sink', 'table']) {
+  for (const id of ['light', 'chair', 'suction', 'syringe']) {
     const layer = screen.getByTestId(`layer-${id}`)
     expect(layer.querySelector('img')).toHaveAttribute('src', `/art/clinic-layer-${id}.webp`)
     // a layer is scenery; only the hotspot over it takes a press
@@ -121,7 +121,7 @@ test('the room is one plate with a layer per object on top of it', () => {
 
 test('each tap target is placed from its measured box', () => {
   render(<ClinicScreen module={module} onComplete={vi.fn()} />)
-  for (const id of ['light', 'chair', 'sink', 'table'] as const) {
+  for (const id of ['light', 'chair', 'suction', 'syringe'] as const) {
     const el = screen.getByTestId(`hotspot-${id}`)
     const measured = hotspots[id]
     // placed from the JSON the import script measures, not from hand-tuned numbers
@@ -134,7 +134,7 @@ test('each tap target is placed from its measured box', () => {
 
 test('no object is buried under a bigger one that draws after it', () => {
   render(<ClinicScreen module={module} onComplete={vi.fn()} />)
-  const ids = ['light', 'chair', 'sink', 'table'] as const
+  const ids = ['light', 'chair', 'suction', 'syringe'] as const
   const order = ids
     .map(id => ({ id, el: screen.getByTestId(`hotspot-${id}`) }))
     .sort((a, b) => (a.el.compareDocumentPosition(b.el) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1))
@@ -172,6 +172,6 @@ test('the room warms only while the light is the object being touched', async ()
   const wash = screen.getByTestId('light-wash')
   expect(wash).toBeInTheDocument()
 
-  await tap('sink')
+  await tap('suction')
   expect(wash.style.opacity).toBe('0')
 })

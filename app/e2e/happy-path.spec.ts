@@ -20,7 +20,7 @@ async function settle(page: Page) {
 // Tappable game elements breathe on purpose (infinite pulse animations), so
 // Playwright's stability check would wait forever — force-click those.
 async function completeClinic(page: Page) {
-  for (const id of ['light', 'chair', 'sink', 'table']) {
+  for (const id of ['light', 'chair', 'suction', 'syringe']) {
     await page.getByTestId(`hotspot-${id}`).click({ force: true })
     await page.getByTestId('zoom-card').getByRole('button').click()
   }
