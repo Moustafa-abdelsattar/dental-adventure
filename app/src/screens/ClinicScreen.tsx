@@ -62,7 +62,7 @@ const ITEMS: { id: ItemId; nameId: StringId; descId: StringId }[] = [
 // Both instruments are lifted straight out of the room at tap-target size, so
 // the card shows the prop's own full-resolution render instead of a magnified
 // crop of a two-hundred-pixel layer.
-const DETAIL_ART = new Set<ItemId>(['suction', 'syringe'])
+const DETAIL_ART = new Set<ItemId>(['suction', 'syringe', 'chair', 'light'])
 
 const IDLE_HINT_MS = 10000
 const CARD_DELAY_MS = 500

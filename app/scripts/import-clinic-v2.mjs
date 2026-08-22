@@ -17,6 +17,7 @@
 import sharp from 'sharp'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { cutToRgba } from './lib/cutout.mjs'
 
 const SRC = '../art-in/source-art/clinic-v2.png'
 const OUT = 'public/art'
@@ -57,6 +58,32 @@ const INSTRUMENTS = [
     lift: { left: 746, top: 423, width: 144, height: 176 },
     hit: { left: 75.2, top: 36.0, width: 12.5, height: 22.0 },
   },
+]
+
+/**
+ * Objects whose close-up card is its own render rather than a magnified crop of
+ * the room.
+ *
+ * The chair and the lamp in the room are small and half behind other things —
+ * blown up to fill a card they are a soft, cropped mess. These are portraits of
+ * the same two objects, drawn for the room's palette, and they only ever appear
+ * on the card a child raises by pressing them. Nothing about the room changes,
+ * which is the point: an object's picture and its place in the room are
+ * different jobs, and only the second one has to register with anything.
+ */
+const PORTRAITS = [
+  // Cream renders on a cream ground. The ground sits at luma ~244 and each
+  // object's own cream at ~188, so anything between the two cuts the object out
+  // — but the soft shadow pooled under it is cream as well, and a cut that
+  // spares the object keeps the shadow with a torn edge. Pitched just above the
+  // object's own cream so the pool goes too; the card supplies its own ground.
+  // The chair takes the low cut: it is mostly blue, so the only cream in it is
+  // the base, and pitching above that clears the shadow pooled underneath.
+  { id: 'chair', src: 'chair-room.png', cut: { bgLuma: 210 } },
+  // The lamp cannot. It is cream from post to shade, and the same cut eats
+  // through the mount and leaves the head floating in pieces, so it stays just
+  // under the ground's own luma and keeps a little shadow at the foot.
+  { id: 'light', src: 'light-room.png', cut: { bgLuma: 236 } },
 ]
 
 const src = () => sharp(resolve(SRC)).resize(SRC_W, SRC_H, { fit: 'fill' })
@@ -153,3 +180,19 @@ for (const inst of INSTRUMENTS) {
 
 writeFileSync(resolve(HOTSPOTS), JSON.stringify(hotspots, null, 2) + '\n')
 console.log('✓ clinic-hotspots.json     tap boxes updated')
+
+// ------------------------------------------------------- the two portraits
+
+for (const shot of PORTRAITS) {
+  const cut = await cutToRgba(sharp, resolve('../art-in/source-art', shot.src), shot.cut)
+  const png = await sharp(cut.rgba, { raw: { width: cut.width, height: cut.height, channels: 4 } })
+    .png()
+    .toBuffer()
+  const trimmed = await sharp(png).trim({ threshold: 1 }).png().toBuffer()
+  const m = await sharp(trimmed).metadata()
+  await sharp(trimmed)
+    .resize({ width: 640, height: 640, fit: 'inside' })
+    .webp({ quality: 88, alphaQuality: 95 })
+    .toFile(resolve(OUT, `clinic-detail-${shot.id}.webp`))
+  console.log(`✓ clinic-detail-${shot.id.padEnd(7)}  portrait cut from ${m.width}x${m.height}`)
+}
