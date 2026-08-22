@@ -56,11 +56,16 @@ async function completeTools(page: Page, ids: string[]) {
   }
 }
 
-async function completeBrush(page: Page) {
+// Both journeys now walk the same tooth screen: the juice puts it to sleep,
+// then the child presses each sticky spot and the brush travels to it.
+async function completePrepare(page: Page) {
+  await expect(page.getByTestId('prep-spray')).toBeVisible({ timeout: 20_000 })
   await settle(page)
-  await page.getByTestId('pick-brush').click({ force: true })
-  // wait for each spot instead of blind-clicking: a story beat can still be
-  // fading out when the brush screen arrives, and a lost click strands the run
+  await page.getByTestId('prep-spray').click({ force: true })
+  await expect(page.getByTestId('prepare-spray-beat')).toBeVisible({ timeout: 15_000 })
+  await expect(page.getByTestId('prep-done-spray')).toBeVisible({ timeout: 15_000 })
+  await page.getByTestId('prep-brush').click({ force: true })
+  await expect(page.getByTestId('prepare-brush-beat')).toBeVisible({ timeout: 15_000 })
   for (const i of [0, 1, 2, 3]) {
     const spot = page.getByTestId(`plaque-${i}`)
     await expect(spot).toBeAttached({ timeout: 15_000 })
@@ -91,8 +96,7 @@ test.describe('Dental Adventure happy paths', () => {
     await completeClinic(page)
     await expect(page.getByTestId('tool-mirror')).toBeVisible({ timeout: 20_000 })
     await completeTools(page, ['mirror', 'explorer', 'spray', 'brush'])
-    await expect(page.getByTestId('pick-brush')).toBeVisible({ timeout: 20_000 })
-    await completeBrush(page)
+    await completePrepare(page)
     await expect(page.getByTestId('drnour-mask')).toBeVisible({ timeout: 20_000 })
     await completeVisit(page)
 
@@ -113,21 +117,7 @@ test.describe('Dental Adventure happy paths', () => {
     await completeClinic(page)
     await expect(page.getByTestId('tool-mirror')).toBeVisible({ timeout: 20_000 })
     await completeTools(page, ['mirror', 'explorer', 'spray', 'brush'])
-    // prepare: the juice sprays the tooth to sleep, then the child presses
-    // each sticky spot and the brush travels to it
-    await expect(page.getByTestId('prep-spray')).toBeVisible({ timeout: 20_000 })
-    await settle(page)
-    await page.getByTestId('prep-spray').click({ force: true })
-    await expect(page.getByTestId('prepare-spray-beat')).toBeVisible({ timeout: 15_000 })
-    await expect(page.getByTestId('prep-done-spray')).toBeVisible({ timeout: 15_000 })
-    await page.getByTestId('prep-brush').click({ force: true })
-    await expect(page.getByTestId('prepare-brush-beat')).toBeVisible({ timeout: 15_000 })
-    for (const i of [0, 1, 2, 3]) {
-      const spot = page.getByTestId(`plaque-${i}`)
-      await expect(spot).toBeAttached({ timeout: 15_000 })
-      await spot.click({ force: true })
-      await expect(spot).toHaveCount(0, { timeout: 15_000 })
-    }
+    await completePrepare(page)
 
     // sleepy spray mission runs by itself
     await expect(page.getByTestId('drnour-mask')).toBeVisible({ timeout: 60_000 })

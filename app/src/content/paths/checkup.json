@@ -23,9 +23,9 @@
     },
     {
       "id": "practice",
-      "kind": "practice-brush",
+      "kind": "prepare",
       "stars": 1,
-      "titleId": "practice.brush.title",
+      "titleId": "prepare.title",
       "beatId": "story.reversal"
     },
     {
