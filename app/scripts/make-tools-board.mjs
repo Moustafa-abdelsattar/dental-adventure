@@ -82,8 +82,8 @@ const layers = []
 for (const t of TOOLS) {
   const b = panelBox(t)
   // Inset so no instrument touches its panel's edge or sits under its number.
-  const padX = 44
-  const padY = 52
+  const padX = 34
+  const padY = 38
   const fitW = b.width - padX * 2
   const fitH = b.height - padY * 2
   const art = await sharp(resolve(OUT, `tool-${t.id}.webp`))

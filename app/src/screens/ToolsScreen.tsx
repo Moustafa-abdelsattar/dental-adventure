@@ -168,14 +168,15 @@ export function ToolsScreen({ module, onComplete }: ModuleProps) {
           data-testid="zoom-card"
         >
           <Pop className="bg-white rounded-3xl p-6 flex flex-col items-center gap-3 w-full max-w-sm shadow-2xl">
-            {/* the instrument lies along its cell, so it wants a landscape box:
-                in a square one a wide tool shrinks to a third of the height it
-                could have had */}
+            {/* The instruments stand, so the box is tall. It used to be a
+                shallow landscape strip, back when each one lay along its cell —
+                these are upright and a wide short box shrank them to a third of
+                the size the card could give them. */}
             <img
               src={`/art/tool-${openTool}.webp`}
               alt=""
               draggable={false}
-              className="w-full h-36 object-contain select-none"
+              className="w-full h-56 object-contain select-none"
               onClick={() => void audio.replayLast()}
             />
             <h2 className="text-2xl font-bold text-center">{t(lang, `tool.${openTool}.name` as StringId)}</h2>
