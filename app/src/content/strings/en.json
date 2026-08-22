@@ -37,7 +37,7 @@
   "clinic.table.desc": "I'm the tool table! All the little helpers sit on me, clean and ready, until it's their turn. 🧰",
   "clinic.done": "You explored the whole clinic, {name}! Amazing!",
   "tools.title": "Meet the Friendly Tools",
-  "tools.intro": "These are the dentist's little helpers, {name}. Tap each one to say hello!",
+  "tools.intro": "These are the dentist's little helpers, {name}. Scratch each one to find it!",
   "tools.groupDone": "You met this whole team! Look how shiny the tooth is getting!",
   "tools.done": "You met all the tools, {name}! They can't wait to help your teeth!",
   "tool.mirror.name": "Dental Mirror",
