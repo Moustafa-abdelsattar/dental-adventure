@@ -113,11 +113,14 @@ test.describe('Dental Adventure happy paths', () => {
     await completeClinic(page)
     await expect(page.getByTestId('tool-mirror')).toBeVisible({ timeout: 20_000 })
     await completeTools(page, ['mirror', 'explorer', 'spray', 'brush'])
-    // prepare: ring → umbrella → spray
-    await expect(page.getByTestId('prep-ring')).toBeVisible({ timeout: 20_000 })
+    // prepare: the juice sprays the tooth to sleep, then the brush cleans it.
+    // Each instrument travels to the tooth and works on it, so the tick only
+    // appears once its beat has played out — hence the longer waits here.
+    await expect(page.getByTestId('prep-spray')).toBeVisible({ timeout: 20_000 })
     await settle(page)
-    for (const id of ['ring', 'umbrella', 'spray']) {
+    for (const id of ['spray', 'brush']) {
       await page.getByTestId(`prep-${id}`).click({ force: true })
+      await expect(page.getByTestId(`prepare-${id}-beat`)).toBeVisible({ timeout: 15_000 })
       await expect(page.getByTestId(`prep-done-${id}`)).toBeVisible({ timeout: 15_000 })
     }
     // sleepy spray mission runs by itself

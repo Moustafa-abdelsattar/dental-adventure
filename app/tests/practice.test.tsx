@@ -43,23 +43,38 @@ test('brush: spot tap without brush hints instead of cleaning; with brush cleans
   expect(onComplete).toHaveBeenCalledTimes(1)
 })
 
-test('prepare: wrong order does not advance; correct ring→umbrella→spray completes', async () => {
+test('prepare: wrong order does not advance; juice then brush completes', async () => {
+  vi.useFakeTimers()
   const onComplete = vi.fn()
   render(<PrepareScreen module={mod('prepare')} onComplete={onComplete} />)
 
+  // the brush is second, so pressing it first must do nothing but wiggle
+  await act(async () => {
+    fireEvent.click(screen.getByTestId('prep-brush'))
+  })
+  expect(screen.queryByTestId('prepare-brush-beat')).toBeNull()
+  expect(onComplete).not.toHaveBeenCalled()
+
+  // the juice rises to the tooth and sprays it to sleep
   await act(async () => {
     fireEvent.click(screen.getByTestId('prep-spray'))
   })
-  expect(screen.queryByTestId('tooth-ring')).toBeNull()
+  expect(screen.getByTestId('prepare-spray-beat')).toBeInTheDocument()
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(2500)
+  })
+  expect(screen.queryByTestId('prepare-spray-beat')).toBeNull()
   expect(onComplete).not.toHaveBeenCalled()
 
-  for (const id of ['ring', 'umbrella', 'spray']) {
-    await act(async () => {
-      fireEvent.click(screen.getByTestId(`prep-${id}`))
-    })
-  }
-  expect(screen.getByTestId('tooth-ring')).toBeInTheDocument()
-  expect(screen.getByTestId('tooth-umbrella')).toBeInTheDocument()
+  // then the brush scrubs it clean
+  await act(async () => {
+    fireEvent.click(screen.getByTestId('prep-brush'))
+  })
+  expect(screen.getByTestId('prepare-brush-beat')).toBeInTheDocument()
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(3000)
+  })
+  expect(audio.say).toHaveBeenCalledWith('en', 'prepare.step.brush')
   expect(audio.say).toHaveBeenCalledWith('en', 'prepare.done')
   expect(onComplete).toHaveBeenCalledTimes(1)
 })
