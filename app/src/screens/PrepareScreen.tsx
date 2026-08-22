@@ -3,7 +3,7 @@ import { motion } from 'motion/react'
 import { audio } from '../lib/audio'
 import { t, type StringId } from '../lib/i18n'
 import { useGame } from '../store/game'
-import { BigTooth } from '../game/BigTooth'
+import { BigTooth, SPOT_POS } from '../game/BigTooth'
 import { TOOLS, type ToolId } from '../game/tools/tools'
 import { StarBurst } from '../components/motion/StarBurst'
 import { DoneBadge } from '../components/ui/DoneBadge'
@@ -12,26 +12,34 @@ import { GameStage } from '../game/GameStage'
 import { loops, wiggle, wiggleTiming } from '../motion/springs'
 import type { ModuleProps } from './registry'
 
+/** How many different things Milo can say when a spot comes clean. */
+const PRAISE_LINES = 4
+
 const SEQUENCE: { toolId: ToolId; stepId: StringId }[] = [
   { toolId: 'spray', stepId: 'prepare.step.spray' },
   { toolId: 'brush', stepId: 'prepare.step.brush' },
 ]
 
-/** How long each instrument spends at the tooth before the step is done. */
+/** How long the juice spends at the tooth before the step is done. */
 const SPRAY_MS = 1900
-const BRUSH_MS = 2300
-/** Spacing of the four scrubs, so the plaque clears under the brush. */
-const SCRUB_MS = BRUSH_MS / 5
+/** How long the brush takes to reach a spot before that spot comes clean. */
+const REACH_MS = 320
+/** Where the brush waits between spots, as a share of the tooth's box. */
+const BRUSH_PARK = { x: 50, y: 74 }
 
 /**
  * Treatment practice: the sleepy juice, then the polishing brush.
  *
  * The screen used to be ring → umbrella → sleepy gel, and tapping a tool only
  * lit a tick on the tool itself. The rubber dam is gone with the two
- * instruments that made it, and the two that remain now do their job on screen:
- * the juice rises to the tooth and sprays it to sleep, and the brush follows and
- * scrubs the plaque off it. A child watching is told what is about to happen to
- * their own tooth, which a tick beside a picture never said.
+ * instruments that made it, and the two that remain now do their job on screen.
+ *
+ * The juice is watched: it rises, tips towards the tooth and puffs, and the
+ * tooth's eyes close partway through. The cleaning is not — the brush comes up
+ * and then waits, and the child presses each sticky spot themselves. The brush
+ * travels to whichever one they pressed and that spot comes away under it. A
+ * child who cleans the tooth has done something; a child who watches a brush
+ * clean it by itself has only waited.
  *
  * Only the correct next tool is active and pulsing; wrong taps wiggle gently.
  */
@@ -44,6 +52,10 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
   const [acting, setActing] = useState<ToolId | null>(null)
   const [sleepy, setSleepy] = useState(false)
   const [spots, setSpots] = useState([true, true, true, true])
+  /** Set once the brush is up and the tooth is waiting to be pressed. */
+  const [scrubbing, setScrubbing] = useState(false)
+  const [brushAt, setBrushAt] = useState(BRUSH_PARK)
+  const spotsRef = useRef([true, true, true, true])
   const doneRef = useRef(false)
   const timers = useRef<ReturnType<typeof setTimeout>[]>([])
   const done = step >= SEQUENCE.length
@@ -82,26 +94,54 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
   }
 
   const tapTool = (toolId: ToolId) => {
-    if (done || acting) return
+    if (done || acting || scrubbing) return
     if (toolId !== SEQUENCE[step].toolId) {
       setWiggleId(toolId)
       later(() => setWiggleId(null), 450)
       void audio.say(lang, 'milo.hint.tap')
       return
     }
-    setActing(toolId)
 
     if (toolId === 'spray') {
+      setActing(toolId)
       // the tooth drops off to sleep partway through the spray, not after it
       later(() => setSleepy(true), SPRAY_MS * 0.55)
       later(() => void finishStep(step + 1), SPRAY_MS)
       return
     }
 
-    // the brush clears one plaque spot per pass, so the scrubbing is visibly
-    // doing something rather than playing over a tooth that changes at the end
-    spots.forEach((_, i) => later(() => setSpots(s => s.map((d, j) => (j === i ? false : d))), SCRUB_MS * (i + 1)))
-    later(() => void finishStep(step + 1), BRUSH_MS)
+    // The brush does not clean anything on its own. It comes up, parks, and
+    // hands the job to the child.
+    setActing(toolId)
+    setScrubbing(true)
+    void audio.say(lang, 'prepare.step.scrub')
+  }
+
+  /** A sticky spot has been pressed: send the brush to it, then wipe it. */
+  const tapSpot = (i: number) => {
+    if (!scrubbing) return
+    const current = spotsRef.current
+    if (!current[i]) return
+
+    setBrushAt({ x: (SPOT_POS[i].cx / 200) * 100, y: (SPOT_POS[i].cy / 200) * 100 })
+    later(() => {
+      const next = [...spotsRef.current]
+      next[i] = false
+      spotsRef.current = next
+      setSpots(next)
+
+      if (next.some(Boolean)) {
+        // A different line each time. Indexed by how many spots have gone, so
+        // the four are heard in order whichever order they are pressed in.
+        const cleaned = next.filter(dirty => !dirty).length
+        void audio.say(lang, `milo.praise.${Math.min(cleaned, PRAISE_LINES)}` as StringId)
+        later(() => setBrushAt(BRUSH_PARK), 420)
+      } else {
+        setScrubbing(false)
+        setActing(null)
+        void finishStep(step + 1)
+      }
+    }, REACH_MS)
   }
 
   return (
@@ -115,9 +155,9 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
           instrument meant to be a third of the tooth came in twice its size and
           sat over its face. */}
       <div className="relative w-full max-w-xs mx-auto aspect-square">
-        <BigTooth spots={spots} sleepy={sleepy} sparkle={done} />
+        <BigTooth spots={spots} sleepy={sleepy} sparkle={done} onSpotTap={scrubbing ? tapSpot : undefined} />
         {acting === 'spray' && <SprayBeat />}
-        {acting === 'brush' && <BrushBeat />}
+        {acting === 'brush' && <BrushBeat at={brushAt} />}
         <StarBurst show={done} />
       </div>
 
@@ -185,23 +225,30 @@ function SprayBeat() {
   )
 }
 
-/** The brush rises and works across the crown, one pass per plaque spot. */
-function BrushBeat() {
+/**
+ * The brush rises and then goes wherever the child sends it.
+ *
+ * `at` is the spot they just pressed, in the tooth's own percentage space, so
+ * the instrument arrives on the plaque rather than near it.
+ */
+function BrushBeat({ at }: { at: { x: number; y: number } }) {
   return (
     <div className="absolute inset-0 z-20 pointer-events-none" data-testid="prepare-brush-beat">
       <motion.img
         src="/art/tool-brush.webp"
         alt=""
         draggable={false}
-        className="absolute left-[36%] top-[40%] h-[48%] w-auto select-none drop-shadow-lg origin-bottom"
-        initial={{ opacity: 0, y: 190, rotate: 12 }}
-        animate={{
-          opacity: 1,
-          y: [190, 0, 0, 0, 0, 0],
-          x: [0, -34, 34, -22, 26, 0],
-          rotate: [12, -14, 14, -10, 12, 0],
+        className="absolute h-[48%] w-auto select-none drop-shadow-lg origin-bottom"
+        initial={{ opacity: 0, y: 190, left: `${BRUSH_PARK.x}%`, top: `${BRUSH_PARK.y}%` }}
+        animate={{ opacity: 1, y: 0, left: `${at.x}%`, top: `${at.y}%`, rotate: [0, -8, 8, 0] }}
+        transition={{
+          left: { duration: 0.32, ease: 'easeInOut' },
+          top: { duration: 0.32, ease: 'easeInOut' },
+          y: { duration: 0.5, ease: 'easeOut' },
+          opacity: { duration: 0.3 },
+          rotate: { duration: 0.6, repeat: Infinity, ease: 'easeInOut' },
         }}
-        transition={{ duration: 2.3, times: [0, 0.22, 0.42, 0.62, 0.82, 1], ease: 'easeInOut' }}
+        style={{ x: '-50%', y: '-72%' }}
       />
     </div>
   )

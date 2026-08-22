@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { motion } from 'motion/react'
 import { springs, loops, wiggle, wiggleTiming } from '../motion/springs'
 import { audio } from '../lib/audio'
-import { t } from '../lib/i18n'
+import { t, type StringId } from '../lib/i18n'
 import { useGame } from '../store/game'
 import { BigTooth } from '../game/BigTooth'
 import { TOOLS } from '../game/tools/tools'
@@ -10,6 +10,9 @@ import { StarBurst } from '../components/motion/StarBurst'
 import { GameButton } from '../components/ui/GameButton'
 import { GameStage } from '../game/GameStage'
 import type { ModuleProps } from './registry'
+
+/** How many different things Milo can say when a spot comes clean. */
+const PRAISE_LINES = 4
 
 /**
  * Checkup practice: pick up the brush, tap (or sweep over) the sticky spots
@@ -53,7 +56,14 @@ export function PracticeBrushScreen({ onComplete }: ModuleProps) {
     spotsRef.current = next
     setSpots(next)
     if (next.some(Boolean)) {
-      void audio.say(lang, 'milo.great')
+      // A different line for every spot. This used to be `milo.great` each
+      // time, so a child cleaning the tooth heard "Great job" four times over —
+      // by the fourth it carries none of the warmth the first one did, and a
+      // child has stopped listening well before then. Indexed by how many spots
+      // have gone rather than by which one was tapped, so the four lines are
+      // heard in order whichever order the spots are cleaned in.
+      const cleaned = next.filter(dirty => !dirty).length
+      void audio.say(lang, `milo.praise.${Math.min(cleaned, PRAISE_LINES)}` as StringId)
     } else if (!doneRef.current) {
       doneRef.current = true
       setDone(true)

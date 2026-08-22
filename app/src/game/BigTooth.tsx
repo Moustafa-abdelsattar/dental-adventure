@@ -8,6 +8,18 @@ import { Sparkle } from './Sparkle'
  * with plaque spots and care-tool overlays (ring / umbrella / sparkles).
  * `spots` marks which of the four plaque spots are still dirty.
  */
+/**
+ * Where the four sticky spots sit, in the overlay's own 200x200 space — on the
+ * crown edges, clear of the face. Exported because a screen that sends a brush
+ * to a spot has to know where it is.
+ */
+export const SPOT_POS = [
+  { cx: 42, cy: 64 },
+  { cx: 160, cy: 58 },
+  { cx: 56, cy: 148 },
+  { cx: 148, cy: 152 },
+]
+
 export function BigTooth({
   spots = [false, false, false, false],
   sleepy = false,
@@ -25,13 +37,7 @@ export function BigTooth({
   onSpotTap?: (index: number) => void
   onBodyTap?: () => void
 }) {
-  // on the crown edges, clear of the face
-  const spotPos = [
-    { cx: 42, cy: 64 },
-    { cx: 160, cy: 58 },
-    { cx: 56, cy: 148 },
-    { cx: 148, cy: 152 },
-  ]
+  const spotPos = SPOT_POS
 
   // brief foam burst wherever a spot was just cleaned
   const prevSpots = useRef(spots)

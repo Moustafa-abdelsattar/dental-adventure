@@ -66,15 +66,27 @@ test('prepare: wrong order does not advance; juice then brush completes', async 
   expect(screen.queryByTestId('prepare-spray-beat')).toBeNull()
   expect(onComplete).not.toHaveBeenCalled()
 
-  // then the brush scrubs it clean
+  // then the brush comes up and waits — it cleans nothing on its own
   await act(async () => {
     fireEvent.click(screen.getByTestId('prep-brush'))
   })
   expect(screen.getByTestId('prepare-brush-beat')).toBeInTheDocument()
   await act(async () => {
-    await vi.advanceTimersByTimeAsync(3000)
+    await vi.advanceTimersByTimeAsync(2000)
   })
-  expect(audio.say).toHaveBeenCalledWith('en', 'prepare.step.brush')
+  expect(audio.say).toHaveBeenCalledWith('en', 'prepare.step.scrub')
+  expect(onComplete).not.toHaveBeenCalled()
+
+  // the child presses each sticky spot, and each one gets its own praise
+  for (const i of [0, 1, 2, 3]) {
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(`plaque-${i}`))
+    })
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1200)
+    })
+  }
+  for (const n of [1, 2, 3]) expect(audio.say).toHaveBeenCalledWith('en', `milo.praise.${n}`)
   expect(audio.say).toHaveBeenCalledWith('en', 'prepare.done')
   expect(onComplete).toHaveBeenCalledTimes(1)
 })
