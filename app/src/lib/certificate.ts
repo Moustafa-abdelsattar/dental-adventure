@@ -1,11 +1,18 @@
 import { t, type Lang } from './i18n'
 
-const W = 1080
-const H = 1527
+const W = 2480
+const H = 3508
+const GOLD = '#d9a94a'
+const INK = '#3a3560'
+const GRAPE = '#8b6fd8'
+const SKY = '#3b7fc4'
+const BUBBLEGUM = '#f97ba9'
+const MINT = '#7fd0ba'
+const CREAM = '#fef9f0'
 
 /**
  * Draws the Dental Hero certificate to a canvas and returns it as a PNG blob.
- * Uses the localized strings; empty name falls back to "A Brave Dental Hero".
+ * The canvas uses an A4 portrait ratio at 300 DPI for crisp print output.
  */
 export async function renderCertificate({ name, lang, date }: { name: string; lang: Lang; date: Date }): Promise<Blob> {
   await (document.fonts?.ready ?? Promise.resolve())
@@ -17,66 +24,191 @@ export async function renderCertificate({ name, lang, date }: { name: string; la
   if ('direction' in ctx) ctx.direction = lang === 'ar' ? 'rtl' : 'ltr'
   ctx.textAlign = 'center'
 
-  // cream background + double gold border
-  ctx.fillStyle = '#fef9f0'
+  const childName = name.trim() || t(lang, 'cert.defaultName')
+  const localizedDate = date.toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-GB')
+
+  ctx.fillStyle = CREAM
   ctx.fillRect(0, 0, W, H)
-  ctx.strokeStyle = '#d9a94a'
-  ctx.lineWidth = 14
-  roundRect(ctx, 40, 40, W - 80, H - 80, 40)
+
+  drawScallopBorder(ctx)
+
+  ctx.strokeStyle = GOLD
+  ctx.lineWidth = 30
+  roundRect(ctx, 110, 110, W - 220, H - 220, 90)
   ctx.stroke()
-  ctx.lineWidth = 4
-  roundRect(ctx, 70, 70, W - 140, H - 140, 30)
+  ctx.lineWidth = 8
+  roundRect(ctx, 170, 170, W - 340, H - 340, 68)
   ctx.stroke()
 
-  // title
-  ctx.fillStyle = '#8b6fd8'
-  ctx.font = `bold 74px ${font}`
-  ctx.fillText(t(lang, 'cert.title'), W / 2, 220)
+  drawRibbon(ctx, W / 2, 360)
 
-  // Milo — the custom art if it loads, else the drawn fallback
+  ctx.fillStyle = GRAPE
+  fitText(ctx, t(lang, 'cert.title'), W / 2, 570, 1760, 162, 102, font)
+
   const miloImg = await loadImage('/art/milo-celebrate.webp', 500)
-  if (miloImg) ctx.drawImage(miloImg, W / 2 - 210, 300, 420, 420)
-  else drawMilo(ctx, W / 2, 500, 2.2)
+  if (miloImg) ctx.drawImage(miloImg, W / 2 - 385, 720, 770, 770)
+  else drawMilo(ctx, W / 2, 1110, 4)
 
-  // awarded to
-  ctx.fillStyle = '#3a3560'
-  ctx.font = `bold 44px ${font}`
-  ctx.fillText(t(lang, 'cert.awardedTo'), W / 2, 800)
-  ctx.fillStyle = '#3b7fc4'
-  ctx.font = `bold 88px ${font}`
-  ctx.fillText(name.trim() || t(lang, 'cert.defaultName'), W / 2, 910)
-  ctx.strokeStyle = '#d9a94a'
-  ctx.lineWidth = 3
+  ctx.fillStyle = INK
+  ctx.font = `bold 92px ${font}`
+  ctx.fillText(t(lang, 'cert.awardedTo'), W / 2, 1635)
+
+  ctx.fillStyle = SKY
+  fitText(ctx, childName, W / 2, 1845, 1660, 210, 118, font)
+
+  ctx.strokeStyle = GOLD
+  ctx.lineWidth = 8
   ctx.beginPath()
-  ctx.moveTo(240, 940)
-  ctx.lineTo(W - 240, 940)
+  ctx.moveTo(480, 1930)
+  ctx.lineTo(W - 480, 1930)
   ctx.stroke()
 
-  ctx.fillStyle = '#3a3560'
-  ctx.font = `bold 40px ${font}`
-  ctx.fillText(t(lang, 'cert.for'), W / 2, 1030)
+  ctx.fillStyle = INK
+  drawWrappedText(ctx, t(lang, 'cert.for'), W / 2, 2110, 1580, 82, 106, font)
 
-  // five gold stars (drawn, not emoji — consistent on every device)
-  for (let i = 0; i < 5; i++) drawStar(ctx, W / 2 + (i - 2) * 105, 1120, 40, '#f0b429')
+  for (let i = 0; i < 5; i++) drawStar(ctx, W / 2 + (i - 2) * 210, 2365, 86, '#f0b429')
 
-  // rosette
-  ctx.fillStyle = '#3b7fc4'
-  ctx.beginPath()
-  ctx.arc(W / 2, 1290, 80, 0, Math.PI * 2)
-  ctx.fill()
-  ctx.fillStyle = '#ffffff'
-  ctx.font = `bold 30px ${font}`
-  ctx.fillText('DENTAL', W / 2, 1282)
-  ctx.fillText('HERO', W / 2, 1318)
+  const badges = ['Clinic Explorer', 'Tool Expert', 'Brave Counter']
+  badges.forEach((label, i) => drawBadge(ctx, 560 + i * 680, 2660, label, font))
 
-  // date
-  ctx.fillStyle = '#3a3560'
-  ctx.font = `bold 34px ${font}`
-  ctx.fillText(date.toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-GB'), W / 2, 1420)
+  drawRosette(ctx, W / 2, 3020, font)
+
+  ctx.fillStyle = INK
+  ctx.font = `bold 66px ${font}`
+  ctx.fillText(localizedDate, W / 2, 3300)
 
   return new Promise<Blob>((resolve, reject) =>
     canvas.toBlob(b => (b ? resolve(b) : reject(new Error('toBlob failed'))), 'image/png'),
   )
+}
+
+function fitText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  maxWidth: number,
+  startPx: number,
+  minPx: number,
+  font: string,
+) {
+  let size = startPx
+  while (size > minPx) {
+    ctx.font = `bold ${size}px ${font}`
+    const width = ctx.measureText(text)?.width ?? 0
+    if (!width || width <= maxWidth) break
+    size -= 6
+  }
+  ctx.fillText(text, x, y)
+}
+
+function drawWrappedText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  maxWidth: number,
+  size: number,
+  lineHeight: number,
+  font: string,
+) {
+  ctx.font = `bold ${size}px ${font}`
+  const words = text.split(' ')
+  const lines: string[] = []
+  let line = ''
+  for (const word of words) {
+    const next = line ? `${line} ${word}` : word
+    const width = ctx.measureText(next)?.width ?? 0
+    if (width > maxWidth && line) {
+      lines.push(line)
+      line = word
+    } else {
+      line = next
+    }
+  }
+  if (line) lines.push(line)
+  const startY = y - ((lines.length - 1) * lineHeight) / 2
+  lines.slice(0, 3).forEach((wrappedLine, i) => ctx.fillText(wrappedLine, x, startY + i * lineHeight))
+}
+
+function drawScallopBorder(ctx: CanvasRenderingContext2D) {
+  ctx.save()
+  ctx.fillStyle = 'rgba(126, 200, 242, 0.24)'
+  for (let x = 170; x <= W - 170; x += 180) {
+    ctx.beginPath()
+    ctx.arc(x, 124, 38, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.arc(x, H - 124, 38, 0, Math.PI * 2)
+    ctx.fill()
+  }
+  for (let y = 250; y <= H - 250; y += 180) {
+    ctx.beginPath()
+    ctx.arc(124, y, 38, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.arc(W - 124, y, 38, 0, Math.PI * 2)
+    ctx.fill()
+  }
+  ctx.restore()
+}
+
+function drawRibbon(ctx: CanvasRenderingContext2D, cx: number, cy: number) {
+  ctx.save()
+  ctx.fillStyle = SKY
+  roundRect(ctx, cx - 460, cy - 88, 920, 176, 88)
+  ctx.fill()
+  ctx.fillStyle = BUBBLEGUM
+  ctx.beginPath()
+  ctx.moveTo(cx - 410, cy + 56)
+  ctx.lineTo(cx - 520, cy + 260)
+  ctx.lineTo(cx - 325, cy + 188)
+  ctx.lineTo(cx - 190, cy + 316)
+  ctx.lineTo(cx - 120, cy + 82)
+  ctx.closePath()
+  ctx.fill()
+  ctx.beginPath()
+  ctx.moveTo(cx + 410, cy + 56)
+  ctx.lineTo(cx + 520, cy + 260)
+  ctx.lineTo(cx + 325, cy + 188)
+  ctx.lineTo(cx + 190, cy + 316)
+  ctx.lineTo(cx + 120, cy + 82)
+  ctx.closePath()
+  ctx.fill()
+  ctx.fillStyle = '#ffffff'
+  ctx.font = "bold 82px 'Baloo 2'"
+  ctx.fillText('DENTAL HERO', cx, cy + 30)
+  ctx.restore()
+}
+
+function drawBadge(ctx: CanvasRenderingContext2D, cx: number, cy: number, label: string, font: string) {
+  ctx.save()
+  ctx.fillStyle = '#ffffff'
+  ctx.strokeStyle = 'rgba(58, 53, 96, 0.16)'
+  ctx.lineWidth = 5
+  roundRect(ctx, cx - 250, cy - 70, 500, 140, 70)
+  ctx.fill()
+  ctx.stroke()
+  drawStar(ctx, cx - 175, cy, 42, MINT)
+  ctx.fillStyle = INK
+  ctx.textAlign = 'left'
+  ctx.font = `bold 48px ${font}`
+  ctx.fillText(label, cx - 110, cy + 17)
+  ctx.textAlign = 'center'
+  ctx.restore()
+}
+
+function drawRosette(ctx: CanvasRenderingContext2D, cx: number, cy: number, font: string) {
+  ctx.save()
+  ctx.fillStyle = SKY
+  ctx.beginPath()
+  ctx.arc(cx, cy, 150, 0, Math.PI * 2)
+  ctx.fill()
+  ctx.fillStyle = '#ffffff'
+  ctx.font = `bold 58px ${font}`
+  ctx.fillText('DENTAL', cx, cy - 22)
+  ctx.fillText('HERO', cx, cy + 48)
+  ctx.restore()
 }
 
 function drawStar(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, color: string) {
@@ -96,7 +228,7 @@ function drawStar(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: numb
   ctx.restore()
 }
 
-/** Loads an image with a timeout; resolves null on failure (e.g. tests). */
+/** Loads an image with a timeout; resolves null on failure, including tests. */
 function loadImage(src: string, timeoutMs: number): Promise<HTMLImageElement | null> {
   return new Promise(resolve => {
     const img = new Image()
@@ -143,13 +275,12 @@ function drawMilo(ctx: CanvasRenderingContext2D, cx: number, cy: number, s: numb
   ctx.strokeStyle = '#dfe7f5'
   ctx.lineWidth = 5
   ctx.stroke()
-  // eyes + smile + cheeks
-  ctx.fillStyle = '#3a3560'
+  ctx.fillStyle = INK
   ctx.beginPath()
   ctx.ellipse(-24, 10, 9, 12, 0, 0, Math.PI * 2)
   ctx.ellipse(24, 10, 9, 12, 0, 0, Math.PI * 2)
   ctx.fill()
-  ctx.strokeStyle = '#3a3560'
+  ctx.strokeStyle = INK
   ctx.lineWidth = 5
   ctx.beginPath()
   ctx.moveTo(-18, 38)
