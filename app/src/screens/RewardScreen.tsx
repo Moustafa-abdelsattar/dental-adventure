@@ -191,24 +191,27 @@ function printHtml(src: string, title: string) {
 <title>${escapeHtml(title)}</title>
 <style>
 @page { size: portrait; margin: 0.25in; }
-html, body { margin: 0; min-height: 100%; background: #ffffff; }
+html, body { width: 100%; height: 100%; margin: 0; background: #ffffff; }
 body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   print-color-adjust: exact;
   -webkit-print-color-adjust: exact;
 }
 img {
   display: block;
-  width: 100%;
-  max-width: calc(100vw - 0.5in);
-  max-height: calc(100vh - 0.5in);
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
 }
-@media print {
-  body { min-height: auto; }
-  img { width: 100%; height: auto; }
+@media screen {
+  body {
+    min-height: 100vh;
+    padding: 0.25in;
+    box-sizing: border-box;
+  }
 }
 </style>
 </head>
