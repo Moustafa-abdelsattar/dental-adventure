@@ -21,17 +21,22 @@ export default function App() {
   )
   const [started, setStarted] = useState(false)
   const [stageDemo] = useState(() => new URLSearchParams(location.search).has('stage3d'))
+  const reset = useGame(s => s.reset)
 
   useEffect(() => {
     initFromUrl(location.search)
   }, [])
 
   useEffect(() => {
-    if (lang) {
-      document.documentElement.dir = dirFor(lang)
-      document.documentElement.lang = lang
-    }
+    document.documentElement.dir = lang ? dirFor(lang) : 'ltr'
+    document.documentElement.lang = lang ?? 'en'
   }, [lang])
+
+  const startOver = () => {
+    reset()
+    setParentDone(false)
+    setStarted(false)
+  }
 
   useEffect(() => {
     const unlock = () => {
@@ -55,7 +60,7 @@ export default function App() {
   let screen
   if (!lang) screen = <LanguageScreen />
   else if (!path || !parentDone) screen = <ParentScreen onDone={() => setParentDone(true)} />
-  else if (!started) screen = <WelcomeScreen onStart={() => setStarted(true)} />
+  else if (!started) screen = <WelcomeScreen onStart={() => setStarted(true)} onStartOver={startOver} />
   else
     screen = (
       <>

@@ -7,7 +7,7 @@ import { GameButton } from '../components/ui/GameButton'
 import { SpeechBubble } from '../components/ui/SpeechBubble'
 import { MiloHero } from '../components/ui/MiloHero'
 
-export function WelcomeScreen({ onStart }: { onStart: () => void }) {
+export function WelcomeScreen({ onStart, onStartOver }: { onStart: () => void; onStartOver?: () => void }) {
   const lang = useGame(s => s.lang)
   const starCount = useGame(selectStarCount)
   const reset = useGame(s => s.reset)
@@ -23,7 +23,7 @@ export function WelcomeScreen({ onStart }: { onStart: () => void }) {
       return
     }
     reset()
-    location.reload()
+    onStartOver?.()
   }
 
   useEffect(() => {

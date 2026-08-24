@@ -98,4 +98,12 @@ describe('ModuleHost engine', () => {
     render(<ModuleHost registry={registry} />)
     expect(screen.getByText('done-tools')).toBeInTheDocument()
   })
+
+  test('invalid persisted paths reset instead of leaving the child on a blank module host', () => {
+    useGame.setState({ lang: 'en', path: 'surprise' as never })
+    render(<ModuleHost registry={registry} />)
+    expect(useGame.getState().lang).toBeNull()
+    expect(useGame.getState().path).toBeNull()
+    expect(Object.keys(useGame.getState().stars)).toHaveLength(0)
+  })
 })

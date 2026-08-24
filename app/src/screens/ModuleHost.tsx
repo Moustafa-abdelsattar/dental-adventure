@@ -36,11 +36,17 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
   const handoverTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   /** The module id whose completion has already been handled. */
   const completedFor = useRef<string | null>(null)
+  const reset = useGame(s => s.reset)
 
   useEffect(() => () => clearTimeout(handoverTimer.current), [])
 
+  useEffect(() => {
+    if (path && !manifests[path]) reset()
+  }, [path, reset])
+
   if (!lang || !path) return null
   const manifest = manifests[path]
+  if (!manifest) return null
   const finished = manifest.modules.filter(m => starIdsFor(m).every(id => stars[id]))
   const allDone = finished.length === manifest.modules.length
 
