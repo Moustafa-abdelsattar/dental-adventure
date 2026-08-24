@@ -42,7 +42,7 @@
       "label": "The Probe",
       "source": "owner",
       "ar": "أنا اللي بعدّ سنانك واحدة واحدة عشان الدكتور يعرف يطمن عليها. 🔎",
-      "en": "I'm the little tooth checker! I help the dentist check your teeth one by one. 🔎"
+      "en": "I'm the tooth checker! I help the dentist check your teeth one by one. 🔎"
     },
     {
       "id": "tool.suction",
@@ -63,7 +63,7 @@
       "label": "The Handpiece",
       "source": "owner",
       "ar": "أنا زي الدش! برش ميّه وأنا بنضّف السوسة عشان سنانك تبقى نضيفة. 🚿",
-      "en": "I'm like a little shower! I spray water while I clean the cavity and help keep your tooth nice and clean. 🚿"
+      "en": "I'm the polishing brush! I spray water while I clean the cavity and help keep your tooth nice and clean. 🚿"
     },
     {
       "id": "tool.xray",
@@ -91,7 +91,7 @@
       "label": "The Local Anesthetic",
       "source": "owner",
       "ar": "أنا العصير السحري! بنوّم السوسة شوية عشان الدكتور يقدر يشيلها وإنت مرتاح. 🧃✨",
-      "en": "I'm the magic juice! I make the tooth sleepy so the dentist can clean the cavity while you stay comfortable. 🧃✨"
+      "en": "I'm the sleepy gel! I make the tooth sleepy so the dentist can clean the cavity while you stay comfortable. 🧃✨"
     }
   ]
 }
