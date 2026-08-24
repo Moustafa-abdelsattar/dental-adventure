@@ -52,6 +52,16 @@ test('full flow: mask → stop signal → six steps → complete, exactly once',
     'visit.step.mirror',
     'visit.step.sleepy',
     'visit.step.count',
+    'spray.count.1',
+    'spray.count.2',
+    'spray.count.3',
+    'spray.count.4',
+    'spray.count.5',
+    'spray.count.6',
+    'spray.count.7',
+    'spray.count.8',
+    'spray.count.9',
+    'spray.count.10',
     'visit.step.clean',
     'visit.done',
   ])
@@ -110,5 +120,18 @@ for (const path of ['checkup', 'treatment'] as const) {
     // before the counting, and the handpiece only after both.
     const spokenSteps = spoken.filter(id => steps.includes(id as string))
     expect(spokenSteps).toEqual(steps)
+    const countStart = spoken.indexOf('visit.step.count')
+    expect(spoken.slice(countStart + 1, countStart + 11)).toEqual([
+      'spray.count.1',
+      'spray.count.2',
+      'spray.count.3',
+      'spray.count.4',
+      'spray.count.5',
+      'spray.count.6',
+      'spray.count.7',
+      'spray.count.8',
+      'spray.count.9',
+      'spray.count.10',
+    ])
   })
 }

@@ -54,6 +54,7 @@ const STEPS: Step[] = [
 
 const STEP_PAUSE_MS = 900
 const FREEZE_MS = 1500
+const COUNT_IDS = Array.from({ length: 10 }, (_, i) => `spray.count.${i + 1}` as StringId)
 
 /**
  * The visit simulation: meet Dr. Lili (mask reveal), learn the raise-your-hand
@@ -109,7 +110,14 @@ export function VisitScreen({ onComplete }: ModuleProps) {
         setStep(i)
         setLineDone(false)
         await audio.say(lang, STEPS[i].stringId)
-        setLineDone(true)
+        if (STEPS[i].id === 'count') {
+          for (let n = 0; n < COUNT_IDS.length; n++) {
+            if (n === COUNT_IDS.length - 1) setLineDone(true)
+            await audio.say(lang, COUNT_IDS[n])
+          }
+        } else {
+          setLineDone(true)
+        }
         await new Promise(r => setTimeout(r, STEPS[i].pauseMs ?? STEP_PAUSE_MS))
       }
       setPhase('done')
