@@ -1,14 +1,19 @@
-import { render, screen, fireEvent, cleanup } from '@testing-library/react'
+import { render, screen, fireEvent, act, cleanup } from '@testing-library/react'
 import App from '../src/App'
 import { useGame } from '../src/store/game'
 
 beforeEach(() => {
   cleanup()
+  vi.useRealTimers()
   localStorage.clear()
   useGame.getState().reset()
   history.replaceState(null, '', '/')
   document.documentElement.dir = 'ltr'
   document.documentElement.lang = 'en'
+})
+
+afterEach(() => {
+  vi.useRealTimers()
 })
 
 test('flow: language → parent (visit + name) → welcome; dir flips for Arabic', () => {
@@ -80,4 +85,49 @@ test('start over from a returning Arabic session resets progress and direction w
   expect(Object.keys(useGame.getState().stars)).toHaveLength(0)
   expect(document.documentElement.dir).toBe('ltr')
   expect(screen.getByText('Choose language')).toBeInTheDocument()
+})
+
+test('start over needs a fresh second tap before it wipes saved progress', () => {
+  vi.useFakeTimers()
+  useGame.getState().setLang('en')
+  useGame.getState().setPath('checkup')
+  useGame.getState().awardStar('clinic')
+
+  render(<App />)
+  fireEvent.click(screen.getByTestId('start-over'))
+  expect(useGame.getState().path).toBe('checkup')
+  expect(Object.keys(useGame.getState().stars)).toHaveLength(1)
+
+  act(() => vi.advanceTimersByTime(4001))
+  expect(screen.getByTestId('start-over')).toHaveTextContent('Start over')
+  fireEvent.click(screen.getByTestId('start-over'))
+  expect(useGame.getState().path).toBe('checkup')
+  expect(Object.keys(useGame.getState().stars)).toHaveLength(1)
+
+  fireEvent.click(screen.getByTestId('start-over'))
+  expect(useGame.getState().path).toBeNull()
+  expect(Object.keys(useGame.getState().stars)).toHaveLength(0)
+})
+
+test('completed child resumes to the reward instead of replaying finished modules', () => {
+  useGame.getState().setLang('en')
+  useGame.getState().setPath('checkup')
+  ;['clinic', 'tools', 'tools-2', 'practice', 'visit'].forEach(id => useGame.getState().awardStar(id))
+
+  render(<App />)
+  expect(screen.getByText(/Welcome back/)).toBeInTheDocument()
+  fireEvent.click(screen.getByRole('button', { name: /Start the Adventure/ }))
+  expect(screen.getByTestId('reward-screen')).toBeInTheDocument()
+})
+
+test('completed child in free play resumes to the activity picker after welcome', () => {
+  useGame.getState().setLang('en')
+  useGame.getState().setPath('checkup')
+  ;['clinic', 'tools', 'tools-2', 'practice', 'visit'].forEach(id => useGame.getState().awardStar(id))
+  useGame.getState().startFreePlay()
+
+  render(<App />)
+  fireEvent.click(screen.getByRole('button', { name: /Start the Adventure/ }))
+  expect(screen.getByTestId('freeplay-picker')).toBeInTheDocument()
+  expect(screen.getByTestId('freeplay-certificate')).toBeInTheDocument()
 })
