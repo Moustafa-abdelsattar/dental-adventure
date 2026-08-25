@@ -25,6 +25,7 @@ test('reward screen greets by name and Play Again keeps all five stars', () => {
   useGame.getState().setChildName('Omar')
   render(<RewardScreen />)
   expect(screen.getByText('Congratulations, Omar!')).toBeInTheDocument()
+  expect(audio.say).toHaveBeenCalledWith('en', 'reward.narration')
   fireEvent.click(screen.getByRole('button', { name: 'Play Again' }))
   expect(useGame.getState().freePlay).toBe(true)
   expect(Object.keys(useGame.getState().stars)).toHaveLength(5)

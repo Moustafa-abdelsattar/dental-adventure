@@ -41,6 +41,7 @@ test('every tool id has an entry and renders its art asset', () => {
  * in a real browser.
  */
 async function scratch(id: ToolId) {
+  await finishIntro()
   await act(async () => {
     const cell = screen.getByTestId(`tool-${id}`)
     fireEvent.pointerDown(cell, { clientX: 10, clientY: 10 })
@@ -48,8 +49,16 @@ async function scratch(id: ToolId) {
   })
 }
 
+async function finishIntro() {
+  await act(async () => {
+    await Promise.resolve()
+    await Promise.resolve()
+  })
+}
+
 async function dismiss() {
   await act(async () => {
+    await Promise.resolve()
     fireEvent.click(within(screen.getByTestId('zoom-card')).getByRole('button', { name: 'Next' }))
   })
 }
@@ -84,6 +93,44 @@ test('every cover is placed from the measured board, not from hand-tuned numbers
   }
 })
 
+test('Arabic phase two plays start and scratch instructions before cells open', async () => {
+  useGame.getState().setLang('ar')
+  const say = vi.mocked(audio.say)
+  const spoken: string[] = []
+  let finishStart!: () => void
+  let finishScratch!: () => void
+  say.mockImplementation((_lang, id) => {
+    spoken.push(id)
+    if (id === 'tools.title') return new Promise<void>(resolve => (finishStart = resolve))
+    if (id === 'tools.intro') return new Promise<void>(resolve => (finishScratch = resolve))
+    return Promise.resolve()
+  })
+
+  const module = checkup.modules.find(m => m.kind === 'tools')! as ModuleDef
+  render(<ToolsScreen module={module} onComplete={vi.fn()} />)
+  const mirror = screen.getByTestId('tool-mirror')
+
+  expect(spoken).toEqual(['tools.title'])
+  expect(mirror).toHaveAttribute('aria-disabled', 'true')
+  fireEvent.pointerDown(mirror, { clientX: 10, clientY: 10 })
+  fireEvent.pointerUp(mirror, { clientX: 10, clientY: 10 })
+  expect(screen.queryByTestId('zoom-card')).toBeNull()
+
+  await act(async () => {
+    finishStart()
+    await Promise.resolve()
+  })
+
+  expect(spoken).toEqual(['tools.title', 'tools.intro'])
+  expect(mirror).toHaveAttribute('aria-disabled', 'true')
+
+  await act(async () => {
+    finishScratch()
+  })
+
+  expect(mirror).toHaveAttribute('aria-disabled', 'false')
+})
+
 test('scratching a cell reveals the tool, narrates one line about it, and marks it met', async () => {
   const module = checkup.modules.find(m => m.kind === 'tools')! as ModuleDef
   render(<ToolsScreen module={module} onComplete={vi.fn()} />)
@@ -104,6 +151,27 @@ test('scratching a cell reveals the tool, narrates one line about it, and marks 
   expect(screen.getByTestId('met-mirror')).toBeInTheDocument()
   // a met cell has no cover left to scratch
   expect(screen.queryByTestId('tool-mirror')).not.toBeInTheDocument()
+})
+
+test('tool card cannot advance until its narration finishes', async () => {
+  const say = vi.mocked(audio.say)
+  let finishNarration!: () => void
+  say.mockImplementation((_lang, id) =>
+    id === 'tool.mirror.desc' ? new Promise<void>(resolve => (finishNarration = resolve)) : Promise.resolve(),
+  )
+
+  const module = checkup.modules.find(m => m.kind === 'tools')! as ModuleDef
+  render(<ToolsScreen module={module} onComplete={vi.fn()} />)
+  await scratch('mirror')
+
+  const next = within(screen.getByTestId('zoom-card')).getByRole('button', { name: 'Next' })
+  expect(next).toBeDisabled()
+
+  await act(async () => {
+    finishNarration()
+  })
+
+  expect(next).not.toBeDisabled()
 })
 
 test('the module completes once every tool on the roster has been found', async () => {

@@ -53,6 +53,18 @@ test('name is saved and used after start', () => {
   expect(screen.getByText(/Omar's Adventure/)).toBeInTheDocument()
 })
 
+test('Arabic start button mounts phase one immediately', () => {
+  useGame.getState().setLang('ar')
+  useGame.getState().setPath('checkup')
+  useGame.getState().awardStar('setup-complete')
+
+  render(<App />)
+  const start = screen.getByTestId('start-adventure').querySelector('button')!
+  fireEvent.click(start)
+
+  expect(screen.getByTestId('clinic-scene')).toBeInTheDocument()
+})
+
 test('returning child skips parent setup, then continues from the first incomplete module', () => {
   useGame.getState().setLang('en')
   useGame.getState().setPath('checkup')

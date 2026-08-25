@@ -12,12 +12,19 @@ const IDLE_MS = 10000
 
 /** Touch an object the way a finger does: down and up in the same place. */
 async function tap(id: string) {
+  await finishIntro()
   const el = screen.getByTestId(`hotspot-${id}`)
   fireEvent.pointerDown(el, { clientX: 100, clientY: 100 })
   fireEvent.pointerUp(el, { clientX: 100, clientY: 100 })
   // the object plays its beat before the card arrives
   await act(async () => {
     await vi.advanceTimersByTimeAsync(600)
+  })
+}
+
+async function finishIntro() {
+  await act(async () => {
+    await Promise.resolve()
   })
 }
 
@@ -67,11 +74,21 @@ test('idle 10s triggers a spoken hint', () => {
   act(() => {
     vi.advanceTimersByTime(IDLE_MS)
   })
+  expect(audio.say).not.toHaveBeenCalledWith('en', 'milo.hint.tap')
+})
+
+test('idle hint starts only after the clinic intro has finished', async () => {
+  render(<ClinicScreen module={module} onComplete={vi.fn()} />)
+  await finishIntro()
+  act(() => {
+    vi.advanceTimersByTime(IDLE_MS)
+  })
   expect(audio.say).toHaveBeenCalledWith('en', 'milo.hint.tap')
 })
 
 test('the object plays its beat before the card arrives', async () => {
   render(<ClinicScreen module={module} onComplete={vi.fn()} />)
+  await finishIntro()
   const el = screen.getByTestId('hotspot-chair')
   fireEvent.pointerDown(el, { clientX: 100, clientY: 100 })
   fireEvent.pointerUp(el, { clientX: 100, clientY: 100 })
@@ -86,8 +103,52 @@ test('the object plays its beat before the card arrives', async () => {
   expect(screen.getByTestId('zoom-card')).toBeInTheDocument()
 })
 
+test('object taps do not interrupt the clinic intro narration', async () => {
+  const say = vi.mocked(audio.say)
+  let finishIntroNarration!: () => void
+  say.mockImplementation((_lang, id) =>
+    id === 'clinic.intro' ? new Promise<void>(resolve => (finishIntroNarration = resolve)) : Promise.resolve(),
+  )
+
+  render(<ClinicScreen module={module} onComplete={vi.fn()} />)
+  const el = screen.getByTestId('hotspot-chair')
+  expect(el).toBeDisabled()
+  fireEvent.pointerDown(el, { clientX: 100, clientY: 100 })
+  fireEvent.pointerUp(el, { clientX: 100, clientY: 100 })
+
+  expect(say).not.toHaveBeenCalledWith('en', 'clinic.chair.desc')
+  expect(screen.queryByTestId('zoom-card')).not.toBeInTheDocument()
+
+  await act(async () => {
+    finishIntroNarration()
+  })
+
+  expect(el).not.toBeDisabled()
+})
+
+test('the object card cannot advance until its narration finishes', async () => {
+  const say = vi.mocked(audio.say)
+  let finishNarration!: () => void
+  say.mockImplementation((_lang, id) =>
+    id === 'clinic.chair.desc' ? new Promise<void>(resolve => (finishNarration = resolve)) : Promise.resolve(),
+  )
+
+  render(<ClinicScreen module={module} onComplete={vi.fn()} />)
+  await tap('chair')
+
+  const next = within(screen.getByTestId('zoom-card')).getByRole('button', { name: 'Next' })
+  expect(next).toBeDisabled()
+
+  await act(async () => {
+    finishNarration()
+  })
+
+  expect(next).not.toBeDisabled()
+})
+
 test('dragging across an object does not open it', async () => {
   render(<ClinicScreen module={module} onComplete={vi.fn()} />)
+  await finishIntro()
   const el = screen.getByTestId('hotspot-chair')
   fireEvent.pointerDown(el, { clientX: 100, clientY: 100 })
   fireEvent.pointerUp(el, { clientX: 220, clientY: 140 })
@@ -99,6 +160,7 @@ test('dragging across an object does not open it', async () => {
 
 test('a cancelled press does not open it', async () => {
   render(<ClinicScreen module={module} onComplete={vi.fn()} />)
+  await finishIntro()
   const el = screen.getByTestId('hotspot-chair')
   fireEvent.pointerDown(el, { clientX: 100, clientY: 100 })
   fireEvent.pointerCancel(el)
@@ -168,6 +230,7 @@ test('Milo points when an object is touched and is pleased when it is met', asyn
 
 test('the room warms only while the light is the object being touched', async () => {
   render(<ClinicScreen module={module} onComplete={vi.fn()} />)
+  await finishIntro()
   expect(screen.getByTestId('stage-effects')).toBeInTheDocument()
   const wash = screen.getByTestId('light-wash')
   expect(wash).toBeInTheDocument()

@@ -47,6 +47,7 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
   const lang = useGame(s => s.lang)!
   const childName = useGame(s => s.childName)
   const [step, setStep] = useState(0)
+  const [introDone, setIntroDone] = useState(false)
   const [wiggleId, setWiggleId] = useState<ToolId | null>(null)
   /** The instrument currently at the tooth, mid-beat. */
   const [acting, setActing] = useState<ToolId | null>(null)
@@ -61,11 +62,17 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
   const done = step >= SEQUENCE.length
 
   useEffect(() => {
+    let alive = true
     const intro = async () => {
       await audio.say(lang, 'prepare.intro')
-      void audio.say(lang, SEQUENCE[0].stepId)
+      if (!alive) return
+      await audio.say(lang, SEQUENCE[0].stepId)
+      if (alive) setIntroDone(true)
     }
     void intro()
+    return () => {
+      alive = false
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -84,8 +91,10 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
     setActing(null)
     setStep(next)
     if (next < SEQUENCE.length) {
+      setIntroDone(false)
       await audio.say(lang, 'milo.great')
-      void audio.say(lang, SEQUENCE[next].stepId)
+      await audio.say(lang, SEQUENCE[next].stepId)
+      setIntroDone(true)
     } else if (!doneRef.current) {
       doneRef.current = true
       await audio.say(lang, 'prepare.done')
@@ -94,7 +103,7 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
   }
 
   const tapTool = (toolId: ToolId) => {
-    if (done || acting || scrubbing) return
+    if (!introDone || done || acting || scrubbing) return
     if (toolId !== SEQUENCE[step].toolId) {
       setWiggleId(toolId)
       later(() => setWiggleId(null), 450)
@@ -170,12 +179,13 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
             <motion.button
               key={toolId}
               data-testid={`prep-${toolId}`}
+              disabled={!introDone || (!isNext && !used)}
               onClick={() => tapTool(toolId)}
               animate={wiggleId === toolId ? wiggle : isNext ? { scale: [1, 1.1, 1] } : { scale: 1 }}
               transition={
                 wiggleId === toolId ? wiggleTiming : isNext ? loops.breathe : { duration: loops.breathe.duration }
               }
-              className={`relative aspect-square rounded-3xl bg-white shadow-lg p-2 ${isNext ? 'ring-4 ring-sunny' : ''} ${!isNext && !used ? 'opacity-40' : ''} ${used ? 'ring-2 ring-mint' : ''}`}
+              className={`relative aspect-square rounded-3xl bg-white shadow-lg p-2 ${isNext && introDone ? 'ring-4 ring-sunny' : ''} ${(!isNext && !used) || !introDone ? 'opacity-40' : ''} ${used ? 'ring-2 ring-mint' : ''}`}
             >
               <Svg demo={used} />
               {used && <DoneBadge testid={`prep-done-${toolId}`} className="absolute -top-2 -end-2 w-8 h-8" />}

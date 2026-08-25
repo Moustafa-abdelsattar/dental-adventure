@@ -55,6 +55,18 @@ const STEPS: Step[] = [
 const STEP_PAUSE_MS = 900
 const FREEZE_MS = 1500
 const COUNT_IDS = Array.from({ length: 10 }, (_, i) => `spray.count.${i + 1}` as StringId)
+const AR_SIMULATION_CUES = [
+  { atMs: 7540, step: 0 },
+  { atMs: 15740, step: 1 },
+  { atMs: 20180, step: 2 },
+  { atMs: 28740, step: 3 },
+]
+const AR_SIMULATION_DURATION_MS = 35_520
+const AR_COUNT_INTRO_CLOSE_EYES_CUE_MS = 7480
+const AR_COUNT_INTRO_DURATION_MS = 7381
+const AR_COUNT_TEN_CUE_MS = 7720
+const AR_COUNT_TO_TEN_DURATION_MS = 9237
+const AR_CLEAN_DURATION_MS = 10_219
 
 /**
  * The visit simulation: meet Dr. Lili (mask reveal), learn the raise-your-hand
@@ -64,8 +76,14 @@ export function VisitScreen({ onComplete }: ModuleProps) {
   const lang = useGame(s => s.lang)!
   const [phase, setPhase] = useState<Phase>('meet')
   const [masked, setMasked] = useState(true)
+  const [maskReady, setMaskReady] = useState(false)
+  const [meetCopy, setMeetCopy] = useState<StringId>('visit.meetDr')
+  const [handReady, setHandReady] = useState(false)
+  const [stopCopy, setStopCopy] = useState<StringId>('visit.stopSignal')
   const [frozen, setFrozen] = useState(false)
   const [step, setStep] = useState(-1)
+  const [stepCopy, setStepCopy] = useState<StringId | null>(null)
+  const [audioReplayDisabled, setAudioReplayDisabled] = useState(false)
   /** True once the current step's line has finished, for `thenFrame`. */
   const [lineDone, setLineDone] = useState(false)
   const startedSteps = useRef(false)
@@ -78,20 +96,44 @@ export function VisitScreen({ onComplete }: ModuleProps) {
   }
 
   useEffect(() => {
-    void audio.say(lang, 'visit.meetDr')
+    let cancelled = false
+    const run = async () => {
+      setMeetCopy('visit.meetDr')
+      await audio.say(lang, 'visit.meetDr')
+      if (cancelled) return
+      if (lang === 'ar') {
+        setMeetCopy('visit.maskPrompt')
+        await audio.say(lang, 'visit.maskPrompt')
+        if (cancelled) return
+      }
+      setMaskReady(true)
+    }
+    void run()
+    return () => {
+      cancelled = true
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const maskTap = async () => {
-    if (!masked) return
+    if (!masked || !maskReady || phase !== 'meet') return
     setMasked(false)
+    setMeetCopy('visit.maskOff')
     await audio.say(lang, 'visit.maskOff')
+    setHandReady(false)
+    setStopCopy('visit.stopSignal')
     setPhase('stop')
-    void audio.say(lang, 'visit.stopSignal')
+    await audio.say(lang, 'visit.stopSignal')
+    if (lang === 'ar') {
+      setStopCopy('visit.handPrompt')
+      await audio.say(lang, 'visit.handPrompt')
+    }
+    setHandReady(true)
   }
 
   const handTap = () => {
-    if (frozen) return
+    if (frozen || !handReady || phase !== 'stop') return
+    setHandReady(false)
     setFrozen(true)
     setTimeout(() => {
       setFrozen(false)
@@ -105,9 +147,75 @@ export function VisitScreen({ onComplete }: ModuleProps) {
   useEffect(() => {
     if (phase !== 'steps' || startedSteps.current) return
     startedSteps.current = true
+    let cancelled = false
+    const timers: number[] = []
+    const waitMs = (ms: number) =>
+      new Promise<void>(resolve => {
+        timers.push(window.setTimeout(resolve, ms))
+      })
+    const finish = async () => {
+      if (cancelled) return
+      setPhase('done')
+      await audio.say(lang, 'visit.done')
+      if (!cancelled) completeOnce()
+    }
     const run = async () => {
+      if (lang === 'ar') {
+        setAudioReplayDisabled(true)
+        setStep(-1)
+        setLineDone(false)
+        for (const cue of AR_SIMULATION_CUES) {
+          timers.push(
+            window.setTimeout(() => {
+              if (cancelled) return
+              setStep(cue.step)
+              setStepCopy(STEPS[cue.step].stringId)
+              setLineDone(cue.step === 3)
+            }, cue.atMs),
+          )
+        }
+        await Promise.all([audio.say(lang, 'visit.simulation'), waitMs(AR_SIMULATION_DURATION_MS)])
+        timers.forEach(window.clearTimeout)
+        setStep(3)
+        setStepCopy(STEPS[3].stringId)
+        setLineDone(true)
+        setStepCopy('visit.step.count')
+        timers.push(
+          window.setTimeout(() => {
+            if (cancelled) return
+            setStep(4)
+            setLineDone(false)
+          }, AR_COUNT_INTRO_CLOSE_EYES_CUE_MS),
+        )
+        await Promise.all([audio.say(lang, 'visit.step.count'), waitMs(AR_COUNT_INTRO_DURATION_MS)])
+        timers.forEach(window.clearTimeout)
+        if (cancelled) return
+        setStep(4)
+        setLineDone(false)
+        setStepCopy('visit.countToTen')
+        timers.push(
+          window.setTimeout(() => {
+            if (!cancelled) setLineDone(true)
+          }, AR_COUNT_TEN_CUE_MS),
+        )
+        await Promise.all([audio.say(lang, 'visit.countToTen'), waitMs(AR_COUNT_TO_TEN_DURATION_MS)])
+        timers.forEach(window.clearTimeout)
+        if (cancelled) return
+        setLineDone(true)
+        setStep(5)
+        setStepCopy('visit.step.clean')
+        setLineDone(false)
+        await Promise.all([audio.say(lang, 'visit.step.clean'), waitMs(AR_CLEAN_DURATION_MS)])
+        if (cancelled) return
+        setLineDone(true)
+        await finish()
+        if (!cancelled) setAudioReplayDisabled(false)
+        return
+      }
+
       for (let i = 0; i < STEPS.length; i++) {
         setStep(i)
+        setStepCopy(STEPS[i].stringId)
         setLineDone(false)
         await audio.say(lang, STEPS[i].stringId)
         if (STEPS[i].id === 'count') {
@@ -125,6 +233,10 @@ export function VisitScreen({ onComplete }: ModuleProps) {
       completeOnce()
     }
     void run()
+    return () => {
+      cancelled = true
+      timers.forEach(window.clearTimeout)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase])
 
@@ -147,11 +259,13 @@ export function VisitScreen({ onComplete }: ModuleProps) {
     <GameStage
       title={t(lang, 'visit.title')}
       onIntroTap={() => void audio.replayLast()}
+      audioReplayDisabled={audioReplayDisabled}
       intro={
         <>
-          {phase === 'meet' && t(lang, masked ? 'visit.meetDr' : 'visit.maskOff')}
-          {phase === 'stop' && t(lang, 'visit.stopSignal')}
-          {phase === 'steps' && step >= 0 && t(lang, STEPS[step].stringId)}
+          {phase === 'meet' && t(lang, meetCopy)}
+          {phase === 'stop' && t(lang, stopCopy)}
+          {phase === 'steps' && step < 0 && t(lang, 'visit.simulation')}
+          {phase === 'steps' && step >= 0 && t(lang, stepCopy ?? STEPS[step].stringId)}
           {phase === 'done' && t(lang, 'visit.done')}
         </>
       }
@@ -255,7 +369,7 @@ export function VisitScreen({ onComplete }: ModuleProps) {
             transition={{ duration: 0.45, ease: 'easeInOut' }}
             style={{ pointerEvents: phase === 'meet' ? undefined : 'none' }}
           >
-            <DrNour masked={masked} onMaskTap={() => void maskTap()} idle={!frozen} />
+            <DrNour masked={masked} maskEnabled={maskReady} onMaskTap={() => void maskTap()} idle={!frozen} />
           </motion.div>
         </div>
       </div>
@@ -267,9 +381,13 @@ export function VisitScreen({ onComplete }: ModuleProps) {
         <motion.button
           data-testid="raise-hand"
           onClick={handTap}
-          animate={frozen ? { scale: 1 } : { scale: [1, 1.1, 1] }}
+          disabled={!handReady || frozen}
+          aria-disabled={!handReady || frozen}
+          animate={frozen || !handReady ? { scale: 1 } : { scale: [1, 1.1, 1] }}
           transition={frozen ? { duration: 0.3 } : loops.breathe}
-          className="absolute bottom-[13%] left-1/2 -translate-x-1/2 z-10 w-24 h-24 rounded-full bg-sunny shadow-xl ring-4 ring-white/70 flex items-center justify-center"
+          className={`absolute bottom-[13%] left-1/2 -translate-x-1/2 z-10 w-24 h-24 rounded-full bg-sunny shadow-xl ring-4 ring-white/70 flex items-center justify-center ${
+            handReady && !frozen ? 'cursor-pointer' : 'cursor-default opacity-80'
+          }`}
           aria-label="raise hand"
         >
           <RaisedHand className="w-14" />

@@ -20,6 +20,13 @@ afterEach(() => {
   vi.useRealTimers()
 })
 
+async function finishPrepareIntro() {
+  await act(async () => {
+    await Promise.resolve()
+    await Promise.resolve()
+  })
+}
+
 test('brush: spot tap without brush hints instead of cleaning; with brush cleans all 4 and completes', async () => {
   const onComplete = vi.fn()
   render(<PracticeBrushScreen module={mod('practice')} onComplete={onComplete} />)
@@ -47,6 +54,7 @@ test('prepare: wrong order does not advance; juice then brush completes', async 
   vi.useFakeTimers()
   const onComplete = vi.fn()
   render(<PrepareScreen module={mod('prepare')} onComplete={onComplete} />)
+  await finishPrepareIntro()
 
   // the brush is second, so pressing it first must do nothing but wiggle
   await act(async () => {
@@ -89,6 +97,56 @@ test('prepare: wrong order does not advance; juice then brush completes', async 
   for (const n of [1, 2, 3]) expect(audio.say).toHaveBeenCalledWith('en', `milo.praise.${n}`)
   expect(audio.say).toHaveBeenCalledWith('en', 'prepare.done')
   expect(onComplete).toHaveBeenCalledTimes(1)
+})
+
+test('prepare: tools stay inactive until intro narration finishes', async () => {
+  const say = vi.mocked(audio.say)
+  let finishIntro!: () => void
+  say.mockImplementation((_lang, id) =>
+    id === 'prepare.intro' ? new Promise<void>(resolve => (finishIntro = resolve)) : Promise.resolve(),
+  )
+
+  render(<PrepareScreen module={mod('prepare')} onComplete={vi.fn()} />)
+  const spray = screen.getByTestId('prep-spray')
+
+  expect(spray).toBeDisabled()
+  fireEvent.click(spray)
+  expect(screen.queryByTestId('prepare-spray-beat')).toBeNull()
+
+  await act(async () => {
+    finishIntro()
+    await Promise.resolve()
+  })
+
+  expect(spray).not.toBeDisabled()
+})
+
+test('prepare: brush stays inactive until its step narration finishes', async () => {
+  vi.useFakeTimers()
+  const say = vi.mocked(audio.say)
+  let finishBrushLine!: () => void
+  say.mockImplementation((_lang, id) =>
+    id === 'prepare.step.brush' ? new Promise<void>(resolve => (finishBrushLine = resolve)) : Promise.resolve(),
+  )
+
+  render(<PrepareScreen module={mod('prepare')} onComplete={vi.fn()} />)
+  await finishPrepareIntro()
+
+  await act(async () => {
+    fireEvent.click(screen.getByTestId('prep-spray'))
+    await vi.advanceTimersByTimeAsync(2500)
+  })
+
+  const brush = screen.getByTestId('prep-brush')
+  expect(brush).toBeDisabled()
+  fireEvent.click(brush)
+  expect(screen.queryByTestId('prepare-brush-beat')).toBeNull()
+
+  await act(async () => {
+    finishBrushLine()
+  })
+
+  expect(brush).not.toBeDisabled()
 })
 
 test('spray: counts one to ten aloud then completes unconditionally', async () => {

@@ -36,13 +36,25 @@ export function ToolsScreen({ module, onComplete }: ModuleProps) {
   const childName = useGame(s => s.childName)
   const roster = (module.toolIds ?? []) as ToolId[]
   const [met, setMet] = useState<Set<ToolId>>(new Set())
+  const [introDone, setIntroDone] = useState(false)
   const [open, setOpen] = useState<ToolId | null>(null)
+  const [narrationDone, setNarrationDone] = useState(false)
   const [burstFor, setBurstFor] = useState<ToolId | null>(null)
   const doneRef = useRef(false)
   const burstTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const narrationRun = useRef(0)
 
   useEffect(() => {
-    void audio.say(lang, 'tools.intro')
+    let alive = true
+    void (async () => {
+      if (lang === 'ar') await audio.say(lang, 'tools.title')
+      if (!alive) return
+      await audio.say(lang, 'tools.intro')
+      if (alive) setIntroDone(true)
+    })()
+    return () => {
+      alive = false
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -57,21 +69,25 @@ export function ToolsScreen({ module, onComplete }: ModuleProps) {
 
   /** A cover has come away: show the tool and tell the child about it. */
   const reveal = (toolId: ToolId) => {
-    if (met.has(toolId) || open) return
+    if (!introDone || met.has(toolId) || open) return
     milo.react('happy')
     setBurstFor(toolId)
     burstTimer.current = setTimeout(() => setBurstFor(null), 900)
     setOpen(toolId)
+    setNarrationDone(false)
     // One line, not two. The fun fact used to play straight after the
     // description, so a child met each of the nine tools by listening to two
     // sentences about it — in Arabic that is a long time to hold a four-year-old
     // still before the next cover can be scratched. The clip and the string are
     // both still there if it is ever wanted back.
-    void audio.say(lang, `tool.${toolId}.desc` as StringId)
+    const run = ++narrationRun.current
+    void audio.say(lang, `tool.${toolId}.desc` as StringId).then(() => {
+      if (narrationRun.current === run) setNarrationDone(true)
+    })
   }
 
   const closeCard = async () => {
-    if (!open) return
+    if (!open || !narrationDone) return
     const justMet = open
     const next = new Set(met)
     next.add(justMet)
@@ -137,12 +153,14 @@ export function ToolsScreen({ module, onComplete }: ModuleProps) {
                       // journey's roster, so a cell keeps its foil whichever
                       // visit type the child is playing
                       variant={board.order.indexOf(toolId)}
-                      disabled={!!open}
+                      disabled={!introDone || !!open}
                     />
                     {/* the cover carries its own position; the marker sits on it */}
-                    <span className="absolute pointer-events-none" style={style}>
-                      <ScratchHint idx={i} />
-                    </span>
+                    {introDone && (
+                      <span className="absolute pointer-events-none" style={style}>
+                        <ScratchHint idx={i} />
+                      </span>
+                    )}
                   </>
                 )}
                 {isMet && (
@@ -188,7 +206,7 @@ export function ToolsScreen({ module, onComplete }: ModuleProps) {
             <p className="text-lg text-center text-ink/70 font-bold" onClick={() => void audio.replayLast()}>
               {t(lang, `tool.${openTool}.desc` as StringId)}
             </p>
-            <GameButton label={t(lang, 'ui.next')} onPress={() => void closeCard()} />
+            <GameButton label={t(lang, 'ui.next')} disabled={!narrationDone} onPress={() => void closeCard()} />
           </Pop>
         </div>
       )}

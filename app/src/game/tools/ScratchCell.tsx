@@ -240,6 +240,7 @@ export function ScratchCell({
       data-testid={testid}
       role="button"
       aria-label={label}
+      aria-disabled={disabled || done.current}
       tabIndex={0}
       onPointerDown={onDown}
       onPointerMove={onMove}
@@ -248,10 +249,11 @@ export function ScratchCell({
         last.current = null
       }}
       onKeyDown={e => {
+        if (disabled || done.current) return
         if (e.key === 'Enter' || e.key === ' ') finish()
       }}
       className="absolute touch-none select-none"
-      style={{ ...style, cursor: revealed ? 'default' : 'pointer' }}
+      style={{ ...style, cursor: revealed || disabled ? 'default' : 'pointer' }}
     >
       <canvas
         ref={canvasRef}

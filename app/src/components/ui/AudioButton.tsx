@@ -14,17 +14,24 @@ import { useGame } from '../../store/game'
  */
 const LABEL = { en: 'Hear it again', ar: 'اسمعها تاني' }
 
-export function AudioButton({ onPress }: { onPress?: () => void }) {
+export function AudioButton({ onPress, disabled = false }: { onPress?: () => void; disabled?: boolean }) {
   const lang = useGame(s => s.lang) ?? 'en'
   return (
     <motion.button
       type="button"
       data-testid="audio-replay"
       aria-label={LABEL[lang]}
-      whileTap={{ scale: 0.9 }}
+      disabled={disabled}
+      aria-disabled={disabled}
+      whileTap={disabled ? undefined : { scale: 0.9 }}
       transition={springs.snappy}
-      onClick={() => (onPress ? onPress() : void audio.replayLast())}
-      className="shrink-0 w-11 h-11 rounded-full bg-white/80 shadow-md flex items-center justify-center text-sky-deep"
+      onClick={() => {
+        if (disabled) return
+        return onPress ? onPress() : void audio.replayLast()
+      }}
+      className={`shrink-0 w-11 h-11 rounded-full bg-white/80 shadow-md flex items-center justify-center text-sky-deep ${
+        disabled ? 'cursor-default opacity-55' : ''
+      }`}
     >
       <svg viewBox="0 0 24 24" className="w-6 h-6" aria-hidden>
         <path d="M4 9.5 h3.2 L12 5.4 v13.2 L7.2 14.5 H4 Z" fill="currentColor" />

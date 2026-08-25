@@ -22,6 +22,7 @@ export function GameStage({
   title,
   intro,
   onIntroTap,
+  audioReplayDisabled = false,
   scene,
   effects,
   children,
@@ -33,6 +34,7 @@ export function GameStage({
   title: ReactNode
   intro?: ReactNode
   onIntroTap?: () => void
+  audioReplayDisabled?: boolean
   /** Scenery for the world layer: drawn behind the subject and never tappable. */
   scene?: ReactNode
   /**
@@ -62,13 +64,16 @@ export function GameStage({
         </h1>
         {intro !== undefined && (
           <>
-            <p className="w-full text-ink/70 font-bold text-center mt-1 min-h-14 text-balance" onClick={onIntroTap}>
+            <p
+              className="w-full text-ink/70 font-bold text-center mt-1 min-h-14 text-balance"
+              onClick={audioReplayDisabled ? undefined : onIntroTap}
+            >
               {intro}
             </p>
             {/* Its own row rather than beside the text: crowding the line
                 narrows it enough to add a wrap, and a four-year-old needs the
                 replay target big and obvious anyway. */}
-            <AudioButton onPress={onIntroTap} />
+            <AudioButton onPress={onIntroTap} disabled={audioReplayDisabled} />
           </>
         )}
       </header>

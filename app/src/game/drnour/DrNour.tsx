@@ -11,11 +11,13 @@ import { springs } from '../../motion/springs'
 export function DrNour({
   masked,
   onMaskTap,
+  maskEnabled = true,
   idle = true,
   size,
 }: {
   masked: boolean
   onMaskTap?: () => void
+  maskEnabled?: boolean
   idle?: boolean
   /** Fixed pixel width; omit to fill the parent. */
   size?: number
@@ -41,9 +43,10 @@ export function DrNour({
           alt=""
           draggable={false}
           onError={() => setHasMaskedArt(false)}
-          onClick={onMaskTap}
-          className="absolute inset-0 w-full cursor-pointer drop-shadow-md"
-          whileTap={{ scale: 0.97 }}
+          onClick={maskEnabled ? onMaskTap : undefined}
+          aria-disabled={!maskEnabled || undefined}
+          className={`absolute inset-0 w-full drop-shadow-md ${maskEnabled ? 'cursor-pointer' : 'cursor-default'}`}
+          whileTap={maskEnabled ? { scale: 0.97 } : undefined}
           transition={springs.soft}
         />
       )}
@@ -52,11 +55,12 @@ export function DrNour({
         <motion.svg
           data-testid="drnour-mask"
           viewBox="0 0 100 62"
-          onClick={onMaskTap}
-          className="absolute cursor-pointer"
+          onClick={maskEnabled ? onMaskTap : undefined}
+          aria-disabled={!maskEnabled || undefined}
+          className={`absolute ${maskEnabled ? 'cursor-pointer' : 'cursor-default'}`}
           style={{ left: '32.5%', top: '30.5%', width: '36%' }}
           initial={false}
-          whileTap={{ scale: 0.95 }}
+          whileTap={maskEnabled ? { scale: 0.95 } : undefined}
           transition={springs.soft}
         >
           <defs>

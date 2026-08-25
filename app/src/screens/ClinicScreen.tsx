@@ -73,17 +73,26 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
   const lang = useGame(s => s.lang)!
   const childName = useGame(s => s.childName)
   const [explored, setExplored] = useState<Set<ItemId>>(new Set())
+  const [introDone, setIntroDone] = useState(false)
   const [open, setOpen] = useState<ItemId | null>(null)
   const [acting, setActing] = useState<ItemId | null>(null)
+  const [narrationDone, setNarrationDone] = useState(false)
   const [burstFor, setBurstFor] = useState<ItemId | null>(null)
   const [hintFor, setHintFor] = useState<ItemId | null>(null)
   const doneRef = useRef(false)
   const sceneRef = useRef<HTMLDivElement>(null)
   const cardTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const burstTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const narrationRun = useRef(0)
 
   useEffect(() => {
-    void audio.say(lang, 'clinic.intro')
+    let alive = true
+    void audio.say(lang, 'clinic.intro').then(() => {
+      if (alive) setIntroDone(true)
+    })
+    return () => {
+      alive = false
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -96,7 +105,7 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
   )
 
   useEffect(() => {
-    if (open || acting || explored.size >= ITEMS.length) return
+    if (!introDone || open || acting || explored.size >= ITEMS.length) return
     const timer = setTimeout(() => {
       const next = ITEMS.find(i => !explored.has(i.id))
       if (next) {
@@ -106,15 +115,19 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
       }
     }, IDLE_HINT_MS)
     return () => clearTimeout(timer)
-  }, [open, acting, explored, lang])
+  }, [introDone, open, acting, explored, lang])
 
   const tapItem = (id: ItemId) => {
-    if (acting || open) return
+    if (!introDone || acting || open) return
     setHintFor(null)
     setActing(id)
+    setNarrationDone(false)
     milo.react('point')
     const item = ITEMS.find(i => i.id === id)!
-    void audio.say(lang, item.descId)
+    const run = ++narrationRun.current
+    void audio.say(lang, item.descId).then(() => {
+      if (narrationRun.current === run) setNarrationDone(true)
+    })
     cardTimer.current = setTimeout(() => setOpen(id), CARD_DELAY_MS)
   }
 
@@ -145,7 +158,7 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
   }
 
   const closeCard = async () => {
-    if (!open) return
+    if (!open || !narrationDone) return
     const justClosed = open
     const next = new Set(explored)
     next.add(justClosed)
@@ -239,6 +252,7 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
                   key={item.id}
                   data-testid={`hotspot-${item.id}`}
                   aria-label={t(lang, item.nameId)}
+                  disabled={!introDone || !!acting || !!open}
                   onPointerDown={onPointerDown(item.id)}
                   onPointerUp={onPointerUp(item.id)}
                   onPointerCancel={cancelPress}
@@ -250,7 +264,7 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
                   }}
                   className="absolute rounded-3xl"
                 >
-                  {!isExplored && !acting && (
+                  {!isExplored && !acting && introDone && (
                     <TapHere key={`tap-${item.id}`} id={item.id} idx={idx} urgent={hintFor === item.id} />
                   )}
                   {/* On the object, not at the corner of its box. The rinse bowl's
@@ -302,7 +316,7 @@ export function ClinicScreen({ onComplete }: ModuleProps) {
             <p className="text-lg text-center text-ink/70 font-bold" onClick={() => void audio.replayLast()}>
               {t(lang, openItem.descId)}
             </p>
-            <GameButton label={t(lang, 'ui.next')} onPress={() => void closeCard()} />
+            <GameButton label={t(lang, 'ui.next')} disabled={!narrationDone} onPress={() => void closeCard()} />
           </Pop>
         </div>
       )}
