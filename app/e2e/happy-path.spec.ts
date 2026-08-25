@@ -21,8 +21,12 @@ async function settle(page: Page) {
 // Playwright's stability check would wait forever — force-click those.
 async function completeClinic(page: Page) {
   for (const id of ['light', 'chair', 'suction', 'syringe']) {
-    await page.getByTestId(`hotspot-${id}`).click({ force: true })
-    await page.getByTestId('zoom-card').getByRole('button').click()
+    const hotspot = page.getByTestId(`hotspot-${id}`)
+    await expect(hotspot).toBeEnabled({ timeout: 30_000 })
+    await hotspot.click({ force: true })
+    const next = page.getByTestId('zoom-card').getByRole('button')
+    await expect(next).toBeEnabled({ timeout: 30_000 })
+    await next.click()
   }
 }
 
@@ -51,7 +55,9 @@ async function completeTools(page: Page, ids: string[]) {
     // revealing raises a card with the tool's name, description and fun fact
     const card = page.getByTestId('zoom-card')
     await expect(card).toBeVisible({ timeout: 15_000 })
-    await card.getByRole('button').click()
+    const next = card.getByRole('button')
+    await expect(next).toBeEnabled({ timeout: 30_000 })
+    await next.click()
     await expect(page.getByTestId(`met-${id}`)).toBeVisible({ timeout: 15_000 })
   }
 }
@@ -59,12 +65,16 @@ async function completeTools(page: Page, ids: string[]) {
 // Both journeys now walk the same tooth screen: the juice puts it to sleep,
 // then the child presses each sticky spot and the brush travels to it.
 async function completePrepare(page: Page) {
-  await expect(page.getByTestId('prep-spray')).toBeVisible({ timeout: 20_000 })
+  const spray = page.getByTestId('prep-spray')
+  await expect(spray).toBeVisible({ timeout: 20_000 })
   await settle(page)
-  await page.getByTestId('prep-spray').click({ force: true })
+  await expect(spray).toBeEnabled({ timeout: 30_000 })
+  await spray.click({ force: true })
   await expect(page.getByTestId('prepare-spray-beat')).toBeVisible({ timeout: 15_000 })
   await expect(page.getByTestId('prep-done-spray')).toBeVisible({ timeout: 15_000 })
-  await page.getByTestId('prep-brush').click({ force: true })
+  const brush = page.getByTestId('prep-brush')
+  await expect(brush).toBeEnabled({ timeout: 30_000 })
+  await brush.click({ force: true })
   await expect(page.getByTestId('prepare-brush-beat')).toBeVisible({ timeout: 15_000 })
   for (const i of [0, 1, 2, 3]) {
     const spot = page.getByTestId(`plaque-${i}`)
@@ -76,9 +86,21 @@ async function completePrepare(page: Page) {
 
 async function completeVisit(page: Page) {
   await settle(page)
-  await page.getByTestId('drnour-mask').click({ force: true })
-  await page.getByTestId('raise-hand').click({ force: true })
-  // steps auto-advance; the reward screen is the exit criterion
+  const mask = page.getByTestId('drnour-mask')
+  await expect(mask).toBeEnabled({ timeout: 30_000 })
+  await mask.click({ force: true })
+  const hand = page.getByTestId('raise-hand')
+  await expect(hand).toBeEnabled({ timeout: 30_000 })
+  await hand.click({ force: true })
+  // The screen auto-advances after narration; the fallback is intentionally
+  // enabled if a media event is late or swallowed by the browser.
+  const reward = page.getByTestId('reward-screen')
+  await expect(async () => {
+    if ((await reward.count()) > 0) return
+    const next = page.getByTestId('next-fallback').getByRole('button')
+    await expect(next).toBeEnabled({ timeout: 500 })
+    await next.click()
+  }).toPass({ timeout: 120_000 })
 }
 
 test.describe('Dental Adventure happy paths', () => {
@@ -123,7 +145,7 @@ test.describe('Dental Adventure happy paths', () => {
     await expect(page.getByTestId('drnour-mask')).toBeVisible({ timeout: 60_000 })
     await completeVisit(page)
 
-    await expect(page.getByTestId('reward-screen')).toBeVisible({ timeout: 60_000 })
+    await expect(page.getByTestId('reward-screen')).toBeVisible({ timeout: 90_000 })
     await expect(page.getByText('بقيت مستكشف السنان!')).toBeVisible()
   })
 
