@@ -1,5 +1,6 @@
 .env
 node_modules/
+dist/
 
 # local voice auditions (generated, never shipped)
 voice-auditions/
