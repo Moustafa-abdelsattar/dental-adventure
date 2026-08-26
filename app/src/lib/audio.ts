@@ -172,7 +172,7 @@ class AudioController {
       const start = ctx.currentTime + 0.01
       const out = ctx.createGain()
       out.gain.setValueAtTime(0.0001, start)
-      out.gain.exponentialRampToValueAtTime(0.11, start + 0.03)
+      out.gain.exponentialRampToValueAtTime(0.2, start + 0.03)
       out.gain.exponentialRampToValueAtTime(0.0001, start + 0.62)
       out.connect(ctx.destination)
 
@@ -184,7 +184,7 @@ class AudioController {
         ping.type = 'triangle'
         ping.frequency.setValueAtTime([1568, 2093, 2637][i], pingStart)
         pingGain.gain.setValueAtTime(0.0001, pingStart)
-        pingGain.gain.exponentialRampToValueAtTime([0.07, 0.05, 0.04][i], pingStart + 0.025)
+        pingGain.gain.exponentialRampToValueAtTime([0.13, 0.1, 0.08][i], pingStart + 0.025)
         pingGain.gain.exponentialRampToValueAtTime(0.0001, pingStart + 0.22)
         ping.connect(pingGain)
         pingGain.connect(out)
