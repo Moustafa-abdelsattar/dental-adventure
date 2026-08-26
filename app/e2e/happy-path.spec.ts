@@ -90,9 +90,13 @@ async function completePrepare(page: Page) {
 async function completeVisit(page: Page) {
   await settle(page)
   const mask = page.getByTestId('drnour-mask')
-  await expect(mask).not.toHaveAttribute('aria-disabled', 'true', { timeout: 30_000 })
-  await mask.click({ force: true })
   const hand = page.getByTestId('raise-hand')
+  await expect(async () => {
+    if ((await hand.count()) > 0) return
+    await expect(mask).not.toHaveAttribute('aria-disabled', 'true', { timeout: 500 })
+    await mask.click({ force: true })
+    await expect(hand).toBeVisible({ timeout: 3_000 })
+  }).toPass({ timeout: 40_000 })
   await expect(hand).toBeEnabled({ timeout: 30_000 })
   await hand.click({ force: true })
   // The screen auto-advances after narration; the fallback is intentionally
