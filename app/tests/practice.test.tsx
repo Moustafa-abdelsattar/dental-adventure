@@ -50,6 +50,33 @@ test('brush: spot tap without brush hints instead of cleaning; with brush cleans
   expect(onComplete).toHaveBeenCalledTimes(1)
 })
 
+test('Arabic brush cleaning plays an erase sound as each stain disappears', async () => {
+  useGame.getState().setLang('ar')
+  const eraseSfx = vi.spyOn(audio, 'playEraseSfx').mockImplementation(() => {})
+  render(<PracticeBrushScreen module={mod('practice')} onComplete={vi.fn()} />)
+
+  fireEvent.click(screen.getByTestId('pick-brush'))
+  for (const i of [0, 1, 2, 3]) {
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(`plaque-${i}`))
+    })
+  }
+
+  expect(eraseSfx).toHaveBeenCalledTimes(4)
+})
+
+test('English brush cleaning keeps the original silent stain erase behavior', async () => {
+  const eraseSfx = vi.spyOn(audio, 'playEraseSfx').mockImplementation(() => {})
+  render(<PracticeBrushScreen module={mod('practice')} onComplete={vi.fn()} />)
+
+  fireEvent.click(screen.getByTestId('pick-brush'))
+  await act(async () => {
+    fireEvent.click(screen.getByTestId('plaque-0'))
+  })
+
+  expect(eraseSfx).not.toHaveBeenCalled()
+})
+
 test('prepare: wrong order does not advance; juice then brush completes', async () => {
   vi.useFakeTimers()
   const onComplete = vi.fn()
@@ -97,6 +124,28 @@ test('prepare: wrong order does not advance; juice then brush completes', async 
   for (const n of [1, 2, 3]) expect(audio.say).toHaveBeenCalledWith('en', `milo.praise.${n}`)
   expect(audio.say).toHaveBeenCalledWith('en', 'prepare.done')
   expect(onComplete).toHaveBeenCalledTimes(1)
+})
+
+test('Arabic prepare brush plays an erase sound when a stain comes away', async () => {
+  vi.useFakeTimers()
+  useGame.getState().setLang('ar')
+  const eraseSfx = vi.spyOn(audio, 'playEraseSfx').mockImplementation(() => {})
+  render(<PrepareScreen module={mod('prepare')} onComplete={vi.fn()} />)
+  await finishPrepareIntro()
+
+  await act(async () => {
+    fireEvent.click(screen.getByTestId('prep-spray'))
+    await vi.advanceTimersByTimeAsync(2500)
+  })
+  await act(async () => {
+    fireEvent.click(screen.getByTestId('prep-brush'))
+  })
+  await act(async () => {
+    fireEvent.click(screen.getByTestId('plaque-0'))
+    await vi.advanceTimersByTimeAsync(320)
+  })
+
+  expect(eraseSfx).toHaveBeenCalledTimes(1)
 })
 
 test('prepare: tools stay inactive until intro narration finishes', async () => {

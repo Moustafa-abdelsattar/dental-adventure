@@ -55,6 +55,7 @@ export function PracticeBrushScreen({ onComplete }: ModuleProps) {
     next[i] = false
     spotsRef.current = next
     setSpots(next)
+    if (lang === 'ar') audio.playEraseSfx()
     if (next.some(Boolean)) {
       // A different line for every spot. This used to be `milo.great` each
       // time, so a child cleaning the tooth heard "Great job" four times over —

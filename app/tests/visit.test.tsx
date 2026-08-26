@@ -257,6 +257,7 @@ test('Arabic simulation uses one narration track with timed visual cues', async 
   vi.useFakeTimers()
   useGame.getState().setLang('ar')
   const onComplete = vi.fn()
+  const eraseSfx = vi.spyOn(audio, 'playEraseSfx').mockImplementation(() => {})
   let finishSimulation!: () => void
   let finishCountIntro!: () => void
   let finishCountToTen!: () => void
@@ -386,6 +387,7 @@ test('Arabic simulation uses one narration track with timed visual cues', async 
   await act(async () => {
     await vi.advanceTimersByTimeAsync(10_219)
   })
+  expect(eraseSfx).toHaveBeenCalledTimes(4)
   expect(audio.say).toHaveBeenCalledWith('ar', 'visit.done')
   expect(onComplete).toHaveBeenCalledTimes(1)
 })

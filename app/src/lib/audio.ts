@@ -9,6 +9,7 @@ class AudioController {
   /** Settles the in-flight line's promise. Held so an interruption can end it. */
   private settleCurrent: (() => void) | null = null
   private music: HTMLAudioElement | null = null
+  private sfxContext: AudioContext | null = null
   private last: { lang: Lang; id: StringId } | null = null
   private muted = false
   private talkingSubs = new Set<(talking: boolean) => void>()
@@ -96,6 +97,63 @@ class AudioController {
     return this.last ? this.say(this.last.lang, this.last.id) : Promise.resolve()
   }
 
+  playEraseSfx() {
+    if (!this.unlocked || this.muted) return
+
+    const AudioContextCtor =
+      window.AudioContext ?? (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
+    if (!AudioContextCtor) return
+
+    try {
+      const ctx = this.sfxContext ?? new AudioContextCtor()
+      this.sfxContext = ctx
+      if (ctx.state === 'suspended') void ctx.resume()
+
+      const start = ctx.currentTime + 0.01
+      const duration = 0.2
+      const out = ctx.createGain()
+      out.gain.setValueAtTime(0.0001, start)
+      out.gain.exponentialRampToValueAtTime(0.16, start + 0.025)
+      out.gain.exponentialRampToValueAtTime(0.0001, start + duration)
+      out.connect(ctx.destination)
+
+      const buffer = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * duration), ctx.sampleRate)
+      const data = buffer.getChannelData(0)
+      for (let i = 0; i < data.length; i++) {
+        const fade = 1 - i / data.length
+        data[i] = (Math.random() * 2 - 1) * fade
+      }
+
+      const noise = ctx.createBufferSource()
+      noise.buffer = buffer
+      const bandpass = ctx.createBiquadFilter()
+      bandpass.type = 'bandpass'
+      bandpass.frequency.setValueAtTime(1800, start)
+      bandpass.Q.setValueAtTime(2.2, start)
+      noise.connect(bandpass)
+      bandpass.connect(out)
+      noise.start(start)
+      noise.stop(start + duration)
+
+      const ping = ctx.createOscillator()
+      const pingGain = ctx.createGain()
+      ping.type = 'sine'
+      ping.frequency.setValueAtTime(2900, start + 0.035)
+      ping.frequency.exponentialRampToValueAtTime(4100, start + 0.14)
+      pingGain.gain.setValueAtTime(0.0001, start + 0.035)
+      pingGain.gain.exponentialRampToValueAtTime(0.045, start + 0.055)
+      pingGain.gain.exponentialRampToValueAtTime(0.0001, start + 0.16)
+      ping.connect(pingGain)
+      pingGain.connect(out)
+      ping.start(start + 0.035)
+      ping.stop(start + 0.17)
+
+      window.setTimeout(() => out.disconnect(), Math.ceil(duration * 1000) + 80)
+    } catch {
+      // SFX are decorative; narration and progression should never depend on them.
+    }
+  }
+
   startMusic() {
     if (!this.unlocked || this.music || this.muted) return
     this.music = new Audio('/audio/music.mp3')
@@ -125,6 +183,7 @@ class AudioController {
     this.current = null
     this.settleCurrent = null
     this.music = null
+    this.sfxContext = null
     this.last = null
     this.muted = false
     this.talkingSubs.clear()

@@ -67,6 +67,7 @@ const AR_COUNT_INTRO_DURATION_MS = 7381
 const AR_COUNT_TEN_CUE_MS = 7720
 const AR_COUNT_TO_TEN_DURATION_MS = 9237
 const AR_CLEAN_DURATION_MS = 10_219
+const AR_CLEAN_ERASE_SFX_CUES_MS = [1800, 3600, 5600, 7600]
 
 /**
  * The visit simulation: meet Dr. Lili (mask reveal), learn the raise-your-hand
@@ -205,6 +206,13 @@ export function VisitScreen({ onComplete }: ModuleProps) {
         setStep(5)
         setStepCopy('visit.step.clean')
         setLineDone(false)
+        for (const atMs of AR_CLEAN_ERASE_SFX_CUES_MS) {
+          timers.push(
+            window.setTimeout(() => {
+              if (!cancelled) audio.playEraseSfx()
+            }, atMs),
+          )
+        }
         await Promise.all([audio.say(lang, 'visit.step.clean'), waitMs(AR_CLEAN_DURATION_MS)])
         if (cancelled) return
         setLineDone(true)

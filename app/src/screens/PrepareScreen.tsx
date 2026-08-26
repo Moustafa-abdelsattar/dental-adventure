@@ -138,6 +138,7 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
       next[i] = false
       spotsRef.current = next
       setSpots(next)
+      if (lang === 'ar') audio.playEraseSfx()
 
       if (next.some(Boolean)) {
         // A different line each time. Indexed by how many spots have gone, so
