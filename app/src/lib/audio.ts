@@ -97,7 +97,7 @@ class AudioController {
     return this.last ? this.say(this.last.lang, this.last.id) : Promise.resolve()
   }
 
-  playEraseSfx() {
+  private getSfxContext() {
     if (!this.unlocked || this.muted) return
 
     const AudioContextCtor =
@@ -108,7 +108,17 @@ class AudioController {
       const ctx = this.sfxContext ?? new AudioContextCtor()
       this.sfxContext = ctx
       if (ctx.state === 'suspended') void ctx.resume()
+      return ctx
+    } catch {
+      return
+    }
+  }
 
+  playEraseSfx() {
+    const ctx = this.getSfxContext()
+    if (!ctx) return
+
+    try {
       const start = ctx.currentTime + 0.01
       const duration = 0.2
       const out = ctx.createGain()
@@ -149,6 +159,40 @@ class AudioController {
       ping.stop(start + 0.17)
 
       window.setTimeout(() => out.disconnect(), Math.ceil(duration * 1000) + 80)
+    } catch {
+      // SFX are decorative; narration and progression should never depend on them.
+    }
+  }
+
+  playStarSfx() {
+    const ctx = this.getSfxContext()
+    if (!ctx) return
+
+    try {
+      const start = ctx.currentTime + 0.01
+      const out = ctx.createGain()
+      out.gain.setValueAtTime(0.0001, start)
+      out.gain.exponentialRampToValueAtTime(0.11, start + 0.03)
+      out.gain.exponentialRampToValueAtTime(0.0001, start + 0.62)
+      out.connect(ctx.destination)
+
+      const chimes = [0, 0.08, 0.18]
+      chimes.forEach((delay, i) => {
+        const pingStart = start + delay
+        const ping = ctx.createOscillator()
+        const pingGain = ctx.createGain()
+        ping.type = 'triangle'
+        ping.frequency.setValueAtTime([1568, 2093, 2637][i], pingStart)
+        pingGain.gain.setValueAtTime(0.0001, pingStart)
+        pingGain.gain.exponentialRampToValueAtTime([0.07, 0.05, 0.04][i], pingStart + 0.025)
+        pingGain.gain.exponentialRampToValueAtTime(0.0001, pingStart + 0.22)
+        ping.connect(pingGain)
+        pingGain.connect(out)
+        ping.start(pingStart)
+        ping.stop(pingStart + 0.24)
+      })
+
+      window.setTimeout(() => out.disconnect(), 720)
     } catch {
       // SFX are decorative; narration and progression should never depend on them.
     }

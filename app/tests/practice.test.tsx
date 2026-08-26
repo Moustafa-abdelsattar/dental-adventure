@@ -130,6 +130,7 @@ test('Arabic prepare brush plays an erase sound when a stain comes away', async 
   vi.useFakeTimers()
   useGame.getState().setLang('ar')
   const eraseSfx = vi.spyOn(audio, 'playEraseSfx').mockImplementation(() => {})
+  const starSfx = vi.spyOn(audio, 'playStarSfx').mockImplementation(() => {})
   render(<PrepareScreen module={mod('prepare')} onComplete={vi.fn()} />)
   await finishPrepareIntro()
 
@@ -146,6 +147,30 @@ test('Arabic prepare brush plays an erase sound when a stain comes away', async 
   })
 
   expect(eraseSfx).toHaveBeenCalledTimes(1)
+  expect(starSfx).toHaveBeenCalledTimes(1)
+})
+
+test('English prepare brush does not add Arabic decay removal sounds', async () => {
+  vi.useFakeTimers()
+  const eraseSfx = vi.spyOn(audio, 'playEraseSfx').mockImplementation(() => {})
+  const starSfx = vi.spyOn(audio, 'playStarSfx').mockImplementation(() => {})
+  render(<PrepareScreen module={mod('prepare')} onComplete={vi.fn()} />)
+  await finishPrepareIntro()
+
+  await act(async () => {
+    fireEvent.click(screen.getByTestId('prep-spray'))
+    await vi.advanceTimersByTimeAsync(2500)
+  })
+  await act(async () => {
+    fireEvent.click(screen.getByTestId('prep-brush'))
+  })
+  await act(async () => {
+    fireEvent.click(screen.getByTestId('plaque-0'))
+    await vi.advanceTimersByTimeAsync(320)
+  })
+
+  expect(eraseSfx).not.toHaveBeenCalled()
+  expect(starSfx).not.toHaveBeenCalled()
 })
 
 test('prepare: tools stay inactive until intro narration finishes', async () => {
