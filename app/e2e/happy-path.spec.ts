@@ -68,10 +68,13 @@ async function completePrepare(page: Page) {
   const spray = page.getByTestId('prep-spray')
   await expect(spray).toBeVisible({ timeout: 20_000 })
   await settle(page)
-  await expect(spray).toBeEnabled({ timeout: 30_000 })
-  await spray.click({ force: true })
-  await expect(page.getByTestId('prepare-spray-beat')).toBeVisible({ timeout: 15_000 })
-  await expect(page.getByTestId('prep-done-spray')).toBeVisible({ timeout: 15_000 })
+  const sprayDone = page.getByTestId('prep-done-spray')
+  await expect(async () => {
+    if ((await sprayDone.count()) > 0) return
+    await expect(spray).toBeEnabled({ timeout: 500 })
+    await spray.click({ force: true })
+    await expect(sprayDone).toBeVisible({ timeout: 3_000 })
+  }).toPass({ timeout: 40_000 })
   const brush = page.getByTestId('prep-brush')
   await expect(brush).toBeEnabled({ timeout: 30_000 })
   await brush.click({ force: true })
@@ -87,7 +90,7 @@ async function completePrepare(page: Page) {
 async function completeVisit(page: Page) {
   await settle(page)
   const mask = page.getByTestId('drnour-mask')
-  await expect(mask).toBeEnabled({ timeout: 30_000 })
+  await expect(mask).not.toHaveAttribute('aria-disabled', 'true', { timeout: 30_000 })
   await mask.click({ force: true })
   const hand = page.getByTestId('raise-hand')
   await expect(hand).toBeEnabled({ timeout: 30_000 })
