@@ -1,6 +1,22 @@
 import { render, screen, fireEvent, act, cleanup } from '@testing-library/react'
 import App from '../src/App'
+import { audio } from '../src/lib/audio'
+import { ModuleHost } from '../src/screens/ModuleHost'
+import type { ModuleProps, ModuleRegistry } from '../src/screens/registry'
 import { useGame } from '../src/store/game'
+
+function CompleteNow({ onComplete }: ModuleProps) {
+  return <button onClick={() => onComplete()}>complete module</button>
+}
+
+const instantRegistry: ModuleRegistry = {
+  clinic: CompleteNow,
+  tools: CompleteNow,
+  prepare: CompleteNow,
+  spray: CompleteNow,
+  visit: CompleteNow,
+  'practice-brush': CompleteNow,
+}
 
 beforeEach(() => {
   cleanup()
@@ -14,6 +30,7 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.useRealTimers()
+  vi.restoreAllMocks()
 })
 
 test('flow: language → parent (visit + name) → welcome; dir flips for Arabic', () => {
@@ -63,6 +80,23 @@ test('Arabic start button mounts phase one immediately', () => {
   fireEvent.click(start)
 
   expect(screen.getByTestId('clinic-scene')).toBeInTheDocument()
+})
+
+test('Arabic module completion skips Milo story beat overlay', () => {
+  vi.useFakeTimers()
+  vi.spyOn(audio, 'say').mockResolvedValue()
+  useGame.getState().setLang('ar')
+  useGame.getState().setPath('checkup')
+
+  render(<ModuleHost registry={instantRegistry} />)
+  fireEvent.click(screen.getByRole('button', { name: 'complete module' }))
+  act(() => {
+    vi.runOnlyPendingTimers()
+  })
+
+  expect(screen.queryByTestId('story-beat')).not.toBeInTheDocument()
+  expect(audio.say).toHaveBeenCalledWith('ar', 'milo.starEarned')
+  expect(audio.say).not.toHaveBeenCalledWith('ar', 'story.calmer1')
 })
 
 test('returning child skips parent setup, then continues from the first incomplete module', () => {

@@ -123,9 +123,9 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
     clearTimeout(handoverTimer.current)
     handoverTimer.current = setTimeout(() => setHandingOver(false), screenChange.lock * 1000)
 
-    // Milo's arc: modules with a story beat speak it (and show him calming);
-    // the rest keep the plain star-earned cheer.
-    if (current.beatId) {
+    // English keeps Milo's interstitial story moments. Arabic moves straight to
+    // the next phase so the child does not see the waving tooth quote overlay.
+    if (current.beatId && lang !== 'ar') {
       const doneCount = finished.length + 1
       setBeat({ stringId: current.beatId, calm: Math.min(1, doneCount / (manifest.modules.length - 1)) })
     } else {
