@@ -22,6 +22,17 @@ export function starIdsFor(m: ModuleDef): string[] {
   return Array.from({ length: m.stars }, (_, i) => (i === 0 ? m.id : `${m.id}-${i + 1}`))
 }
 
+function visibleModulesFor(path: string, manifest: PathManifest): ModuleDef[] {
+  if (path === 'treatment') return manifest.modules.filter(m => m.id !== 'spray')
+  return manifest.modules
+}
+
+function starIdsForProgress(path: string, m: ModuleDef): string[] {
+  const ids = starIdsFor(m)
+  if (path === 'treatment' && m.id === 'prepare') return [...ids, 'spray']
+  return ids
+}
+
 export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRegistry }) {
   const lang = useGame(s => s.lang)
   const path = useGame(s => s.path)
@@ -47,15 +58,16 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
   if (!lang || !path) return null
   const manifest = manifests[path]
   if (!manifest) return null
-  const finished = manifest.modules.filter(m => starIdsFor(m).every(id => stars[id]))
-  const allDone = finished.length === manifest.modules.length
+  const modules = visibleModulesFor(path, manifest)
+  const finished = modules.filter(m => starIdsForProgress(path, m).every(id => stars[id]))
+  const allDone = finished.length === modules.length
 
   // Free-play: replay any module; completing it just returns to the picker.
   if (allDone && freePlay && freeChoice === 'certificate') {
     return <RewardScreen onPlayAgain={() => setFreeChoice(null)} />
   }
   if (allDone && freePlay) {
-    const chosen = manifest.modules.find(m => m.id === freeChoice)
+    const chosen = modules.find(m => m.id === freeChoice)
     if (chosen) {
       const Screen = registry[chosen.kind]
       if (!Screen) return null
@@ -75,7 +87,7 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
     }
     return (
       <div className="min-h-[calc(var(--app-h)-var(--hud-h))] flex flex-col items-center justify-center gap-3 px-6 pt-[var(--hud-h)]" data-testid="freeplay-picker">
-        {manifest.modules.map((m, i) => (
+        {modules.map((m, i) => (
           <motion.button
             key={m.id}
             data-testid={`freeplay-${m.id}`}
@@ -96,7 +108,7 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
           initial={{ opacity: 0, x: -24 }}
           animate={{ opacity: 1, x: 0 }}
           whileTap={{ scale: 0.96 }}
-          transition={{ ...springs.playful, delay: manifest.modules.length * STAGGER }}
+          transition={{ ...springs.playful, delay: modules.length * STAGGER }}
           className="min-h-[72px] w-full max-w-xs rounded-3xl bg-sunny text-white shadow-md text-xl font-bold flex items-center gap-4 px-5"
         >
           <img src="/art/milo-celebrate.webp" alt="" className="w-11 h-11 object-contain select-none" draggable={false} />
@@ -106,7 +118,7 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
     )
   }
 
-  const current = manifest.modules.find(m => !starIdsFor(m).every(id => stars[id]))
+  const current = modules.find(m => !starIdsForProgress(path, m).every(id => stars[id]))
 
   if (!current) return <RewardScreen />
 
@@ -127,12 +139,12 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
     // the next phase so the child does not see the waving tooth quote overlay.
     if (current.beatId && lang !== 'ar') {
       const doneCount = finished.length + 1
-      setBeat({ stringId: current.beatId, calm: Math.min(1, doneCount / (manifest.modules.length - 1)) })
+      setBeat({ stringId: current.beatId, calm: Math.min(1, doneCount / (modules.length - 1)) })
     } else {
       void audio.say(lang, 'milo.starEarned')
     }
     const from = origin ?? { x: window.innerWidth / 2, y: window.innerHeight / 2 }
-    starIdsFor(current).forEach((id, i) => {
+    starIdsForProgress(path, current).forEach((id, i) => {
       setTimeout(() => {
         setFlights(f => [...f, { key: Date.now() + i, from }])
         awardStar(id)

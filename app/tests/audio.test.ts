@@ -48,6 +48,16 @@ test('replayLast replays the last id', () => {
   expect(srcs.filter(s => s.endsWith('milo.great.mp3'))).toHaveLength(2)
 })
 
+test('Arabic decay-removal SFX uses the recorded clip without changing last narration', () => {
+  audio.unlock()
+  void audio.say('ar', 'prepare.step.brush')
+  audio.playDecayRemovalSfx()
+  expect(FakeAudio.instances.at(-1)!.src).toBe('/audio/ar/decay-removal-sfx.mp3')
+
+  void audio.replayLast()
+  expect(FakeAudio.instances.at(-1)!.src).toBe('/audio/ar/prepare.step.brush.mp3')
+})
+
 test('music ducks under narration and recovers on clip end', () => {
   audio.unlock()
   audio.startMusic()

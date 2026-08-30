@@ -9,6 +9,7 @@ class AudioController {
   /** Settles the in-flight line's promise. Held so an interruption can end it. */
   private settleCurrent: (() => void) | null = null
   private music: HTMLAudioElement | null = null
+  private decayRemovalSfx: HTMLAudioElement | null = null
   private sfxContext: AudioContext | null = null
   private last: { lang: Lang; id: StringId } | null = null
   private muted = false
@@ -198,6 +199,23 @@ class AudioController {
     }
   }
 
+  playDecayRemovalSfx() {
+    if (!this.unlocked || this.muted) return
+
+    this.decayRemovalSfx?.pause()
+    const clip = new Audio('/audio/ar/decay-removal-sfx.mp3')
+    clip.volume = 1
+    this.decayRemovalSfx = clip
+
+    const release = () => {
+      if (this.decayRemovalSfx === clip) this.decayRemovalSfx = null
+    }
+
+    clip.onended = release
+    clip.onerror = release
+    void Promise.resolve(clip.play()).catch(release)
+  }
+
   startMusic() {
     if (!this.unlocked || this.music || this.muted) return
     this.music = new Audio('/audio/music.mp3')
@@ -227,6 +245,7 @@ class AudioController {
     this.current = null
     this.settleCurrent = null
     this.music = null
+    this.decayRemovalSfx = null
     this.sfxContext = null
     this.last = null
     this.muted = false

@@ -58,6 +58,7 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
   const [brushAt, setBrushAt] = useState(BRUSH_PARK)
   const spotsRef = useRef([true, true, true, true])
   const doneRef = useRef(false)
+  const decayRemovalSfxStarted = useRef(false)
   const timers = useRef<ReturnType<typeof setTimeout>[]>([])
   const done = step >= SEQUENCE.length
 
@@ -123,6 +124,7 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
     // hands the job to the child.
     setActing(toolId)
     setScrubbing(true)
+    decayRemovalSfxStarted.current = false
     void audio.say(lang, 'prepare.step.scrub')
   }
 
@@ -138,9 +140,9 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
       next[i] = false
       spotsRef.current = next
       setSpots(next)
-      if (lang === 'ar') {
-        audio.playEraseSfx()
-        audio.playStarSfx()
+      if (lang === 'ar' && !decayRemovalSfxStarted.current) {
+        decayRemovalSfxStarted.current = true
+        audio.playDecayRemovalSfx()
       }
 
       if (next.some(Boolean)) {

@@ -126,11 +126,12 @@ test('prepare: wrong order does not advance; juice then brush completes', async 
   expect(onComplete).toHaveBeenCalledTimes(1)
 })
 
-test('Arabic prepare brush plays an erase sound when a stain comes away', async () => {
+test('Arabic prepare brush plays the recorded decay-removal sound when stains come away', async () => {
   vi.useFakeTimers()
   useGame.getState().setLang('ar')
   const eraseSfx = vi.spyOn(audio, 'playEraseSfx').mockImplementation(() => {})
   const starSfx = vi.spyOn(audio, 'playStarSfx').mockImplementation(() => {})
+  const decayRemovalSfx = vi.spyOn(audio, 'playDecayRemovalSfx').mockImplementation(() => {})
   render(<PrepareScreen module={mod('prepare')} onComplete={vi.fn()} />)
   await finishPrepareIntro()
 
@@ -145,15 +146,21 @@ test('Arabic prepare brush plays an erase sound when a stain comes away', async 
     fireEvent.click(screen.getByTestId('plaque-0'))
     await vi.advanceTimersByTimeAsync(320)
   })
+  await act(async () => {
+    fireEvent.click(screen.getByTestId('plaque-1'))
+    await vi.advanceTimersByTimeAsync(320)
+  })
 
-  expect(eraseSfx).toHaveBeenCalledTimes(1)
-  expect(starSfx).toHaveBeenCalledTimes(1)
+  expect(decayRemovalSfx).toHaveBeenCalledTimes(1)
+  expect(eraseSfx).not.toHaveBeenCalled()
+  expect(starSfx).not.toHaveBeenCalled()
 })
 
 test('English prepare brush does not add Arabic decay removal sounds', async () => {
   vi.useFakeTimers()
   const eraseSfx = vi.spyOn(audio, 'playEraseSfx').mockImplementation(() => {})
   const starSfx = vi.spyOn(audio, 'playStarSfx').mockImplementation(() => {})
+  const decayRemovalSfx = vi.spyOn(audio, 'playDecayRemovalSfx').mockImplementation(() => {})
   render(<PrepareScreen module={mod('prepare')} onComplete={vi.fn()} />)
   await finishPrepareIntro()
 
@@ -169,6 +176,7 @@ test('English prepare brush does not add Arabic decay removal sounds', async () 
     await vi.advanceTimersByTimeAsync(320)
   })
 
+  expect(decayRemovalSfx).not.toHaveBeenCalled()
   expect(eraseSfx).not.toHaveBeenCalled()
   expect(starSfx).not.toHaveBeenCalled()
 })
