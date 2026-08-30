@@ -8,6 +8,10 @@ test('Arabic scratch tool cards use the requested child-friendly names', () => {
   expect(ar['tool.brush.name']).toBe('الدش الصغنون')
 })
 
+test('Arabic welcome stops after exploring the clinic together', () => {
+  expect(ar['milo.welcome']).toBe('أهلاً يا {name}! أنا ميلو السنّة. النهارده هنستكشف عيادة السنان سوا.')
+})
+
 test('Arabic visit copy refers to the child dentist without naming the dentist', () => {
   const visitCopy = Object.entries(ar)
     .filter(([id]) => id.startsWith('visit.'))

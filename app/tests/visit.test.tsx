@@ -36,7 +36,7 @@ test('mask tap reveals the smile underneath', async () => {
   expect(audio.say).toHaveBeenCalledWith('en', 'visit.maskOff')
 })
 
-test('full flow: mask → stop signal → six steps → complete, exactly once', async () => {
+test('full flow: mask → stop signal → five steps → complete, exactly once', async () => {
   vi.useFakeTimers()
   const onComplete = vi.fn()
   render(<VisitScreen module={mod} onComplete={onComplete} />)
@@ -53,28 +53,19 @@ test('full flow: mask → stop signal → six steps → complete, exactly once',
     await vi.advanceTimersByTimeAsync(2000) // freeze ends
   })
   await act(async () => {
-    await vi.advanceTimersByTimeAsync(30_000) // six steps auto-advance
+    await vi.advanceTimersByTimeAsync(30_000) // five steps auto-advance
   })
   for (const id of [
     'visit.step.chair',
     'visit.step.light',
     'visit.step.mirror',
     'visit.step.sleepy',
-    'visit.step.count',
-    'spray.count.1',
-    'spray.count.2',
-    'spray.count.3',
-    'spray.count.4',
-    'spray.count.5',
-    'spray.count.6',
-    'spray.count.7',
-    'spray.count.8',
-    'spray.count.9',
-    'spray.count.10',
     'visit.step.clean',
     'visit.done',
   ])
     expect(audio.say).toHaveBeenCalledWith('en', id)
+  expect(audio.say).not.toHaveBeenCalledWith('en', 'visit.step.count')
+  for (let n = 1; n <= 10; n++) expect(audio.say).not.toHaveBeenCalledWith('en', `spray.count.${n}`)
   expect(onComplete).toHaveBeenCalledTimes(1)
   // manual Next after auto-complete must not double-fire
   fireEvent.click(screen.getByRole('button', { name: 'Next' }))
@@ -258,23 +249,11 @@ test('Arabic simulation uses one narration track with timed visual cues', async 
   useGame.getState().setLang('ar')
   const onComplete = vi.fn()
   let finishSimulation!: () => void
-  let finishCountIntro!: () => void
-  let finishCountToTen!: () => void
   let finishClean!: () => void
   vi.mocked(audio.say).mockImplementation((_, id) => {
     if (id === 'visit.simulation') {
       return new Promise(resolve => {
         finishSimulation = resolve
-      })
-    }
-    if (id === 'visit.step.count') {
-      return new Promise(resolve => {
-        finishCountIntro = resolve
-      })
-    }
-    if (id === 'visit.countToTen') {
-      return new Promise(resolve => {
-        finishCountToTen = resolve
       })
     }
     if (id === 'visit.step.clean') {
@@ -336,43 +315,6 @@ test('Arabic simulation uses one narration track with timed visual cues', async 
   await act(async () => {
     await vi.advanceTimersByTimeAsync(6780)
   })
-  expect(audio.say).toHaveBeenCalledWith('ar', 'visit.step.count')
-  expect(screen.getByTestId('visit-frame-sleepy')).toHaveAttribute('data-active', 'true')
-  expect(screen.getByTestId('visit-frame-count')).not.toHaveAttribute('data-active', 'true')
-
-  await act(async () => {
-    finishCountIntro()
-    await Promise.resolve()
-  })
-  expect(audio.say).not.toHaveBeenCalledWith('ar', 'visit.countToTen')
-
-  await act(async () => {
-    await vi.advanceTimersByTimeAsync(7480)
-  })
-  expect(screen.getByTestId('visit-frame-count')).toHaveAttribute('data-active', 'true')
-  expect(audio.say).toHaveBeenCalledWith('ar', 'visit.countToTen')
-
-  await act(async () => {
-    await vi.advanceTimersByTimeAsync(901)
-  })
-  expect(audio.say).toHaveBeenCalledWith('ar', 'visit.countToTen')
-  expect(screen.getByText(/واحد/)).toBeInTheDocument()
-  expect(screen.getByTestId('visit-frame-count')).toHaveAttribute('data-active', 'true')
-
-  await act(async () => {
-    await vi.advanceTimersByTimeAsync(7720)
-  })
-  expect(screen.getByTestId('visit-frame-count-ten')).toHaveAttribute('data-active', 'true')
-
-  await act(async () => {
-    finishCountToTen()
-    await Promise.resolve()
-  })
-  expect(audio.say).not.toHaveBeenCalledWith('ar', 'visit.step.clean')
-
-  await act(async () => {
-    await vi.advanceTimersByTimeAsync(1517)
-  })
   expect(audio.say).toHaveBeenCalledWith('ar', 'visit.step.clean')
   expect(screen.getByTestId('visit-frame-clean')).toHaveAttribute('data-active', 'true')
   expect(onComplete).not.toHaveBeenCalled()
@@ -410,12 +352,10 @@ async function runSimulation() {
   return vi.mocked(audio.say).mock.calls.map(c => c[1])
 }
 
-// Both journeys walk the same six beats. This was briefly split — the sleepy
-// juice and the counting on the treatment path only — and the owner's call is
-// that every child sees all six, so the test asserts that for each path rather
-// than one each way.
+// Both journeys walk the same five beats; the countdown is no longer part of
+// the visit simulation.
 for (const path of ['checkup', 'treatment'] as const) {
-  test(`the ${path} visit walks all six steps in order`, async () => {
+  test(`the ${path} visit walks all five steps in order without counting`, async () => {
     vi.useFakeTimers()
     useGame.getState().setPath(path)
     const spoken = await runSimulation()
@@ -425,27 +365,14 @@ for (const path of ['checkup', 'treatment'] as const) {
       'visit.step.light',
       'visit.step.mirror',
       'visit.step.sleepy',
-      'visit.step.count',
       'visit.step.clean',
     ]
     for (const id of steps) expect(spoken).toContain(id)
 
-    // Order is the part that matters clinically: the sleepy juice goes on
-    // before the counting, and the handpiece only after both.
     const spokenSteps = spoken.filter(id => steps.includes(id as string))
     expect(spokenSteps).toEqual(steps)
-    const countStart = spoken.indexOf('visit.step.count')
-    expect(spoken.slice(countStart + 1, countStart + 11)).toEqual([
-      'spray.count.1',
-      'spray.count.2',
-      'spray.count.3',
-      'spray.count.4',
-      'spray.count.5',
-      'spray.count.6',
-      'spray.count.7',
-      'spray.count.8',
-      'spray.count.9',
-      'spray.count.10',
-    ])
+    expect(spoken).not.toContain('visit.step.count')
+    expect(spoken).not.toContain('visit.countToTen')
+    for (let n = 1; n <= 10; n++) expect(spoken).not.toContain(`spray.count.${n}`)
   })
 }

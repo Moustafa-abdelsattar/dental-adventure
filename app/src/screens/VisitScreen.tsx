@@ -16,7 +16,7 @@ const ART_W = 820
 const ART_H = 1168
 
 /** Every cut frame, all on that one canvas. */
-const FRAMES = ['chair', 'light', 'mirror', 'sleepy', 'count', 'count-ten', 'clean', 'hand'] as const
+const FRAMES = ['chair', 'light', 'mirror', 'sleepy', 'clean', 'hand'] as const
 type Frame = (typeof FRAMES)[number]
 
 interface Step {
@@ -29,32 +29,17 @@ interface Step {
   pauseMs?: number
 }
 
-/**
- * The whole visit, in order, for every child.
- *
- * The sleepy juice and the counting were briefly shown only on the treatment
- * journey, on the reasoning that a check-up child shown numbing gel would learn
- * to expect something they were not going to be given. The owner's call is that
- * every child sees all six, so both journeys run this one list. To put the
- * split back, branch on `useGame(s => s.path)` here and restore the two tests
- * in `visit.test.tsx` that assert each direction.
- *
- * The counting beat holds on two frames — eyes shut mid-count, then both hands
- * up on ten — so the pause while a child actually counts has something moving
- * in it rather than a still picture waiting them out.
- */
+/** The whole visit, in order, for every child. */
 const STEPS: Step[] = [
   { id: 'chair', stringId: 'visit.step.chair', frame: 'chair' },
   { id: 'light', stringId: 'visit.step.light', frame: 'light' },
   { id: 'mirror', stringId: 'visit.step.mirror', frame: 'mirror' },
   { id: 'sleepy', stringId: 'visit.step.sleepy', frame: 'sleepy' },
-  { id: 'count', stringId: 'visit.step.count', frame: 'count', thenFrame: 'count-ten', pauseMs: 2200 },
   { id: 'clean', stringId: 'visit.step.clean', frame: 'clean' },
 ]
 
 const STEP_PAUSE_MS = 900
 const FREEZE_MS = 1500
-const COUNT_IDS = Array.from({ length: 10 }, (_, i) => `spray.count.${i + 1}` as StringId)
 const AR_SIMULATION_CUES = [
   { atMs: 7540, step: 0 },
   { atMs: 15740, step: 1 },
@@ -62,10 +47,6 @@ const AR_SIMULATION_CUES = [
   { atMs: 28740, step: 3 },
 ]
 const AR_SIMULATION_DURATION_MS = 35_520
-const AR_COUNT_INTRO_CLOSE_EYES_CUE_MS = 7480
-const AR_COUNT_INTRO_DURATION_MS = 7381
-const AR_COUNT_TEN_CUE_MS = 7720
-const AR_COUNT_TO_TEN_DURATION_MS = 9237
 const AR_CLEAN_DURATION_MS = 10_219
 
 /**
@@ -176,33 +157,8 @@ export function VisitScreen({ onComplete }: ModuleProps) {
         }
         await Promise.all([audio.say(lang, 'visit.simulation'), waitMs(AR_SIMULATION_DURATION_MS)])
         timers.forEach(window.clearTimeout)
-        setStep(3)
-        setStepCopy(STEPS[3].stringId)
-        setLineDone(true)
-        setStepCopy('visit.step.count')
-        timers.push(
-          window.setTimeout(() => {
-            if (cancelled) return
-            setStep(4)
-            setLineDone(false)
-          }, AR_COUNT_INTRO_CLOSE_EYES_CUE_MS),
-        )
-        await Promise.all([audio.say(lang, 'visit.step.count'), waitMs(AR_COUNT_INTRO_DURATION_MS)])
-        timers.forEach(window.clearTimeout)
         if (cancelled) return
         setStep(4)
-        setLineDone(false)
-        setStepCopy('visit.countToTen')
-        timers.push(
-          window.setTimeout(() => {
-            if (!cancelled) setLineDone(true)
-          }, AR_COUNT_TEN_CUE_MS),
-        )
-        await Promise.all([audio.say(lang, 'visit.countToTen'), waitMs(AR_COUNT_TO_TEN_DURATION_MS)])
-        timers.forEach(window.clearTimeout)
-        if (cancelled) return
-        setLineDone(true)
-        setStep(5)
         setStepCopy('visit.step.clean')
         setLineDone(false)
         await Promise.all([audio.say(lang, 'visit.step.clean'), waitMs(AR_CLEAN_DURATION_MS)])
@@ -218,14 +174,7 @@ export function VisitScreen({ onComplete }: ModuleProps) {
         setStepCopy(STEPS[i].stringId)
         setLineDone(false)
         await audio.say(lang, STEPS[i].stringId)
-        if (STEPS[i].id === 'count') {
-          for (let n = 0; n < COUNT_IDS.length; n++) {
-            if (n === COUNT_IDS.length - 1) setLineDone(true)
-            await audio.say(lang, COUNT_IDS[n])
-          }
-        } else {
-          setLineDone(true)
-        }
+        setLineDone(true)
         await new Promise(r => setTimeout(r, STEPS[i].pauseMs ?? STEP_PAUSE_MS))
       }
       setPhase('done')
