@@ -87,7 +87,7 @@ test('light glow is a slow fade, never a flash', () => {
   expect(Number(glow.getAttribute('data-glow-duration'))).toBeGreaterThanOrEqual(1)
 })
 
-test('mask cannot be tapped until Dr. Lili intro finishes', async () => {
+test('mask cannot be tapped until the dentist intro finishes', async () => {
   let finishMeet!: () => void
   vi.mocked(audio.say).mockImplementation((_, id) => {
     if (id === 'visit.meetDr') {

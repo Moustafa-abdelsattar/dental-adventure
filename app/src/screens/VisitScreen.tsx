@@ -69,7 +69,7 @@ const AR_COUNT_TO_TEN_DURATION_MS = 9237
 const AR_CLEAN_DURATION_MS = 10_219
 
 /**
- * The visit simulation: meet Dr. Lili (mask reveal), learn the raise-your-hand
+ * The visit simulation: meet the dentist (mask reveal), learn the raise-your-hand
  * stop signal, then walk the four calm steps of a real visit.
  */
 export function VisitScreen({ onComplete }: ModuleProps) {
@@ -313,12 +313,12 @@ export function VisitScreen({ onComplete }: ModuleProps) {
         />
       }
     >
-      {/* The treatment room, not a picture of one: the child and Dr. Lili stand
+      {/* The treatment room, not a picture of one: the child and dentist stand
           on one floor line with the lamp directly over the chair.
 
           The group is bottom-anchored *above* the action row rather than at the
           foot of the stage. Sitting it on the very bottom edge cropped the base
-          of the chair and left the Next button lying across Dr. Lili's face. */}
+          of the chair and left the Next button lying across the dentist's face. */}
       <div
         data-testid="visit-scene"
         className="absolute inset-x-0 top-[22%] bottom-[10%] flex items-end justify-center px-2"
@@ -326,7 +326,7 @@ export function VisitScreen({ onComplete }: ModuleProps) {
         {/* The box carries the frames' own aspect ratio and is driven by
             height, not width. Sized by width it stood taller than the space it
             was given, so the boy overflowed the stage at nearly twice the size
-            he should be and Dr. Lili beside him looked doll-sized. Matching the
+            he should be and the dentist beside him looked doll-sized. Matching the
             ratio also means every percentage below is a coordinate in the
             artwork itself. */}
         <div className="relative h-full max-w-full" style={{ aspectRatio: `${ART_W} / ${ART_H}` }}>
@@ -354,13 +354,13 @@ export function VisitScreen({ onComplete }: ModuleProps) {
             ))}
           </div>
 
-          {/* Dr. Lili has the meeting to herself.
+          {/* The dentist has the meeting to herself.
               She is drawn as a small-headed full figure; the walkthrough frames
               are a tight crop on the boy with a big-headed dentist leaning in
               painted into them. The two framings cannot share a floor — stood
               beside the chair she reads as doll-sized, and scaled to match his
               head she covers him. So this beat is hers alone, which is what the
-              line asks for anyway ("This is Dr. Lili — tap the mask"), and the
+              line asks for anyway ("Let's meet your dentist — tap the mask"), and the
               chair frames take the stage from the stop signal onward. */}
           <motion.div
             className="absolute bottom-[4%] left-1/2 -translate-x-1/2 w-[62%]"

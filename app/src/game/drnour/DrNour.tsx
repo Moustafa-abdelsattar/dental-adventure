@@ -3,7 +3,7 @@ import { motion } from 'motion/react'
 import { springs } from '../../motion/springs'
 
 /**
- * Dr. Lili — the owner's custom dentist art with a tap-to-reveal mask.
+ * The owner's custom dentist art with a tap-to-reveal mask.
  * Preferred: a real masked render (`/art/drnour-masked.webp`, same character
  * wearing a mask) crossfaded with the unmasked one. Until that asset exists,
  * a soft-shaded drawn mask overlay stands in.
@@ -32,7 +32,7 @@ export function DrNour({
       transition={{ duration: 3.5, repeat: idle ? Infinity : 0, ease: 'easeInOut' }}
       data-testid="drnour"
       role="img"
-      aria-label="Dr. Lili"
+      aria-label="Your dentist"
     >
       <img src="/art/drnour.webp" alt="" draggable={false} className="w-full drop-shadow-md" />
 
