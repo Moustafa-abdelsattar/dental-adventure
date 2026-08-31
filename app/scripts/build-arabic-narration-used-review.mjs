@@ -83,14 +83,6 @@ const entries = [
     note: 'Narration after the tooth cleanup finishes.',
   },
   {
-    id: 'visit.meetDr',
-    source: 'app/public/audio/ar/visit.meetDr.mp3',
-    target: 'app/public/audio/ar/visit.meetDr.mp3',
-    screenshot: '09-dentist-masked.png',
-    frame: 'Dentist visit starts',
-    note: 'Generic first dentist visit narration.',
-  },
-  {
     id: 'visit.maskPrompt',
     source: 'Arabic-narration-redo/07-dentist-visit/recordings/الدكتورة.m4a.mp4',
     target: 'app/public/audio/ar/visit.maskPrompt.mp3',

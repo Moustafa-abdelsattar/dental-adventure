@@ -79,14 +79,15 @@ export function VisitScreen({ onComplete }: ModuleProps) {
   useEffect(() => {
     let cancelled = false
     const run = async () => {
-      setMeetCopy('visit.meetDr')
-      await audio.say(lang, 'visit.meetDr')
-      if (cancelled) return
       if (lang === 'ar') {
         setMeetCopy('visit.maskPrompt')
         await audio.say(lang, 'visit.maskPrompt')
-        if (cancelled) return
+        if (!cancelled) setMaskReady(true)
+        return
       }
+      setMeetCopy('visit.meetDr')
+      await audio.say(lang, 'visit.meetDr')
+      if (cancelled) return
       setMaskReady(true)
     }
     void run()
