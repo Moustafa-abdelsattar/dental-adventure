@@ -312,9 +312,25 @@ function lineRow(e, screenId, i) {
   const only = e.only
   const enOff = only === 'ar'
   const arOff = only === 'en'
-  const de = dur('en', id)
-  const da = dur('ar', id)
   const mute = (only !== 'ar' && isSilent('en', id)) || (only !== 'en' && isSilent('ar', id))
+
+  // One field per language, not a paragraph and a copy of it in a box. The
+  // field IS the line; the original only reappears underneath once it has been
+  // changed, so a row shows each sentence once until you touch it.
+  const cell = (lang, off, offText) => {
+    const txt = (lang === 'en' ? EN : AR)[id] ?? ''
+    const rtl = lang === 'ar'
+    if (off) return `<span class="dash">${offText}</span>`
+    return `
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/${lang}/${esc(id)}.mp3" aria-label="Play ${esc(id)}">▶</button>
+        <span class="dur">${secs(dur(lang, id))}</span>${voiceBadge(lang, id)}
+      </div>
+      <textarea class="edit" dir="${rtl ? 'rtl' : 'ltr'}"${rtl ? ' lang="ar"' : ''} data-field="${esc(key)}::${lang}"
+        rows="1">${esc(txt)}</textarea>
+      <p class="was" dir="${rtl ? 'rtl' : 'ltr'}"${rtl ? ' lang="ar"' : ''} hidden><span>was</span> ${esc(txt || '—')}</p>`
+  }
+
   return `
   <tr class="line${only ? ' only-' + only : ''}${mute ? ' has-silent' : ''}" data-key="${esc(key)}" data-id="${esc(id)}">
     <td class="c-seq">${i + 1}</td>
@@ -323,25 +339,9 @@ function lineRow(e, screenId, i) {
       ${only ? `<span class="badge lang-only">${only.toUpperCase()} only</span>` : ''}
       ${e.label ? `<span class="hint">${esc(e.label)}</span>` : ''}
     </td>
-    <td class="c-lang en${enOff ? ' off' : ''}">
-      ${enOff ? '<span class="dash">not played in English</span>' : `
-      <div class="row-top">
-        <button class="play" data-src="../../app/public/audio/en/${esc(id)}.mp3">▶</button>
-        <span class="dur">${secs(de)}</span>${voiceBadge('en', id)}
-      </div>
-      <p class="orig" dir="ltr">${esc(EN[id] ?? '—')}</p>
-      <textarea class="edit" dir="ltr" data-field="${esc(key)}::en" rows="2" placeholder="Revised English line…">${esc(EN[id] ?? '')}</textarea>`}
-    </td>
-    <td class="c-lang ar${arOff ? ' off' : ''}">
-      ${arOff ? '<span class="dash">لا تُقال بالعربية</span>' : `
-      <div class="row-top">
-        <button class="play" data-src="../../app/public/audio/ar/${esc(id)}.mp3">▶</button>
-        <span class="dur">${secs(da)}</span>${voiceBadge('ar', id)}
-      </div>
-      <p class="orig" dir="rtl" lang="ar">${esc(AR[id] ?? '—')}</p>
-      <textarea class="edit" dir="rtl" lang="ar" data-field="${esc(key)}::ar" rows="2" placeholder="السطر العربي المعدَّل…">${esc(AR[id] ?? '')}</textarea>`}
-    </td>
-    <td class="c-note"><textarea class="note" data-field="${esc(key)}::note" rows="2" placeholder="Note / action…"></textarea></td>
+    <td class="c-lang en${enOff ? ' off' : ''}">${cell('en', enOff, 'not played in English')}</td>
+    <td class="c-lang ar${arOff ? ' off' : ''}">${cell('ar', arOff, 'لا تُقال بالعربية')}</td>
+    <td class="c-note"><textarea class="note" data-field="${esc(key)}::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr>`
 }
 
@@ -373,12 +373,16 @@ function screenSection(s, unreachable = false) {
   const rows = s.events.map(e => (e.kind === 'line' ? lineRow(e, s.id, n++) : otherRow(e, n))).join('')
   const enTotal = s.events.filter(e => e.kind === 'line' && e.only !== 'ar').reduce((a, e) => a + (dur('en', e.id) ?? 0), 0)
   const arTotal = s.events.filter(e => e.kind === 'line' && e.only !== 'en').reduce((a, e) => a + (dur('ar', e.id) ?? 0), 0)
+  // Name what each pair is showing — a section can carry three states and an
+  // unlabelled row of near-identical phones tells you nothing.
+  const stateName = n => n.replace(/^\d+-/, '').replace(/-/g, ' ')
   const shots = (s.shots ?? [])
     .map(
       name => `<figure>
+        <div class="state">${esc(stateName(name))}</div>
         <div class="pair">
-          <div><img loading="lazy" src="shots/en-${name}.png" alt="${esc(name)} in English"><figcaption>English</figcaption></div>
-          <div><img loading="lazy" src="shots/ar-${name}.png" alt="${esc(name)} in Arabic"><figcaption>العربية</figcaption></div>
+          <div><img loading="lazy" src="shots/en-${name}.png" alt="${esc(stateName(name))} in English"><figcaption>English</figcaption></div>
+          <div><img loading="lazy" src="shots/ar-${name}.png" alt="${esc(stateName(name))} in Arabic"><figcaption><bdi>العربية</bdi></figcaption></div>
         </div>
       </figure>`,
     )
@@ -399,7 +403,7 @@ function screenSection(s, unreachable = false) {
   </div>
   <div class="tablewrap">
   <table>
-    <thead><tr><th>#</th><th>String</th><th>English</th><th>العربية</th><th>Note</th></tr></thead>
+    <thead><tr><th>#</th><th>String</th><th>English <span class="pen">click to edit</span></th><th><bdi>العربية</bdi> <span class="pen">click to edit</span></th><th>Note</th></tr></thead>
     <tbody>${rows}</tbody>
   </table>
   </div>
@@ -471,27 +475,35 @@ section.unreachable{border-color:var(--rose);background:var(--rose-soft)}
 .src{font:.75rem var(--mono);color:var(--muted)}
 .blurb{margin:.55rem 0 .9rem;color:var(--muted);max-width:88ch}
 .warn{margin:.6rem 0;padding:.5rem .7rem;border-radius:9px;background:var(--panel);border:1px solid var(--rose);font-size:.87rem}
-.shots{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:.9rem}
+.shots{display:flex;gap:1.4rem;flex-wrap:wrap;margin-bottom:1rem}
 figure{margin:0}
-.pair{display:flex;gap:.5rem}
-.pair img{width:158px;border-radius:10px;border:1px solid var(--line);display:block;background:#fff}
-figcaption{font-size:.72rem;color:var(--muted);text-align:center;margin-top:.2rem}
+.state{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:.35rem}
+.pair{display:flex;gap:.55rem}
+.pair img{width:212px;border-radius:12px;border:1px solid var(--line);display:block;background:#fff;
+  box-shadow:0 2px 10px rgba(34,31,51,.07)}
+figcaption{font-size:.72rem;color:var(--muted);text-align:center;margin-top:.25rem}
+@media(max-width:1150px){.pair img{width:168px}}
 .totals{display:flex;gap:1rem;flex-wrap:wrap;font-size:.82rem;margin-bottom:.6rem;color:var(--muted)}
 .totals strong{color:var(--ink)}
 .tablewrap{overflow-x:auto}
-table{border-collapse:collapse;width:100%;min-width:960px}
+table{border-collapse:collapse;width:100%;min-width:880px}
 th{text-align:start;font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);
   padding:.4rem .5rem;border-bottom:1px solid var(--line);background:var(--panel)}
 td{padding:.5rem;border-bottom:1px solid var(--line);vertical-align:top}
 .c-seq{width:2.2rem;color:var(--muted);font:.78rem var(--mono)}
-.c-id{width:16rem}
+.c-id{width:14rem}
 .c-id code{font:.78rem var(--mono);color:var(--accent);word-break:break-all}
 .c-lang{width:26%}
-.c-note{width:13rem}
+.c-note{width:10rem}
 tr.evt td{background:var(--bg)}
 .tag{display:inline-block;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;
   color:var(--muted);border:1px dashed var(--line);border-radius:99px;padding:.05rem .55rem;margin-inline-end:.5rem}
-.hint{color:var(--muted);font-size:.8rem}
+.pen{text-transform:none;letter-spacing:0;font-weight:400;font-size:.68rem;opacity:.65}
+.pen::before{content:"✎ "}
+.hint{display:block;margin-top:.25rem;color:var(--muted);font-size:.79rem;line-height:1.4}
+td.c-id .badge{margin-inline-start:.3rem}
+tr.evt .hint,.alarm .hint{display:inline;margin:0}
+.alarm li code{margin-inline-end:.4rem}
 .badge{display:inline-block;font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
   border-radius:99px;padding:.05rem .4rem;margin-inline-start:.35rem;vertical-align:middle}
 .badge.tts{background:var(--accent-soft);color:var(--accent)}
@@ -510,11 +522,16 @@ tr.has-silent td{background:var(--rose-soft)}
 .play.playing{background:var(--accent);color:#fff;border-color:var(--accent)}
 .play.missing{border-color:var(--rose);color:var(--rose)}
 .dur{font:.74rem var(--mono);color:var(--muted)}
-.orig{margin:.2rem 0 .35rem;font-size:.9rem}
-textarea{width:100%;font:.85rem var(--sans);color:var(--ink);background:var(--bg);
-  border:1px solid var(--line);border-radius:7px;padding:.35rem .45rem;resize:vertical}
+.was{margin:.3rem 0 0;font-size:.82rem;color:var(--muted)}
+.was span{display:inline-block;font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;
+  color:var(--amber);border:1px solid var(--amber);border-radius:99px;padding:0 .35rem;margin-inline-end:.35rem}
+textarea{display:block;width:100%;font:.88rem/1.45 var(--sans);color:var(--ink);background:transparent;
+  border:1px solid transparent;border-radius:7px;padding:.3rem .4rem;resize:none;overflow:hidden;min-height:1.9rem}
+textarea:hover{border-color:var(--line)}
+textarea.note{background:var(--bg);border-color:var(--line);font-size:.82rem;color:var(--muted)}
 textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
 textarea.dirty{border-color:var(--amber);background:#fffaf0}
+:root[data-theme="dark"] textarea.dirty{background:#2b2418}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) textarea.dirty{background:#2b2418}}
 .c-lang.off{color:var(--muted)}
 .dash{font-size:.82rem;font-style:italic}
@@ -597,16 +614,28 @@ ${UNREACHABLE.map(s => screenSection(s, true)).join('')}
   }
   function save(){ try{localStorage.setItem(KEY,JSON.stringify(store))}catch(e){} countDirty(); }
 
+  function grow(t){ t.style.height='auto'; t.style.height=(t.scrollHeight+2)+'px'; }
+  function showWas(t){
+    var was=t.parentElement.querySelector('.was');
+    if(was) was.hidden = !t.classList.contains('dirty');
+  }
   document.querySelectorAll('textarea').forEach(function(t){
     var f=t.dataset.field, base=t.value;
     t.dataset.base=base;
     if(store[f]!==undefined && store[f]!==base){ t.value=store[f]; t.classList.add('dirty'); }
+    showWas(t);
     t.addEventListener('input',function(){
       if(t.value===t.dataset.base){ delete store[f]; t.classList.remove('dirty'); }
       else { store[f]=t.value; t.classList.add('dirty'); }
-      save();
+      showWas(t); grow(t); save();
     });
   });
+  // Size every field to its content once the fonts have settled, so nothing is
+  // clipped — Arabic wraps to more lines than the English beside it.
+  function growAll(){ document.querySelectorAll('textarea').forEach(grow); }
+  growAll();
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(growAll);
+  addEventListener('resize', growAll);
   countDirty();
 
   // one clip at a time
@@ -627,6 +656,7 @@ ${UNREACHABLE.map(s => screenSection(s, true)).join('')}
   Object.keys(modes).forEach(function(id){
     document.getElementById(id).addEventListener('click',function(){
       document.body.className=modes[id];
+      requestAnimationFrame(growAll);
       Object.keys(modes).forEach(function(o){ document.getElementById(o).classList.toggle('on',o===id); });
     });
   });
@@ -641,7 +671,7 @@ ${UNREACHABLE.map(s => screenSection(s, true)).join('')}
   document.getElementById('reset').addEventListener('click',function(){
     if(!confirm('Discard every edit saved in this browser?')) return;
     store={}; save();
-    document.querySelectorAll('textarea').forEach(function(t){ t.value=t.dataset.base; t.classList.remove('dirty'); });
+    document.querySelectorAll('textarea').forEach(function(t){ t.value=t.dataset.base; t.classList.remove('dirty'); showWas(t); grow(t); });
   });
 
   document.getElementById('export').addEventListener('click',function(){
