@@ -99,14 +99,6 @@ const entries = [
     note: 'Prompt before the child can tap the mask.',
   },
   {
-    id: 'visit.maskOff',
-    source: 'Arabic-narration-redo/بعد الماسك.m4a.mp4',
-    target: 'app/public/audio/ar/visit.maskOff.mp3',
-    screenshot: '10-dentist-after-mask.png',
-    frame: 'After the mask is removed',
-    note: 'Narration immediately after tapping the mask.',
-  },
-  {
     id: 'visit.handPrompt',
     source: 'Arabic-narration-redo/ازاى هيرفع ايده معدل.m4a.mp4',
     target: 'app/public/audio/ar/visit.handPrompt.mp3',

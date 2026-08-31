@@ -103,17 +103,20 @@ export function VisitScreen({ onComplete }: ModuleProps) {
   const maskTap = async () => {
     if (!masked || !maskReady || phase !== 'meet') return
     setMasked(false)
-    setMeetCopy('visit.maskOff')
-    await audio.say(lang, 'visit.maskOff')
     setHandReady(false)
-    setPhase('stop')
     if (lang === 'ar') {
+      setPhase('stop')
       setStopCopy('visit.handPrompt')
       await audio.say(lang, 'visit.handPrompt')
-    } else {
-      setStopCopy('visit.stopSignal')
-      await audio.say(lang, 'visit.stopSignal')
+      setHandReady(true)
+      return
     }
+
+    setMeetCopy('visit.maskOff')
+    await audio.say(lang, 'visit.maskOff')
+    setPhase('stop')
+    setStopCopy('visit.stopSignal')
+    await audio.say(lang, 'visit.stopSignal')
     setHandReady(true)
   }
 
