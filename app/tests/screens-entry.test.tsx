@@ -95,7 +95,7 @@ test('Arabic module completion skips Milo story beat overlay', () => {
   })
 
   expect(screen.queryByTestId('story-beat')).not.toBeInTheDocument()
-  expect(audio.say).toHaveBeenCalledWith('ar', 'milo.starEarned')
+  expect(audio.say).not.toHaveBeenCalledWith('ar', 'milo.starEarned')
   expect(audio.say).not.toHaveBeenCalledWith('ar', 'story.calmer1')
 })
 

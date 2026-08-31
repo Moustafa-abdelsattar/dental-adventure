@@ -115,6 +115,7 @@ test('Arabic visit plays the mask prompt before allowing the mask tap', async ()
   useGame.getState().setLang('ar')
   let finishMeet!: () => void
   let finishPrompt!: () => void
+  let finishMaskOff!: () => void
   vi.mocked(audio.say).mockImplementation((_, id) => {
     if (id === 'visit.meetDr') {
       return new Promise(resolve => {
@@ -124,6 +125,11 @@ test('Arabic visit plays the mask prompt before allowing the mask tap', async ()
     if (id === 'visit.maskPrompt') {
       return new Promise(resolve => {
         finishPrompt = resolve
+      })
+    }
+    if (id === 'visit.maskOff') {
+      return new Promise(resolve => {
+        finishMaskOff = resolve
       })
     }
     return Promise.resolve()
@@ -154,8 +160,15 @@ test('Arabic visit plays the mask prompt before allowing the mask tap', async ()
   await act(async () => {
     fireEvent.click(screen.getByTestId('drnour-mask'))
   })
-  expect(audio.say).not.toHaveBeenCalledWith('ar', 'visit.maskOff')
-  expect(screen.queryByTestId('drnour-smile')).toBeNull()
+  expect(audio.say).toHaveBeenCalledWith('ar', 'visit.maskOff')
+  expect(screen.getByTestId('drnour-smile')).toBeInTheDocument()
+  expect(audio.say).not.toHaveBeenCalledWith('ar', 'visit.handPrompt')
+
+  await act(async () => {
+    finishMaskOff()
+    await Promise.resolve()
+  })
+  expect(audio.say).toHaveBeenCalledWith('ar', 'visit.handPrompt')
 })
 
 test('hand cannot be raised until the stop signal narration finishes', async () => {
