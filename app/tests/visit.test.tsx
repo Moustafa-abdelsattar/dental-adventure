@@ -155,6 +155,7 @@ test('Arabic visit plays the mask prompt before allowing the mask tap', async ()
     fireEvent.click(screen.getByTestId('drnour-mask'))
   })
   expect(audio.say).not.toHaveBeenCalledWith('ar', 'visit.maskOff')
+  expect(screen.queryByTestId('drnour-smile')).toBeNull()
 })
 
 test('hand cannot be raised until the stop signal narration finishes', async () => {
