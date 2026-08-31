@@ -94,9 +94,14 @@ test('prepare: wrong order does not advance; juice then brush completes', async 
   await act(async () => {
     fireEvent.click(screen.getByTestId('prep-spray'))
   })
+  expect(screen.getByTestId('tooth-face')).toHaveAttribute('src', '/art/tooth-sleepy.webp')
+  expect(screen.queryByTestId('prepare-spray-beat')).toBeNull()
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(500)
+  })
   expect(screen.getByTestId('prepare-spray-beat')).toBeInTheDocument()
   await act(async () => {
-    await vi.advanceTimersByTimeAsync(2500)
+    await vi.advanceTimersByTimeAsync(2000)
   })
   expect(screen.queryByTestId('prepare-spray-beat')).toBeNull()
   expect(onComplete).not.toHaveBeenCalled()
@@ -182,10 +187,10 @@ test('Arabic prepare uses only the recorded dentist narration lines', async () =
   }
 
   expect(audio.say).toHaveBeenCalledWith('ar', 'prepare.step.brush')
+  expect(audio.say).toHaveBeenCalledWith('ar', 'prepare.step.spray')
   expect(audio.say).toHaveBeenCalledWith('ar', 'prepare.done')
   for (const id of [
     'prepare.intro',
-    'prepare.step.spray',
     'prepare.step.scrub',
     'milo.great',
     'milo.hint.tap',

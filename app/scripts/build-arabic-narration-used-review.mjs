@@ -59,6 +59,14 @@ const entries = [
     note: 'Spoken when the water/air syringe is tapped.',
   },
   {
+    id: 'prepare.step.spray',
+    source: 'Arabic-narration/phase 3 spraying the sleepy juice.ogg',
+    target: 'app/public/audio/ar/prepare.step.spray.mp3',
+    screenshot: '06-tooth-after-juice.png',
+    frame: 'Tooth simulation sleepy juice step',
+    note: 'Recorded narration while the tooth closes its eyes and the sleepy juice is sprayed.',
+  },
+  {
     id: 'prepare.step.brush',
     source: 'Arabic-narration-redo/04-practice-brushing/recordings/�خطوة الدش الصغنون.m4a.mp4',
     target: 'app/public/audio/ar/prepare.step.brush.mp3',

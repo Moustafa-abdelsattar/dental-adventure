@@ -76,6 +76,7 @@ export function BigTooth({
         transition={{ duration: sleepy ? 3 : 4, repeat: Infinity, ease: 'easeInOut' }}
       >
         <img
+          data-testid="tooth-face"
           src={sleepy ? '/art/tooth-sleepy.webp' : '/art/tooth-happy.webp'}
           alt=""
           draggable={false}

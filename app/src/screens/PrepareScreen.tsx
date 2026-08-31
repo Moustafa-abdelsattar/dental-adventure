@@ -20,7 +20,9 @@ const SEQUENCE: { toolId: ToolId; stepId: StringId }[] = [
   { toolId: 'brush', stepId: 'prepare.step.brush' },
 ]
 
-/** How long the juice spends at the tooth before the step is done. */
+/** How long the tooth waits with closed eyes before the juice appears. */
+const SPRAY_EYES_LEAD_MS = 500
+/** How long the juice spends at the tooth before the visual beat is done. */
 const SPRAY_MS = 1900
 /** How long the brush takes to reach a spot before that spot comes clean. */
 const REACH_MS = 320
@@ -34,8 +36,8 @@ const BRUSH_PARK = { x: 50, y: 74 }
  * lit a tick on the tool itself. The rubber dam is gone with the two
  * instruments that made it, and the two that remain now do their job on screen.
  *
- * The juice is watched: it rises, tips towards the tooth and puffs, and the
- * tooth's eyes close partway through. The cleaning is not — the brush comes up
+ * The juice is watched: the tooth closes its eyes first, then the juice rises,
+ * tips towards the tooth and puffs. The cleaning is not — the brush comes up
  * and then waits, and the child presses each sticky spot themselves. The brush
  * travels to whichever one they pressed and that spot comes away under it. A
  * child who cleans the tooth has done something; a child who watches a brush
@@ -51,6 +53,7 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
   const [wiggleId, setWiggleId] = useState<ToolId | null>(null)
   /** The instrument currently at the tooth, mid-beat. */
   const [acting, setActing] = useState<ToolId | null>(null)
+  const [sprayVisible, setSprayVisible] = useState(false)
   const [sleepy, setSleepy] = useState(false)
   const [spots, setSpots] = useState([true, true, true, true])
   /** Set once the brush is up and the tooth is waiting to be pressed. */
@@ -94,6 +97,7 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
 
   const finishStep = async (next: number) => {
     setActing(null)
+    setSprayVisible(false)
     setStep(next)
     if (next < SEQUENCE.length) {
       setIntroDone(false)
@@ -118,9 +122,12 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
 
     if (toolId === 'spray') {
       setActing(toolId)
-      // the tooth drops off to sleep partway through the spray, not after it
-      later(() => setSleepy(true), SPRAY_MS * 0.55)
-      later(() => void finishStep(step + 1), SPRAY_MS)
+      setSleepy(true)
+      setSprayVisible(false)
+      later(() => setSprayVisible(true), SPRAY_EYES_LEAD_MS)
+      const visualDone = new Promise<void>(resolve => later(resolve, SPRAY_EYES_LEAD_MS + SPRAY_MS))
+      const narrationDone = lang === 'ar' ? audio.say(lang, 'prepare.step.spray') : Promise.resolve()
+      void Promise.all([visualDone, narrationDone]).then(() => finishStep(step + 1))
       return
     }
 
@@ -175,7 +182,7 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
           sat over its face. */}
       <div className="relative w-full max-w-xs mx-auto aspect-square">
         <BigTooth spots={spots} sleepy={sleepy} sparkle={done} onSpotTap={scrubbing ? tapSpot : undefined} />
-        {acting === 'spray' && <SprayBeat />}
+        {acting === 'spray' && sprayVisible && <SprayBeat />}
         {acting === 'brush' && <BrushBeat at={brushAt} />}
         <StarBurst show={done} />
       </div>
