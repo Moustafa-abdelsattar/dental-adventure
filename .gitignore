@@ -27,3 +27,7 @@ Arabic-narration-redo/
 Arabic-narration-used/
 artifacts/
 backups/
+
+# playwright run output
+test-results/
+playwright-report/

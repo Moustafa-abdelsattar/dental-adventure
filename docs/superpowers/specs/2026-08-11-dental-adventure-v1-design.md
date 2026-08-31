@@ -1,7 +1,7 @@
 # Dental Adventure v1 — Design Spec
 
 **Date:** 2026-08-11 · **Status:** Approved by owner (with additions: step-by-step build w/ tests, premium UI/UX + motion, unified tool art)
-**Sources:** spec board photo (`photo_2026-08-11_16-40-37.jpg`), owner's approach doc (`dental-adventure-interactive-game-approach.md`, treated as inspiration), 6-agent investigation (2026-08-11).
+**Sources:** spec board photo (`docs/photo_2026-08-11_16-40-37.jpg`), owner's approach doc (`dental-adventure-interactive-game-approach.md`, treated as inspiration), 6-agent investigation (2026-08-11).
 
 ## 1. What it is
 

@@ -12,7 +12,7 @@ The child picks a language, a parent picks the visit type (first checkup or trea
 
 Design rules it holds to: no fail states, no needles or blood, nothing that startles. Every instruction is spoken as well as written. A child who taps nothing still moves forward.
 
-It also carries a Facial Image Scale module for measuring dental anxiety before and after play, for clinics using the game as part of research.
+A Facial Image Scale module — the pre/post anxiety measure clinics would need to use the game as research — is **planned but not built**. Nothing in the app collects, scores or exports a mood rating today. See `docs/blueprint-phase-0-inspection.md` §1.1; earlier drafts of this file and of `docs/poc-review/` claimed it already existed, and it never has.
 
 ## Running it
 
@@ -34,14 +34,22 @@ node scripts/measure-layout.mjs # assert every screen aligns to the same grid
 
 ```
 app/           the game — React 19, Vite, Tailwind 4, Zustand, Motion
-  src/screens/   one file per screen, all sharing ModuleFrame
+  src/screens/   one file per screen, all sharing GameStage
+  src/game/      GameStage, the HUD, Milo, and the tool rig
+  src/three/     the 3D stage, reachable only from the ?stage3d=1 harness
   src/content/   copy and path manifests; the strings files drive the narration
   public/audio/  baked narration, one clip per string per language
 docs/          the plan, the tracker, and the Arabic audio script
-scripts/       narration generation (ElevenLabs) and art import
+scripts/       narration generation and art import
 ```
 
-Narration is generated ahead of time rather than spoken by the device, so it sounds the same on every phone and works offline. Regenerating it needs an `ELEVENLABS_API_KEY` in a root `.env`.
+Narration is baked ahead of time rather than spoken by the device, so it sounds the same on every phone and works offline. Three routes produce it, and they are not interchangeable:
+
+- **Arabic** ships from human recordings, imported with `scripts/import-arabic-narration-used.mjs` from the local `Arabic-narration-used/` folder. That folder is gitignored, so those recordings exist only on this machine — they are the one asset here with no copy in the repo.
+- **English** is synthesised by `scripts/generate-audio-edge.mjs` (Microsoft Edge neural TTS via `msedge-tts`, free, no key). This is the pipeline currently in use.
+- `scripts/generate-audio.mjs` and `scripts/audition-voices.mjs` use ElevenLabs and want an `ELEVENLABS_API_KEY` in a root `.env`. The Edge route exists as the standing fallback for them.
+
+Changing a string is therefore expensive: every edit costs a regenerated clip, and for Arabic it costs a new recording.
 
 ## Credits
 

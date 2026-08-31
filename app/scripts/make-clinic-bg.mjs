@@ -30,9 +30,6 @@ const OUT = resolve(import.meta.dirname, '../public/art/clinic-room-bg.webp')
 const W = 1280
 const H = 1024
 
-/** Everything above the chair's headrest. Below this line the render has furniture. */
-const WALL_H = 356
-
 // The sign, in the coordinates of the resized image.
 const SIGN = { left: 966, top: 111, width: 286, height: 247 }
 

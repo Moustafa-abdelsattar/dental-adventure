@@ -5,6 +5,29 @@ import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  build: {
+    rollupOptions: {
+      output: {
+        // Three.js and the 3D stage are reachable only from the `?stage3d=1`
+        // harness, never from the game a child plays, and they are already
+        // split off as lazy chunks. This only *renames* them into an `assets/3d/`
+        // folder — it deliberately does not regroup them, because forcing them
+        // into named chunks puts them in the entry's static graph and Vite then
+        // emits a `modulepreload` for a megabyte of renderer on first paint.
+        // The folder exists so the service worker below has a stable pattern to
+        // exclude; hashed chunk names give it nothing to match on.
+        chunkFileNames(chunk) {
+          const is3d = chunk.moduleIds?.some(
+            id =>
+              id.includes('node_modules/three') ||
+              id.includes('@react-three') ||
+              id.includes('/src/three/'),
+          )
+          return is3d ? 'assets/3d/[name]-[hash].js' : 'assets/[name]-[hash].js'
+        },
+      },
+    },
+  },
   plugins: [
     react(),
     tailwindcss(),
@@ -14,6 +37,10 @@ export default defineConfig({
         // precache everything, including narration — after the first online
         // load the whole game (voices included) works fully offline
         globPatterns: ['**/*.{js,css,html,woff2,svg,png,webp,mp3}'],
+        // …except the 3D harness. It is not on the child's path, and the models
+        // it needs are .glb, which was never precached anyway — so caching its
+        // code bought nothing and cost the offline bundle nearly a megabyte.
+        globIgnores: ['**/assets/3d/**'],
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
       },
       manifest: {

@@ -26,3 +26,46 @@ Source: [next-level-plan.md](next-level-plan.md). Update the checkboxes as items
 - [ ] P2.4 Anonymous research mode (mood check, not diagnosis)
 - [ ] P2.5 Validation with pediatric dentists and children
 - [ ] P2.6 Outcome reporting separated from the child's reward experience
+
+---
+
+## Known defects found in the 2026-08-31 audit
+
+Verified against `master` at `29473ab` and the live Railway build. None of these
+are caught by the test suites, which are green (124 unit, 5 e2e).
+
+- [ ] **D1 — The counting mission never runs.** `spray` is the "Quiet Counting
+  Mission". `checkup.json` has no such module, and `ModuleHost.visibleModulesFor`
+  filters it out of `treatment.json`, folding its star into `prepare` so the
+  progress bar still adds up. The filter arrived in `b065dbe "Update Arabic
+  narration flow"` and is not language-scoped, so it removed the mission from
+  English too. This is the "practise calm skills" beat the external review asked
+  for (P1.2), and the README still advertises it.
+- [ ] **D2 — The brushing practice never runs.** No manifest routes to
+  `practice-brush`, so `PracticeBrushScreen` ("Make the Tooth Sparkle") is
+  unreachable. `60679e4 "one tooth screen, not two"` folded its behaviour into
+  `PrepareScreen`, which is the *treatment* screen — so a child on the **first
+  checkup** path is shown the sleepy juice. That is the exact first-visit /
+  treatment mixing P0.1 and P0.2 are marked done for. Either re-point the
+  checkup manifest, or delete the screen and its tests and correct the README.
+- [ ] **D3 — Background music has never played.** `audio.startMusic()` fetches
+  `/audio/music.mp3`; the file does not exist and never has in git history.
+  Caddy's SPA fallback returns `index.html` as `text/html` with a 200, so the
+  decode fails, `.play()` rejects, and the `catch` swallows it silently. Either
+  add the track or remove the code and the ducking logic that serves it.
+- [ ] **D4 — Arabic and English get different feedback sounds.** Cleaning a
+  sticky spot plays a recorded clip for Arabic (`playDecayRemovalSfx`, gated on
+  `lang === 'ar'`) and a synthesised WebAudio blip for English
+  (`playEraseSfx`). Pick one.
+
+### Fixed in that audit
+- The service worker precached 946 KB of Three.js and the `?stage3d=1` harness
+  onto every device. The 3D chunks now build into `assets/3d/` and are excluded
+  from the offline bundle, which drops from 11.14 MB to 10.19 MB. The game does
+  not use 3D, and the harness's `.glb` models were never precached anyway.
+- Deleted `app/src/components/ui/ToolCard.tsx` and `app/demo-artifact/`, both
+  unreferenced. `oxlint` now reports no real findings, only fast-refresh notes.
+- The README claimed a Facial Image Scale module that has never existed, named
+  `ModuleFrame` (replaced by `GameStage`), and credited narration to ElevenLabs
+  when English ships from `msedge-tts` and Arabic from human recordings.
+- Deleted the `feat/game-stage` branch, fully merged into `master`.
