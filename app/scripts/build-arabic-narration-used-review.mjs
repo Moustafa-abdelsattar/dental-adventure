@@ -199,14 +199,6 @@ entries.push(
       note: 'Spoken after all current tool cards are found.',
     },
     {
-      id: 'visit.stopSignal',
-      source: 'app/public/audio/ar/visit.stopSignal.mp3',
-      target: 'app/public/audio/ar/visit.stopSignal.mp3',
-      screenshot: '11-raise-hand-prompt.png',
-      frame: 'Stop signal explanation starts',
-      note: 'First stop-signal line after the mask reveal.',
-    },
-    {
       id: 'visit.stopSignalDone',
       source: 'app/public/audio/ar/visit.stopSignalDone.mp3',
       target: 'app/public/audio/ar/visit.stopSignalDone.mp3',

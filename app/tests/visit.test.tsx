@@ -184,14 +184,8 @@ test('hand cannot be raised until the stop signal narration finishes', async () 
 
 test('Arabic visit plays the hand prompt before allowing the hand tap', async () => {
   useGame.getState().setLang('ar')
-  let finishStop!: () => void
   let finishPrompt!: () => void
   vi.mocked(audio.say).mockImplementation((_, id) => {
-    if (id === 'visit.stopSignal') {
-      return new Promise(resolve => {
-        finishStop = resolve
-      })
-    }
     if (id === 'visit.handPrompt') {
       return new Promise(resolve => {
         finishPrompt = resolve
@@ -206,13 +200,7 @@ test('Arabic visit plays the hand prompt before allowing the hand tap', async ()
     fireEvent.click(screen.getByTestId('drnour-mask'))
     await Promise.resolve()
   })
-  expect(audio.say).toHaveBeenCalledWith('ar', 'visit.stopSignal')
-  expect(screen.getByTestId('raise-hand')).toBeDisabled()
-
-  await act(async () => {
-    finishStop()
-    await Promise.resolve()
-  })
+  expect(audio.say).not.toHaveBeenCalledWith('ar', 'visit.stopSignal')
   expect(audio.say).toHaveBeenCalledWith('ar', 'visit.handPrompt')
   expect(screen.getByTestId('raise-hand')).toBeDisabled()
 

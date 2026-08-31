@@ -103,12 +103,13 @@ export function VisitScreen({ onComplete }: ModuleProps) {
     setMeetCopy('visit.maskOff')
     await audio.say(lang, 'visit.maskOff')
     setHandReady(false)
-    setStopCopy('visit.stopSignal')
     setPhase('stop')
-    await audio.say(lang, 'visit.stopSignal')
     if (lang === 'ar') {
       setStopCopy('visit.handPrompt')
       await audio.say(lang, 'visit.handPrompt')
+    } else {
+      setStopCopy('visit.stopSignal')
+      await audio.say(lang, 'visit.stopSignal')
     }
     setHandReady(true)
   }
