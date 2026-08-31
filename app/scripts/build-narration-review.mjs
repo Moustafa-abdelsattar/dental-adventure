@@ -408,7 +408,6 @@ function screenSection(s, unreachable = false) {
 
 const enAll = Object.values(DUR.en).reduce((a, b) => a + b, 0)
 const arAll = Object.values(DUR.ar).reduce((a, b) => a + b, 0)
-const arRecorded = Object.keys(DUR.ar).filter(k => RECORDED.has(k)).length
 const arRealAudio = Object.keys(DUR.ar).length - SILENT.ar.size
 // Lines the shipped game actually speaks, whose clip is silence.
 const LIVE_SILENT = []
