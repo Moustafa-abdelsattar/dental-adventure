@@ -83,8 +83,16 @@ const entries = [
     note: 'Narration after the tooth cleanup finishes.',
   },
   {
+    id: 'visit.meetDr',
+    source: 'Arabic-narration-redo/مقدمة الدكتورة.m4a.mp4',
+    target: 'app/public/audio/ar/visit.meetDr.mp3',
+    screenshot: '09-dentist-masked.png',
+    frame: 'Dentist visit starts',
+    note: 'First dentist visit narration before the mask prompt.',
+  },
+  {
     id: 'visit.maskPrompt',
-    source: 'Arabic-narration-redo/07-dentist-visit/recordings/الدكتورة.m4a.mp4',
+    source: 'Arabic-narration-redo/الدكتورة.m4a.mp4',
     target: 'app/public/audio/ar/visit.maskPrompt.mp3',
     screenshot: '09-dentist-masked.png',
     frame: 'Dentist mask prompt before tapping',
@@ -92,7 +100,7 @@ const entries = [
   },
   {
     id: 'visit.maskOff',
-    source: 'Arabic-narration-redo/07-dentist-visit/recordings/بعد الماسك.m4a.mp4',
+    source: 'Arabic-narration-redo/بعد الماسك.m4a.mp4',
     target: 'app/public/audio/ar/visit.maskOff.mp3',
     screenshot: '10-dentist-after-mask.png',
     frame: 'After the mask is removed',
@@ -100,7 +108,7 @@ const entries = [
   },
   {
     id: 'visit.handPrompt',
-    source: 'Arabic-narration-redo/07-dentist-visit/recordings/ازاى هيرفع ايده معدل.m4a.mp4',
+    source: 'Arabic-narration-redo/ازاى هيرفع ايده معدل.m4a.mp4',
     target: 'app/public/audio/ar/visit.handPrompt.mp3',
     screenshot: '11-raise-hand-prompt.png',
     frame: 'Before the raise-hand button is pressed',

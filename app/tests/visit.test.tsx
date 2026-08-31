@@ -113,8 +113,14 @@ test('mask cannot be tapped until the dentist intro finishes', async () => {
 
 test('Arabic visit plays the mask prompt before allowing the mask tap', async () => {
   useGame.getState().setLang('ar')
+  let finishMeet!: () => void
   let finishPrompt!: () => void
   vi.mocked(audio.say).mockImplementation((_, id) => {
+    if (id === 'visit.meetDr') {
+      return new Promise(resolve => {
+        finishMeet = resolve
+      })
+    }
     if (id === 'visit.maskPrompt') {
       return new Promise(resolve => {
         finishPrompt = resolve
@@ -124,7 +130,13 @@ test('Arabic visit plays the mask prompt before allowing the mask tap', async ()
   })
 
   render(<VisitScreen module={mod} onComplete={vi.fn()} />)
-  expect(audio.say).not.toHaveBeenCalledWith('ar', 'visit.meetDr')
+  expect(audio.say).toHaveBeenCalledWith('ar', 'visit.meetDr')
+  expect(screen.getByTestId('drnour-mask')).toHaveAttribute('aria-disabled', 'true')
+
+  await act(async () => {
+    finishMeet()
+    await Promise.resolve()
+  })
   expect(audio.say).toHaveBeenCalledWith('ar', 'visit.maskPrompt')
   expect(screen.getByTestId('drnour-mask')).toHaveAttribute('aria-disabled', 'true')
 

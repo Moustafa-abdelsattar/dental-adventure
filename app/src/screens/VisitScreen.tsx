@@ -80,6 +80,9 @@ export function VisitScreen({ onComplete }: ModuleProps) {
     let cancelled = false
     const run = async () => {
       if (lang === 'ar') {
+        setMeetCopy('visit.meetDr')
+        await audio.say(lang, 'visit.meetDr')
+        if (cancelled) return
         setMeetCopy('visit.maskPrompt')
         await audio.say(lang, 'visit.maskPrompt')
         if (!cancelled) setMaskReady(true)
