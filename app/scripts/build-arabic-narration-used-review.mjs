@@ -83,22 +83,6 @@ const entries = [
     note: 'Narration after the tooth cleanup finishes.',
   },
   {
-    id: 'spray.intro',
-    source: 'Arabic-narration/phase 4 why we close eyes.ogg',
-    target: 'app/public/audio/ar/spray.intro.mp3',
-    screenshot: '14-count-close-eyes.png',
-    frame: 'Counting screen starts',
-    note: 'Explains why the child can close their eyes before counting.',
-  },
-  {
-    id: 'spray.countToTen',
-    source: 'Arabic-narration/phase 4 coutning 1 to 10.ogg',
-    target: 'app/public/audio/ar/spray.countToTen.mp3',
-    screenshot: '15-count-to-ten.png',
-    frame: 'Counting from 1 to 10',
-    note: 'One continuous Arabic recording for the full count.',
-  },
-  {
     id: 'visit.meetDr',
     source: 'Arabic-narration-redo/مقدمة الدكتورة.m4a.mp4',
     target: 'app/public/audio/ar/visit.meetDr.mp3',
@@ -420,12 +404,6 @@ async function captureScreenshots() {
   }
   await page.waitForTimeout(200)
   await shot(page, '08-tooth-cleaned.png')
-
-  await seedSession(page, { clinic: true, tools: true, prepare: true })
-  await page.getByTestId('spray-count-art').waitFor({ state: 'visible' })
-  await shot(page, '14-count-close-eyes.png')
-  await page.getByTestId('count-bubble').waitFor({ state: 'visible' })
-  await shot(page, '15-count-to-ten.png')
 
   await seedSession(page, { clinic: true, tools: true, prepare: true, spray: true })
   await page.getByTestId('drnour').waitFor({ state: 'visible' })

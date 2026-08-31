@@ -82,9 +82,9 @@ describe('ModuleHost engine', () => {
     expect(screen.getByTestId('reward-screen')).toBeInTheDocument()
   })
 
-  test('English treatment skips the counting module between tooth prep and the dentist visit', () => {
+  test.each(['ar', 'en'] as const)('%s treatment skips the counting module between tooth prep and the dentist visit', lang => {
     vi.spyOn(audio, 'say').mockResolvedValue()
-    useGame.getState().setLang('en')
+    useGame.getState().setLang(lang)
     useGame.getState().setPath('treatment')
 
     render(<ModuleHost registry={registry} />)
@@ -101,23 +101,7 @@ describe('ModuleHost engine', () => {
     expect(screen.queryByText('done-spray')).not.toBeInTheDocument()
     expect(screen.getByText('done-visit')).toBeInTheDocument()
     expect(useGame.getState().stars).toMatchObject({ clinic: true, tools: true, prepare: true, spray: true })
-  })
-
-  test('Arabic treatment shows the counting module before the dentist visit', () => {
-    vi.spyOn(audio, 'say').mockResolvedValue()
-    useGame.getState().setLang('ar')
-    useGame.getState().setPath('treatment')
-
-    render(<ModuleHost registry={registry} />)
-    for (const id of ['clinic', 'tools', 'prepare']) {
-      fireEvent.click(screen.getByText(`done-${id}`))
-      act(() => vi.advanceTimersByTime(1000))
-    }
-
-    expect(screen.getByText('done-spray')).toBeInTheDocument()
-    expect(screen.queryByText('done-visit')).not.toBeInTheDocument()
-    expect(useGame.getState().stars).toMatchObject({ clinic: true, tools: true, prepare: true })
-    expect(audio.say).not.toHaveBeenCalledWith('ar', 'milo.starEarned')
+    if (lang === 'ar') expect(audio.say).not.toHaveBeenCalledWith('ar', 'milo.starEarned')
   })
 
   test('completing a module with a beat shows Milo\'s story line and tapping dismisses it', () => {

@@ -285,23 +285,3 @@ test('spray: counts one to ten aloud then completes unconditionally', async () =
   expect(audio.say).toHaveBeenCalledWith('en', 'spray.done')
   expect(onComplete).toHaveBeenCalledTimes(1)
 })
-
-test('Arabic spray uses the two recorded counting lines and count artwork', async () => {
-  vi.useFakeTimers()
-  useGame.getState().setLang('ar')
-  const onComplete = vi.fn()
-  render(<SprayScreen module={mod('spray')} onComplete={onComplete} />)
-
-  expect(screen.getByTestId('spray-count-art')).toHaveAttribute('src', '/art/visit-step-count.webp')
-
-  await act(async () => {
-    await vi.advanceTimersByTimeAsync(11_000)
-  })
-
-  expect(audio.say).toHaveBeenCalledWith('ar', 'spray.intro')
-  expect(audio.say).toHaveBeenCalledWith('ar', 'spray.countToTen')
-  for (let n = 1; n <= 10; n++) expect(audio.say).not.toHaveBeenCalledWith('ar', `spray.count.${n}`)
-  expect(audio.say).not.toHaveBeenCalledWith('ar', 'spray.done')
-  expect(screen.getByTestId('spray-count-art')).toHaveAttribute('src', '/art/visit-step-count-ten.webp')
-  expect(onComplete).toHaveBeenCalledTimes(1)
-})

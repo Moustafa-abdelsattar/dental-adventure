@@ -9,10 +9,7 @@ import { STRING_IDS } from '../src/lib/i18n'
 // a TTS provider). Adding a string without either a clip or an entry here
 // fails the suite. Regenerate clips with scripts/generate-audio-edge.mjs
 // (free, no key) or scripts/generate-audio.mjs (ElevenLabs, needs .env key).
-const PENDING_CLIPS = new Set<string>([
-  // Arabic-only continuous counting line. English still uses spray.count.1-10.
-  'spray.countToTen',
-])
+const PENDING_CLIPS = new Set<string>([])
 
 for (const lang of ['en', 'ar'] as const) {
   test(`every string id has a ${lang} narration clip (or is consciously pending)`, () => {

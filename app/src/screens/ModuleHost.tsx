@@ -22,14 +22,14 @@ export function starIdsFor(m: ModuleDef): string[] {
   return Array.from({ length: m.stars }, (_, i) => (i === 0 ? m.id : `${m.id}-${i + 1}`))
 }
 
-function visibleModulesFor(path: string, manifest: PathManifest, lang: string): ModuleDef[] {
-  if (path === 'treatment' && lang !== 'ar') return manifest.modules.filter(m => m.id !== 'spray')
+function visibleModulesFor(path: string, manifest: PathManifest): ModuleDef[] {
+  if (path === 'treatment') return manifest.modules.filter(m => m.id !== 'spray')
   return manifest.modules
 }
 
-function starIdsForProgress(path: string, m: ModuleDef, lang: string): string[] {
+function starIdsForProgress(path: string, m: ModuleDef): string[] {
   const ids = starIdsFor(m)
-  if (path === 'treatment' && lang !== 'ar' && m.id === 'prepare') return [...ids, 'spray']
+  if (path === 'treatment' && m.id === 'prepare') return [...ids, 'spray']
   return ids
 }
 
@@ -58,8 +58,8 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
   if (!lang || !path) return null
   const manifest = manifests[path]
   if (!manifest) return null
-  const modules = visibleModulesFor(path, manifest, lang)
-  const finished = modules.filter(m => starIdsForProgress(path, m, lang).every(id => stars[id]))
+  const modules = visibleModulesFor(path, manifest)
+  const finished = modules.filter(m => starIdsForProgress(path, m).every(id => stars[id]))
   const allDone = finished.length === modules.length
 
   // Free-play: replay any module; completing it just returns to the picker.
@@ -118,7 +118,7 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
     )
   }
 
-  const current = modules.find(m => !starIdsForProgress(path, m, lang).every(id => stars[id]))
+  const current = modules.find(m => !starIdsForProgress(path, m).every(id => stars[id]))
 
   if (!current) return <RewardScreen />
 
@@ -144,7 +144,7 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
       void audio.say(lang, 'milo.starEarned')
     }
     const from = origin ?? { x: window.innerWidth / 2, y: window.innerHeight / 2 }
-    starIdsForProgress(path, current, lang).forEach((id, i) => {
+    starIdsForProgress(path, current).forEach((id, i) => {
       setTimeout(() => {
         setFlights(f => [...f, { key: Date.now() + i, from }])
         awardStar(id)

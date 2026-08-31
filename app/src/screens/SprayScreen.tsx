@@ -11,7 +11,6 @@ import { GameStage } from '../game/GameStage'
 import type { ModuleProps } from './registry'
 
 const PAUSE_MS = 600
-const ARABIC_COUNT_MS = 9237
 
 /**
  * The calm counting mission. Milo counts ALOUD from one to ten, slowly —
@@ -39,17 +38,6 @@ export function SprayScreen({ onComplete }: ModuleProps) {
     const run = async () => {
       await audio.say(lang, 'spray.intro')
       await new Promise(r => setTimeout(r, PAUSE_MS))
-      if (lang === 'ar') {
-        const countLine = audio.say(lang, 'spray.countToTen' as StringId)
-        for (let i = 1; i <= 10; i++) {
-          setCount(i)
-          await new Promise(r => setTimeout(r, ARABIC_COUNT_MS / 10))
-        }
-        await countLine
-        setDone(true)
-        completeOnce()
-        return
-      }
       for (let i = 1; i <= 10; i++) {
         setCount(i)
         await audio.say(lang, `spray.count.${i}` as StringId)
@@ -73,17 +61,7 @@ export function SprayScreen({ onComplete }: ModuleProps) {
       action={<GameButton label={t(lang, 'ui.next')} disabled={!done} onPress={completeOnce} />}
     >
       <div className="relative w-full">
-        {lang === 'ar' ? (
-          <img
-            src={count > 0 ? '/art/visit-step-count-ten.webp' : '/art/visit-step-count.webp'}
-            alt=""
-            data-testid="spray-count-art"
-            className="mx-auto w-full max-w-[360px] select-none object-contain drop-shadow-xl"
-            draggable={false}
-          />
-        ) : (
-          <BigTooth sleepy={count > 0} sparkle={done} />
-        )}
+        <BigTooth sleepy={count > 0} sparkle={done} />
         <StarBurst show={done} />
         {count > 0 && !done && (
           <motion.div
