@@ -20,6 +20,8 @@ voice-lines/
 
 # visual-gate screenshots (regenerate with scripts/shots.mjs)
 shots/
+# …except the narration review sheet's, which are the document's content
+!docs/narration-review/shots/
 
 # local narration intake/review folders; app-ready clips live under app/public/audio
 Arabic-narration/

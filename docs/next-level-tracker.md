@@ -53,10 +53,26 @@ are caught by the test suites, which are green (124 unit, 5 e2e).
   Caddy's SPA fallback returns `index.html` as `text/html` with a 200, so the
   decode fails, `.play()` rejects, and the `catch` swallows it silently. Either
   add the track or remove the code and the ducking logic that serves it.
-- [ ] **D4 — Arabic and English get different feedback sounds.** Cleaning a
-  sticky spot plays a recorded clip for Arabic (`playDecayRemovalSfx`, gated on
-  `lang === 'ar'`) and a synthesised WebAudio blip for English
-  (`playEraseSfx`). Pick one.
+- [ ] **D4 — Arabic and English get different feedback when a spot is cleaned.**
+  In `PrepareScreen`, Arabic plays a recorded sound effect once — on the first
+  spot only, guarded by `decayRemovalSfxStarted` — and says nothing else.
+  English says nothing but speaks a praise line after each spot. Since the
+  fourth spot ends the step, `milo.praise.4` is baked in both languages and
+  never heard. The synthesised `playEraseSfx` is not the counterpart: it is
+  called only from the unreachable `PracticeBrushScreen`, and is itself gated on
+  `lang === 'ar'`. Decide what cleaning a spot should sound like, once.
+- [ ] **D5 — Six Arabic lines the game speaks are silent files.** 93 of the 126
+  Arabic clips are byte-identical 5060-byte placeholders measuring −91 dB —
+  digital silence. Most are for copy Arabic never speaks, so they only waste
+  bandwidth, but six are on the live path: `lang.greet`, `milo.welcomeBack`,
+  `milo.hint.tap`, `clinic.done`, `tools.done`, `visit.done`. An Arabic child
+  gets no greeting when they choose the language, no help if they stall, and
+  silence at the end of three of the four modules. Confirmed against the
+  deployed build, not just locally. All six are listed as imported recordings in
+  `Arabic-narration-used/manifest.json` with `runtimeDuration: 0.35` logged
+  against them, so the import wrote the placeholder and recorded that it had.
+  Check `Arabic-narration-redo/01-shared-milo-lines/` for usable source audio
+  before re-booking the voice.
 
 ### Fixed in that audit
 - The service worker precached 946 KB of Three.js and the `?stage3d=1` harness
@@ -69,3 +85,12 @@ are caught by the test suites, which are green (124 unit, 5 e2e).
   `ModuleFrame` (replaced by `GameStage`), and credited narration to ElevenLabs
   when English ships from `msedge-tts` and Arabic from human recordings.
 - Deleted the `feat/game-stage` branch, fully merged into `master`.
+
+### Where the evidence lives
+`docs/narration-review/index.html` — every screen in both languages, each with
+its screenshot, the narration it plays in order, the clip durations, and a
+playable copy of every clip. Built by `app/scripts/build-narration-review.mjs`
+from the screen components themselves; screenshots refreshed by
+`app/scripts/capture-narration-review.mjs`. Open it from inside the repo so the
+audio resolves. Lines are editable in the page and **Export edits** produces a
+patch for `strings/*.json` plus the list of clips that would need regenerating.

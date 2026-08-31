@@ -1,0 +1,2300 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dental Adventure — Narration Review</title>
+<link rel="icon" href="data:,">
+<style>
+:root{
+  --bg:#f7f5f1; --panel:#fff; --ink:#221f33; --muted:#6b6780; --line:#e4e0d8;
+  --accent:#5b4bd6; --accent-soft:#eeebff; --mint:#1d8a6a; --amber:#a86a12;
+  --rose:#b32d5e; --rose-soft:#fdeef3;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --sans:"Segoe UI",system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#16151c; --panel:#1e1d26; --ink:#eceaf4; --muted:#9b96ad; --line:#2f2d3a;
+  --accent:#a99bff; --accent-soft:#272244; --mint:#5fd3ab; --amber:#e0aa5a;
+  --rose:#ff8fb4; --rose-soft:#38202b;
+}}
+:root[data-theme="dark"]{
+  --bg:#16151c; --panel:#1e1d26; --ink:#eceaf4; --muted:#9b96ad; --line:#2f2d3a;
+  --accent:#a99bff; --accent-soft:#272244; --mint:#5fd3ab; --amber:#e0aa5a;
+  --rose:#ff8fb4; --rose-soft:#38202b;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 var(--sans)}
+header.top{position:sticky;top:0;z-index:20;background:var(--panel);border-bottom:1px solid var(--line);
+  padding:.7rem 1.25rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+header.top h1{font-size:1.05rem;margin:0;letter-spacing:-.01em}
+header.top .sub{color:var(--muted);font-size:.82rem}
+.spacer{flex:1}
+button,.btn{font:inherit;border:1px solid var(--line);background:var(--panel);color:var(--ink);
+  border-radius:8px;padding:.35rem .7rem;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+main{max-width:1500px;margin:0 auto;padding:1.25rem}
+.intro{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:1.25rem}
+.intro h2{margin:.1rem 0 .5rem;font-size:1rem}
+.intro p{margin:.4rem 0;max-width:74ch}
+.stats{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.8rem}
+.stat{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:.5rem .75rem;min-width:8.5rem}
+.stat b{display:block;font-size:1.15rem}
+.stat span{color:var(--muted);font-size:.76rem}
+section.screen{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:1.1rem}
+section.unreachable{border-color:var(--rose);background:var(--rose-soft)}
+.s-head{display:flex;align-items:baseline;gap:.7rem;flex-wrap:wrap}
+.s-head h2{margin:0;font-size:1.1rem;display:flex;align-items:center;gap:.55rem}
+.num{background:var(--accent);color:#fff;border-radius:7px;padding:.1rem .45rem;font:600 .78rem var(--mono)}
+.num.dead{background:var(--rose)}
+.src{font:.75rem var(--mono);color:var(--muted)}
+.blurb{margin:.55rem 0 .9rem;color:var(--muted);max-width:88ch}
+.warn{margin:.6rem 0;padding:.5rem .7rem;border-radius:9px;background:var(--panel);border:1px solid var(--rose);font-size:.87rem}
+.shots{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:.9rem}
+figure{margin:0}
+.pair{display:flex;gap:.5rem}
+.pair img{width:158px;border-radius:10px;border:1px solid var(--line);display:block;background:#fff}
+figcaption{font-size:.72rem;color:var(--muted);text-align:center;margin-top:.2rem}
+.totals{display:flex;gap:1rem;flex-wrap:wrap;font-size:.82rem;margin-bottom:.6rem;color:var(--muted)}
+.totals strong{color:var(--ink)}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:960px}
+th{text-align:start;font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);
+  padding:.4rem .5rem;border-bottom:1px solid var(--line);background:var(--panel)}
+td{padding:.5rem;border-bottom:1px solid var(--line);vertical-align:top}
+.c-seq{width:2.2rem;color:var(--muted);font:.78rem var(--mono)}
+.c-id{width:16rem}
+.c-id code{font:.78rem var(--mono);color:var(--accent);word-break:break-all}
+.c-lang{width:26%}
+.c-note{width:13rem}
+tr.evt td{background:var(--bg)}
+.tag{display:inline-block;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;
+  color:var(--muted);border:1px dashed var(--line);border-radius:99px;padding:.05rem .55rem;margin-inline-end:.5rem}
+.hint{color:var(--muted);font-size:.8rem}
+.badge{display:inline-block;font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+  border-radius:99px;padding:.05rem .4rem;margin-inline-start:.35rem;vertical-align:middle}
+.badge.tts{background:var(--accent-soft);color:var(--accent)}
+.badge.rec{background:#dff5ec;color:var(--mint)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .badge.rec{background:#12352a}}
+.badge.lang-only{background:transparent;border:1px solid var(--amber);color:var(--amber)}
+.badge.silent{background:var(--rose);color:#fff}
+tr.has-silent td{background:var(--rose-soft)}
+.alarm{background:var(--rose-soft);border:2px solid var(--rose);border-radius:14px;padding:1rem 1.25rem;margin-bottom:1.25rem}
+.alarm h2{margin:.1rem 0 .5rem;font-size:1rem;color:var(--rose)}
+.alarm ul{margin:.5rem 0 0;padding-inline-start:1.1rem}
+.alarm li{margin:.2rem 0}
+.alarm code{font:.82rem var(--mono)}
+.row-top{display:flex;align-items:center;gap:.4rem;margin-bottom:.25rem;flex-wrap:wrap}
+.play{width:1.7rem;height:1.7rem;padding:0;border-radius:50%;line-height:1;font-size:.7rem}
+.play.playing{background:var(--accent);color:#fff;border-color:var(--accent)}
+.play.missing{border-color:var(--rose);color:var(--rose)}
+.dur{font:.74rem var(--mono);color:var(--muted)}
+.orig{margin:.2rem 0 .35rem;font-size:.9rem}
+textarea{width:100%;font:.85rem var(--sans);color:var(--ink);background:var(--bg);
+  border:1px solid var(--line);border-radius:7px;padding:.35rem .45rem;resize:vertical}
+textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
+textarea.dirty{border-color:var(--amber);background:#fffaf0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) textarea.dirty{background:#2b2418}}
+.c-lang.off{color:var(--muted)}
+.dash{font-size:.82rem;font-style:italic}
+body.only-en .c-lang.ar,body.only-en th:nth-child(4){display:none}
+body.only-ar .c-lang.en,body.only-ar th:nth-child(3){display:none}
+body.only-en .pair div:nth-child(2),body.only-ar .pair div:nth-child(1){display:none}
+.orphans{columns:3;column-gap:1.5rem;font:.8rem var(--mono)}
+.orphans div{break-inside:avoid;padding:.1rem 0}
+@media(max-width:820px){.orphans{columns:1}}
+footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <h1>Dental Adventure — narration review</h1>
+  <span class="sub">every screen · both languages · 251 clips</span>
+  <span class="spacer"></span>
+  <button id="m-both" class="on">Both</button>
+  <button id="m-en">English</button>
+  <button id="m-ar">العربية</button>
+  <button id="theme">◐</button>
+  <button id="export">Export edits</button>
+  <button id="reset">Clear edits</button>
+  <span class="sub" id="dirty"></span>
+</header>
+
+<main>
+<div class="intro">
+  <h2>How to use this</h2>
+  <p>Every line the game speaks, in the order it speaks it, screen by screen. Press <strong>▶</strong> to hear the exact clip that ships. The boxes under each line are editable — type a revised line and it is kept in your browser; <strong>Export edits</strong> downloads only what you changed, as JSON plus a ready-to-paste patch for <code>en.json</code> / <code>ar.json</code>, and a list of which clips would need regenerating.</p>
+  <p><strong>Changing a line is not free.</strong> Narration is baked one clip per string per language. An English edit means re-running <code>scripts/generate-audio-edge.mjs</code>; an Arabic edit on a line marked <span class="badge rec">recorded</span> means booking the voice again.</p>
+  <p class="hint">Audio plays from <code>app/public/audio/</code> next door, so open this file from inside the repo. Rebuild it with <code>node scripts/build-narration-review.mjs</code>; refresh the screenshots with <code>node scripts/capture-narration-review.mjs</code>.</p>
+  <div class="stats">
+    <div class="stat"><b>314s</b><span>English, all clips</span></div>
+    <div class="stat"><b>318s</b><span>Arabic, all clips</span></div>
+    <div class="stat"><b>33</b><span>Arabic clips with any audio at all</span></div>
+    <div class="stat"><b>93</b><span>Arabic clips that are silence</span></div>
+    <div class="stat"><b>64</b><span>clips nothing plays</span></div>
+  </div>
+</div>
+
+<div class="alarm">
+  <h2>⚠ 6 lines the game speaks are silent files</h2>
+  <p>93 of the 126 Arabic clips are byte-identical 5060-byte placeholders measuring −91 dB. Most are for copy Arabic never speaks, so they cost only bandwidth — but these are on the live path, and an Arabic-speaking child hears nothing where a voice is meant to be. Verified on the deployed build, not just locally.</p>
+  <ul><li><code>lang.greet</code> <span class="hint">AR · Choose language</span></li><li><code>milo.welcomeBack</code> <span class="hint">AR · Welcome</span></li><li><code>milo.hint.tap</code> <span class="hint">AR · Meet the dental clinic</span></li><li><code>clinic.done</code> <span class="hint">AR · Meet the dental clinic</span></li><li><code>tools.done</code> <span class="hint">AR · Meet the friendly tools</span></li><li><code>visit.done</code> <span class="hint">AR · Your dental visit</span></li></ul>
+  <p class="hint" style="margin-top:.6rem">All of these are listed in <code>Arabic-narration-used/manifest.json</code> as imported recordings, with <code>runtimeDuration: 0.35</code> recorded against them — so the import wrote the placeholder and logged it. The source recordings may still be good; check <code>Arabic-narration-redo/01-shared-milo-lines/</code> before re-booking the voice.</p>
+</div>
+
+
+<section class="screen" id="s-language">
+  <header class="s-head">
+    <h2><span class="num">01</span>Choose language</h2>
+    <code class="src">src/screens/LanguageScreen.tsx</code>
+  </header>
+  
+  <p class="blurb">The first thing anyone sees. Both languages are on screen at once, so the child (or parent) can pick without reading. Tapping a button unlocks audio, starts the music and speaks the greeting in that language.</p>
+  <div class="shots"><figure>
+        <div class="pair">
+          <div><img loading="lazy" src="shots/en-01-language.png" alt="01-language in English"><figcaption>English</figcaption></div>
+          <div><img loading="lazy" src="shots/ar-01-language.png" alt="01-language in Arabic"><figcaption>العربية</figcaption></div>
+        </div>
+      </figure></div>
+  <div class="totals">
+    <span>Spoken runtime — English <strong>1.7s</strong></span>
+    <span><bdi>العربية</bdi> <strong>0.3s</strong></span>
+    <span class="muted">excludes pauses and time waiting for the child</span>
+  </div>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>#</th><th>String</th><th>English</th><th>العربية</th><th>Note</th></tr></thead>
+    <tbody><tr class="evt tap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">waits for the child</span><span class="hint">Child taps a language</span></td></tr>
+  <tr class="line has-silent" data-key="language::lang.greet::0" data-id="lang.greet">
+    <td class="c-seq">1</td>
+    <td class="c-id">
+      <code>lang.greet</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/lang.greet.mp3">▶</button>
+        <span class="dur">1.67s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Hello! Let&#39;s play in English!</p>
+      <textarea class="edit" dir="ltr" data-field="language::lang.greet::0::en" rows="2" placeholder="Revised English line…">Hello! Let&#39;s play in English!</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/lang.greet.mp3">▶</button>
+        <span class="dur">0.35s</span><span class="badge silent" title="5060-byte placeholder measuring -91 dB. Nothing is heard.">SILENT</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">تمام! هنكمّل بالعربي المصري.</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="language::lang.greet::0::ar" rows="2" placeholder="السطر العربي المعدَّل…">تمام! هنكمّل بالعربي المصري.</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="language::lang.greet::0::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt note"><td class="c-seq"></td><td colspan="4">
+    
+    <span class="hint">Background music is meant to start here. It never does — /audio/music.mp3 does not exist. See defect D3.</span></td></tr></tbody>
+  </table>
+  </div>
+</section>
+<section class="screen" id="s-parent-visit">
+  <header class="s-head">
+    <h2><span class="num">02</span>For parents — which visit</h2>
+    <code class="src">src/screens/ParentScreen.tsx</code>
+  </header>
+  
+  <p class="blurb">A parent-facing gate. Silent on purpose — this screen is not for the child.</p>
+  <div class="shots"><figure>
+        <div class="pair">
+          <div><img loading="lazy" src="shots/en-02-parent-visit.png" alt="02-parent-visit in English"><figcaption>English</figcaption></div>
+          <div><img loading="lazy" src="shots/ar-02-parent-visit.png" alt="02-parent-visit in Arabic"><figcaption>العربية</figcaption></div>
+        </div>
+      </figure></div>
+  <div class="totals">
+    <span>Spoken runtime — English <strong>0.0s</strong></span>
+    <span><bdi>العربية</bdi> <strong>0.0s</strong></span>
+    <span class="muted">excludes pauses and time waiting for the child</span>
+  </div>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>#</th><th>String</th><th>English</th><th>العربية</th><th>Note</th></tr></thead>
+    <tbody><tr class="evt note"><td class="c-seq"></td><td colspan="4">
+    
+    <span class="hint">No narration. Copy shown: parent.forParents, parent.whichVisit, parent.checkup, parent.treatment.</span></td></tr></tbody>
+  </table>
+  </div>
+</section>
+<section class="screen" id="s-parent-name">
+  <header class="s-head">
+    <h2><span class="num">03</span>For parents — child&#39;s name</h2>
+    <code class="src">src/screens/ParentScreen.tsx</code>
+  </header>
+  
+  <p class="blurb">Optional. The name is substituted into {name} in many lines below — but the clips are baked, so the spoken line never says it. Only the on-screen text does.</p>
+  <div class="shots"><figure>
+        <div class="pair">
+          <div><img loading="lazy" src="shots/en-03-parent-name.png" alt="03-parent-name in English"><figcaption>English</figcaption></div>
+          <div><img loading="lazy" src="shots/ar-03-parent-name.png" alt="03-parent-name in Arabic"><figcaption>العربية</figcaption></div>
+        </div>
+      </figure></div>
+  <div class="totals">
+    <span>Spoken runtime — English <strong>0.0s</strong></span>
+    <span><bdi>العربية</bdi> <strong>0.0s</strong></span>
+    <span class="muted">excludes pauses and time waiting for the child</span>
+  </div>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>#</th><th>String</th><th>English</th><th>العربية</th><th>Note</th></tr></thead>
+    <tbody><tr class="evt note"><td class="c-seq"></td><td colspan="4">
+    
+    <span class="hint">No narration. Copy shown: parent.childName, parent.namePlaceholder, ui.next, parent.skip.</span></td></tr></tbody>
+  </table>
+  </div>
+</section>
+<section class="screen" id="s-welcome">
+  <header class="s-head">
+    <h2><span class="num">04</span>Welcome</h2>
+    <code class="src">src/screens/WelcomeScreen.tsx</code>
+  </header>
+  
+  <p class="blurb">Milo introduces himself. A returning child gets the second line instead of the first.</p>
+  <div class="shots"><figure>
+        <div class="pair">
+          <div><img loading="lazy" src="shots/en-04-welcome.png" alt="04-welcome in English"><figcaption>English</figcaption></div>
+          <div><img loading="lazy" src="shots/ar-04-welcome.png" alt="04-welcome in Arabic"><figcaption>العربية</figcaption></div>
+        </div>
+      </figure></div>
+  <div class="totals">
+    <span>Spoken runtime — English <strong>10.8s</strong></span>
+    <span><bdi>العربية</bdi> <strong>7.5s</strong></span>
+    <span class="muted">excludes pauses and time waiting for the child</span>
+  </div>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>#</th><th>String</th><th>English</th><th>العربية</th><th>Note</th></tr></thead>
+    <tbody>
+  <tr class="line" data-key="welcome::milo.welcome::0" data-id="milo.welcome">
+    <td class="c-seq">1</td>
+    <td class="c-id">
+      <code>milo.welcome</code>
+      
+      <span class="hint">First time</span>
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/milo.welcome.mp3">▶</button>
+        <span class="dur">8.36s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Hi {name}! I&#39;m Milo the Tooth. I&#39;m visiting the dentist today, and I feel a little wiggly inside. Will you explore with me?</p>
+      <textarea class="edit" dir="ltr" data-field="welcome::milo.welcome::0::en" rows="2" placeholder="Revised English line…">Hi {name}! I&#39;m Milo the Tooth. I&#39;m visiting the dentist today, and I feel a little wiggly inside. Will you explore with me?</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/milo.welcome.mp3">▶</button>
+        <span class="dur">7.10s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">أهلاً يا {name}! أنا ميلو السنّة. النهارده هنستكشف عيادة السنان سوا.</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="welcome::milo.welcome::0::ar" rows="2" placeholder="السطر العربي المعدَّل…">أهلاً يا {name}! أنا ميلو السنّة. النهارده هنستكشف عيادة السنان سوا.</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="welcome::milo.welcome::0::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line has-silent" data-key="welcome::milo.welcomeBack::1" data-id="milo.welcomeBack">
+    <td class="c-seq">2</td>
+    <td class="c-id">
+      <code>milo.welcomeBack</code>
+      
+      <span class="hint">Returning child (any star already earned)</span>
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/milo.welcomeBack.mp3">▶</button>
+        <span class="dur">2.42s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Welcome back, {name}! Let&#39;s keep exploring!</p>
+      <textarea class="edit" dir="ltr" data-field="welcome::milo.welcomeBack::1::en" rows="2" placeholder="Revised English line…">Welcome back, {name}! Let&#39;s keep exploring!</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/milo.welcomeBack.mp3">▶</button>
+        <span class="dur">0.35s</span><span class="badge silent" title="5060-byte placeholder measuring -91 dB. Nothing is heard.">SILENT</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">رجعنا يا {name}! يلا نكمّل من هنا.</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="welcome::milo.welcomeBack::1::ar" rows="2" placeholder="السطر العربي المعدَّل…">رجعنا يا {name}! يلا نكمّل من هنا.</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="welcome::milo.welcomeBack::1::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr></tbody>
+  </table>
+  </div>
+</section>
+<section class="screen" id="s-clinic">
+  <header class="s-head">
+    <h2><span class="num">05</span>Meet the dental clinic</h2>
+    <code class="src">src/screens/ClinicScreen.tsx</code>
+  </header>
+  
+  <p class="blurb">The room, with four things in it that move where they stand. The child presses each one; a card opens 500 ms after the press and cannot be dismissed until its line has finished. Order is the child’s, not the game’s.</p>
+  <div class="shots"><figure>
+        <div class="pair">
+          <div><img loading="lazy" src="shots/en-05-clinic.png" alt="05-clinic in English"><figcaption>English</figcaption></div>
+          <div><img loading="lazy" src="shots/ar-05-clinic.png" alt="05-clinic in Arabic"><figcaption>العربية</figcaption></div>
+        </div>
+      </figure><figure>
+        <div class="pair">
+          <div><img loading="lazy" src="shots/en-06-clinic-card.png" alt="06-clinic-card in English"><figcaption>English</figcaption></div>
+          <div><img loading="lazy" src="shots/ar-06-clinic-card.png" alt="06-clinic-card in Arabic"><figcaption>العربية</figcaption></div>
+        </div>
+      </figure></div>
+  <div class="totals">
+    <span>Spoken runtime — English <strong>30.3s</strong></span>
+    <span><bdi>العربية</bdi> <strong>46.2s</strong></span>
+    <span class="muted">excludes pauses and time waiting for the child</span>
+  </div>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>#</th><th>String</th><th>English</th><th>العربية</th><th>Note</th></tr></thead>
+    <tbody>
+  <tr class="line" data-key="clinic::clinic.intro::0" data-id="clinic.intro">
+    <td class="c-seq">1</td>
+    <td class="c-id">
+      <code>clinic.intro</code>
+      
+      <span class="hint">On arrival — gates every hotspot until it ends</span>
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/clinic.intro.mp3">▶</button>
+        <span class="dur">3.99s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">This is the dental clinic, {name}! Tap everything to see what it does.</p>
+      <textarea class="edit" dir="ltr" data-field="clinic::clinic.intro::0::en" rows="2" placeholder="Revised English line…">This is the dental clinic, {name}! Tap everything to see what it does.</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/clinic.intro.mp3">▶</button>
+        <span class="dur">11.84s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">دي عيادة السنان يا {name}! كل حاجة هنا ليها شغلانة صغيرة — ندوس على أي حاجة عشان نعرفها.</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="clinic::clinic.intro::0::ar" rows="2" placeholder="السطر العربي المعدَّل…">دي عيادة السنان يا {name}! كل حاجة هنا ليها شغلانة صغيرة — ندوس على أي حاجة عشان نعرفها.</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="clinic::clinic.intro::0::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt tap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">idle timer</span><span class="hint">If nothing is pressed for 10 s, Milo points at the next unexplored object</span></td></tr>
+  <tr class="line has-silent" data-key="clinic::milo.hint.tap::1" data-id="milo.hint.tap">
+    <td class="c-seq">2</td>
+    <td class="c-id">
+      <code>milo.hint.tap</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/milo.hint.tap.mp3">▶</button>
+        <span class="dur">2.28s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Tap the one that&#39;s glowing, {name}!</p>
+      <textarea class="edit" dir="ltr" data-field="clinic::milo.hint.tap::1::en" rows="2" placeholder="Revised English line…">Tap the one that&#39;s glowing, {name}!</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/milo.hint.tap.mp3">▶</button>
+        <span class="dur">0.35s</span><span class="badge silent" title="5060-byte placeholder measuring -91 dB. Nothing is heard.">SILENT</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">خد وقتك يا {name}. دوس على اللي بينوّر!</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="clinic::milo.hint.tap::1::ar" rows="2" placeholder="السطر العربي المعدَّل…">خد وقتك يا {name}. دوس على اللي بينوّر!</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="clinic::milo.hint.tap::1::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt tap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">waits for the child</span><span class="hint">Child presses an object — any of the four, any order</span></td></tr>
+  <tr class="line" data-key="clinic::clinic.light.desc::2" data-id="clinic.light.desc">
+    <td class="c-seq">3</td>
+    <td class="c-id">
+      <code>clinic.light.desc</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/clinic.light.desc.mp3">▶</button>
+        <span class="dur">4.46s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">I&#39;m like the sun! I shine bright so the dentist can see your teeth really well. ☀️</p>
+      <textarea class="edit" dir="ltr" data-field="clinic::clinic.light.desc::2::en" rows="2" placeholder="Revised English line…">I&#39;m like the sun! I shine bright so the dentist can see your teeth really well. ☀️</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/clinic.light.desc.mp3">▶</button>
+        <span class="dur">7.00s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">أنا زي الشمس! بنوّر عشان الدكتور يقدر يشوف سنانك كويس. ☀️</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="clinic::clinic.light.desc::2::ar" rows="2" placeholder="السطر العربي المعدَّل…">أنا زي الشمس! بنوّر عشان الدكتور يقدر يشوف سنانك كويس. ☀️</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="clinic::clinic.light.desc::2::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line" data-key="clinic::clinic.suction.desc::3" data-id="clinic.suction.desc">
+    <td class="c-seq">4</td>
+    <td class="c-id">
+      <code>clinic.suction.desc</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/clinic.suction.desc.mp3">▶</button>
+        <span class="dur">3.02s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">I&#39;m a straw! I drink up the water in your mouth.</p>
+      <textarea class="edit" dir="ltr" data-field="clinic::clinic.suction.desc::3::en" rows="2" placeholder="Revised English line…">I&#39;m a straw! I drink up the water in your mouth.</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/clinic.suction.desc.mp3">▶</button>
+        <span class="dur">8.53s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">أنا زي الشاليموه! بشرب الميّه من بوقك.</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="clinic::clinic.suction.desc::3::ar" rows="2" placeholder="السطر العربي المعدَّل…">أنا زي الشاليموه! بشرب الميّه من بوقك.</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="clinic::clinic.suction.desc::3::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line" data-key="clinic::clinic.chair.desc::4" data-id="clinic.chair.desc">
+    <td class="c-seq">5</td>
+    <td class="c-id">
+      <code>clinic.chair.desc</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/clinic.chair.desc.mp3">▶</button>
+        <span class="dur">6.55s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">I&#39;m the dental chair! I&#39;m like a swing — I go up and down to help you feel comfortable and happy. 🪑</p>
+      <textarea class="edit" dir="ltr" data-field="clinic::clinic.chair.desc::4::en" rows="2" placeholder="Revised English line…">I&#39;m the dental chair! I&#39;m like a swing — I go up and down to help you feel comfortable and happy. 🪑</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/clinic.chair.desc.mp3">▶</button>
+        <span class="dur">10.99s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">أنا كرسي الأسنان! زي المرجيحة، بطلع وأنزل عشان تبقى مرتاح ومبسوط. 🪑</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="clinic::clinic.chair.desc::4::ar" rows="2" placeholder="السطر العربي المعدَّل…">أنا كرسي الأسنان! زي المرجيحة، بطلع وأنزل عشان تبقى مرتاح ومبسوط. 🪑</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="clinic::clinic.chair.desc::4::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line" data-key="clinic::clinic.syringe.desc::5" data-id="clinic.syringe.desc">
+    <td class="c-seq">6</td>
+    <td class="c-id">
+      <code>clinic.syringe.desc</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/clinic.syringe.desc.mp3">▶</button>
+        <span class="dur">2.28s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">I puff air and water to rinse your teeth.</p>
+      <textarea class="edit" dir="ltr" data-field="clinic::clinic.syringe.desc::5::en" rows="2" placeholder="Revised English line…">I puff air and water to rinse your teeth.</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/clinic.syringe.desc.mp3">▶</button>
+        <span class="dur">7.15s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">برش ميّه وهوا عشان أنضّف سنانك.</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="clinic::clinic.syringe.desc::5::ar" rows="2" placeholder="السطر العربي المعدَّل…">برش ميّه وهوا عشان أنضّف سنانك.</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="clinic::clinic.syringe.desc::5::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line has-silent" data-key="clinic::clinic.done::6" data-id="clinic.done">
+    <td class="c-seq">7</td>
+    <td class="c-id">
+      <code>clinic.done</code>
+      
+      <span class="hint">All four explored — awards the star</span>
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/clinic.done.mp3">▶</button>
+        <span class="dur">2.93s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">You explored the whole clinic, {name}! Amazing!</p>
+      <textarea class="edit" dir="ltr" data-field="clinic::clinic.done::6::en" rows="2" placeholder="Revised English line…">You explored the whole clinic, {name}! Amazing!</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/clinic.done.mp3">▶</button>
+        <span class="dur">0.35s</span><span class="badge silent" title="5060-byte placeholder measuring -91 dB. Nothing is heard.">SILENT</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">عاش يا {name}! استكشفنا العيادة كلها — دلوقتي بقينا عارفين المكان!</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="clinic::clinic.done::6::ar" rows="2" placeholder="السطر العربي المعدَّل…">عاش يا {name}! استكشفنا العيادة كلها — دلوقتي بقينا عارفين المكان!</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="clinic::clinic.done::6::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line only-en" data-key="clinic::story.calmer1::7" data-id="story.calmer1">
+    <td class="c-seq">8</td>
+    <td class="c-id">
+      <code>story.calmer1</code>
+      <span class="badge lang-only">EN only</span>
+      <span class="hint">Interstitial: Milo appears between modules</span>
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/story.calmer1.mp3">▶</button>
+        <span class="dur">4.78s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">See, {name}? The clinic is just a friendly room. My wiggles are getting smaller!</p>
+      <textarea class="edit" dir="ltr" data-field="clinic::story.calmer1::7::en" rows="2" placeholder="Revised English line…">See, {name}? The clinic is just a friendly room. My wiggles are getting smaller!</textarea>
+    </td>
+    <td class="c-lang ar off">
+      <span class="dash">لا تُقال بالعربية</span>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="clinic::story.calmer1::7::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt note"><td class="c-seq"></td><td colspan="4">
+    <span class="badge lang-only">AR only</span>
+    <span class="hint">Arabic skips the interstitial and the star-earned line entirely, so the recorded voice is never followed by generated filler.</span></td></tr></tbody>
+  </table>
+  </div>
+</section>
+<section class="screen" id="s-tools">
+  <header class="s-head">
+    <h2><span class="num">06</span>Meet the friendly tools</h2>
+    <code class="src">src/screens/ToolsScreen.tsx</code>
+  </header>
+  
+  <p class="blurb">Four covered cells. The child scratches a cover away (a press alone will not do it) and the tool underneath introduces itself. Four tools, not nine — the other five still have copy and clips but are not on any board.</p>
+  <div class="shots"><figure>
+        <div class="pair">
+          <div><img loading="lazy" src="shots/en-07-tools.png" alt="07-tools in English"><figcaption>English</figcaption></div>
+          <div><img loading="lazy" src="shots/ar-07-tools.png" alt="07-tools in Arabic"><figcaption>العربية</figcaption></div>
+        </div>
+      </figure><figure>
+        <div class="pair">
+          <div><img loading="lazy" src="shots/en-08-tools-card.png" alt="08-tools-card in English"><figcaption>English</figcaption></div>
+          <div><img loading="lazy" src="shots/ar-08-tools-card.png" alt="08-tools-card in Arabic"><figcaption>العربية</figcaption></div>
+        </div>
+      </figure></div>
+  <div class="totals">
+    <span>Spoken runtime — English <strong>25.0s</strong></span>
+    <span><bdi>العربية</bdi> <strong>53.4s</strong></span>
+    <span class="muted">excludes pauses and time waiting for the child</span>
+  </div>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>#</th><th>String</th><th>English</th><th>العربية</th><th>Note</th></tr></thead>
+    <tbody>
+  <tr class="line only-ar" data-key="tools::tools.title::0" data-id="tools.title">
+    <td class="c-seq">1</td>
+    <td class="c-id">
+      <code>tools.title</code>
+      <span class="badge lang-only">AR only</span>
+      <span class="hint">Arabic reads the screen title aloud first</span>
+    </td>
+    <td class="c-lang en off">
+      <span class="dash">not played in English</span>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/tools.title.mp3">▶</button>
+        <span class="dur">8.94s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">نتعرّف على الأدوات</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="tools::tools.title::0::ar" rows="2" placeholder="السطر العربي المعدَّل…">نتعرّف على الأدوات</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="tools::tools.title::0::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line" data-key="tools::tools.intro::1" data-id="tools.intro">
+    <td class="c-seq">2</td>
+    <td class="c-id">
+      <code>tools.intro</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/tools.intro.mp3">▶</button>
+        <span class="dur">4.32s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">These are the dentist&#39;s little helpers, {name}. Scratch each one to find it!</p>
+      <textarea class="edit" dir="ltr" data-field="tools::tools.intro::1::en" rows="2" placeholder="Revised English line…">These are the dentist&#39;s little helpers, {name}. Scratch each one to find it!</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/tools.intro.mp3">▶</button>
+        <span class="dur">9.45s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">دلوقتي هنتعرّف على أدوات الدكتور يا {name}. نخربش على كل مربع عشان نلاقي الأداة!</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="tools::tools.intro::1::ar" rows="2" placeholder="السطر العربي المعدَّل…">دلوقتي هنتعرّف على أدوات الدكتور يا {name}. نخربش على كل مربع عشان نلاقي الأداة!</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="tools::tools.intro::1::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt tap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">waits for the child</span><span class="hint">Child scratches a cell clear</span></td></tr>
+  <tr class="line" data-key="tools::tool.mirror.desc::2" data-id="tool.mirror.desc">
+    <td class="c-seq">3</td>
+    <td class="c-id">
+      <code>tool.mirror.desc</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/tool.mirror.desc.mp3">▶</button>
+        <span class="dur">4.74s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">I&#39;m the dental mirror! I help the dentist see every side of your teeth. 🪞</p>
+      <textarea class="edit" dir="ltr" data-field="tools::tool.mirror.desc::2::en" rows="2" placeholder="Revised English line…">I&#39;m the dental mirror! I help the dentist see every side of your teeth. 🪞</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/tool.mirror.desc.mp3">▶</button>
+        <span class="dur">5.72s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">بساعد الدكتور يشوف سنانك من كل ناحية. 🪞</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="tools::tool.mirror.desc::2::ar" rows="2" placeholder="السطر العربي المعدَّل…">بساعد الدكتور يشوف سنانك من كل ناحية. 🪞</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="tools::tool.mirror.desc::2::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line" data-key="tools::tool.explorer.desc::3" data-id="tool.explorer.desc">
+    <td class="c-seq">4</td>
+    <td class="c-id">
+      <code>tool.explorer.desc</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/tool.explorer.desc.mp3">▶</button>
+        <span class="dur">3.16s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">I&#39;m the tooth checker! I check your teeth one by one. 🔎</p>
+      <textarea class="edit" dir="ltr" data-field="tools::tool.explorer.desc::3::en" rows="2" placeholder="Revised English line…">I&#39;m the tooth checker! I check your teeth one by one. 🔎</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/tool.explorer.desc.mp3">▶</button>
+        <span class="dur">7.23s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">بكشف على سنانك واحدة واحدة. 🔎</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="tools::tool.explorer.desc::3::ar" rows="2" placeholder="السطر العربي المعدَّل…">بكشف على سنانك واحدة واحدة. 🔎</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="tools::tool.explorer.desc::3::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line" data-key="tools::tool.spray.desc::4" data-id="tool.spray.desc">
+    <td class="c-seq">5</td>
+    <td class="c-id">
+      <code>tool.spray.desc</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/tool.spray.desc.mp3">▶</button>
+        <span class="dur">2.69s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">I&#39;m the sleepy juice! I make your tooth sleepy. 🧃✨</p>
+      <textarea class="edit" dir="ltr" data-field="tools::tool.spray.desc::4::en" rows="2" placeholder="Revised English line…">I&#39;m the sleepy juice! I make your tooth sleepy. 🧃✨</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/tool.spray.desc.mp3">▶</button>
+        <span class="dur">10.60s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">أنا العصير السحري! بنوّم السن شوية. 🧃✨</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="tools::tool.spray.desc::4::ar" rows="2" placeholder="السطر العربي المعدَّل…">أنا العصير السحري! بنوّم السن شوية. 🧃✨</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="tools::tool.spray.desc::4::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line" data-key="tools::tool.brush.desc::5" data-id="tool.brush.desc">
+    <td class="c-seq">6</td>
+    <td class="c-id">
+      <code>tool.brush.desc</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/tool.brush.desc.mp3">▶</button>
+        <span class="dur">2.97s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">I&#39;m the polishing brush! I wash your tooth clean. 🚿</p>
+      <textarea class="edit" dir="ltr" data-field="tools::tool.brush.desc::5::en" rows="2" placeholder="Revised English line…">I&#39;m the polishing brush! I wash your tooth clean. 🚿</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/tool.brush.desc.mp3">▶</button>
+        <span class="dur">11.09s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">أنا زي الدش! بنضّف سنانك لحد ما تلمع. 🚿</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="tools::tool.brush.desc::5::ar" rows="2" placeholder="السطر العربي المعدَّل…">أنا زي الدش! بنضّف سنانك لحد ما تلمع. 🚿</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="tools::tool.brush.desc::5::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line has-silent" data-key="tools::tools.done::6" data-id="tools.done">
+    <td class="c-seq">7</td>
+    <td class="c-id">
+      <code>tools.done</code>
+      
+      <span class="hint">All four met</span>
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/tools.done.mp3">▶</button>
+        <span class="dur">3.53s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">You met all the tools, {name}! They can&#39;t wait to help your teeth!</p>
+      <textarea class="edit" dir="ltr" data-field="tools::tools.done::6::en" rows="2" placeholder="Revised English line…">You met all the tools, {name}! They can&#39;t wait to help your teeth!</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/tools.done.mp3">▶</button>
+        <span class="dur">0.35s</span><span class="badge silent" title="5060-byte placeholder measuring -91 dB. Nothing is heard.">SILENT</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">عاش يا {name}! عرفنا كل أداة بتعمل إيه — دلوقتي الأدوات مش غريبة علينا!</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="tools::tools.done::6::ar" rows="2" placeholder="السطر العربي المعدَّل…">عاش يا {name}! عرفنا كل أداة بتعمل إيه — دلوقتي الأدوات مش غريبة علينا!</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="tools::tools.done::6::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line only-en" data-key="tools::story.calmer2::7" data-id="story.calmer2">
+    <td class="c-seq">8</td>
+    <td class="c-id">
+      <code>story.calmer2</code>
+      <span class="badge lang-only">EN only</span>
+      <span class="hint">Interstitial</span>
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/story.calmer2.mp3">▶</button>
+        <span class="dur">3.58s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">The little helpers are so nice! I feel calmer already.</p>
+      <textarea class="edit" dir="ltr" data-field="tools::story.calmer2::7::en" rows="2" placeholder="Revised English line…">The little helpers are so nice! I feel calmer already.</textarea>
+    </td>
+    <td class="c-lang ar off">
+      <span class="dash">لا تُقال بالعربية</span>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="tools::story.calmer2::7::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr></tbody>
+  </table>
+  </div>
+</section>
+<section class="screen" id="s-prepare">
+  <header class="s-head">
+    <h2><span class="num">07</span>Prepare the tooth</h2>
+    <code class="src">src/screens/PrepareScreen.tsx</code>
+  </header>
+  
+  <p class="blurb">Two steps: the sleepy juice, then the polishing brush. The juice is watched; the cleaning is done by the child, one sticky spot at a time. This screen runs on BOTH paths — a child booked for a first check-up is shown the sleepy juice here. See defect D2.</p>
+  <div class="shots"><figure>
+        <div class="pair">
+          <div><img loading="lazy" src="shots/en-09-prepare.png" alt="09-prepare in English"><figcaption>English</figcaption></div>
+          <div><img loading="lazy" src="shots/ar-09-prepare.png" alt="09-prepare in Arabic"><figcaption>العربية</figcaption></div>
+        </div>
+      </figure><figure>
+        <div class="pair">
+          <div><img loading="lazy" src="shots/en-10-prepare-spray.png" alt="10-prepare-spray in English"><figcaption>English</figcaption></div>
+          <div><img loading="lazy" src="shots/ar-10-prepare-spray.png" alt="10-prepare-spray in Arabic"><figcaption>العربية</figcaption></div>
+        </div>
+      </figure><figure>
+        <div class="pair">
+          <div><img loading="lazy" src="shots/en-11-prepare-brush.png" alt="11-prepare-brush in English"><figcaption>English</figcaption></div>
+          <div><img loading="lazy" src="shots/ar-11-prepare-brush.png" alt="11-prepare-brush in Arabic"><figcaption>العربية</figcaption></div>
+        </div>
+      </figure></div>
+  <div class="totals">
+    <span>Spoken runtime — English <strong>31.0s</strong></span>
+    <span><bdi>العربية</bdi> <strong>35.9s</strong></span>
+    <span class="muted">excludes pauses and time waiting for the child</span>
+  </div>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>#</th><th>String</th><th>English</th><th>العربية</th><th>Note</th></tr></thead>
+    <tbody>
+  <tr class="line" data-key="prepare::prepare.intro::0" data-id="prepare.intro">
+    <td class="c-seq">1</td>
+    <td class="c-id">
+      <code>prepare.intro</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/prepare.intro.mp3">▶</button>
+        <span class="dur">3.06s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Let&#39;s get this tooth ready, {name}! Two steps, together.</p>
+      <textarea class="edit" dir="ltr" data-field="prepare::prepare.intro::0::en" rows="2" placeholder="Revised English line…">Let&#39;s get this tooth ready, {name}! Two steps, together.</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/prepare.intro.mp3">▶</button>
+        <span class="dur">6.96s</span><span class="badge tts" title="Still Edge TTS — no human recording imported for this line">TTS</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">هنجهّز السن ده يا {name}! خطوتين بس، مع بعض.</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="prepare::prepare.intro::0::ar" rows="2" placeholder="السطر العربي المعدَّل…">هنجهّز السن ده يا {name}! خطوتين بس، مع بعض.</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="prepare::prepare.intro::0::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line" data-key="prepare::prepare.step.spray::1" data-id="prepare.step.spray">
+    <td class="c-seq">2</td>
+    <td class="c-id">
+      <code>prepare.step.spray</code>
+      
+      <span class="hint">Step 1 prompt</span>
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/prepare.step.spray.mp3">▶</button>
+        <span class="dur">3.39s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">First, the magic juice. Tap it to make the tooth sleepy.</p>
+      <textarea class="edit" dir="ltr" data-field="prepare::prepare.step.spray::1::en" rows="2" placeholder="Revised English line…">First, the magic juice. Tap it to make the tooth sleepy.</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/prepare.step.spray.mp3">▶</button>
+        <span class="dur">6.44s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">أول خطوة: العصير السحري — دوس عليه عشان السن ينام.</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="prepare::prepare.step.spray::1::ar" rows="2" placeholder="السطر العربي المعدَّل…">أول خطوة: العصير السحري — دوس عليه عشان السن ينام.</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="prepare::prepare.step.spray::1::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt tap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">waits for the child</span><span class="hint">Child taps the juice (a wrong tool wiggles instead)</span></td></tr>
+  <tr class="line only-en" data-key="prepare::milo.hint.tap::2" data-id="milo.hint.tap">
+    <td class="c-seq">3</td>
+    <td class="c-id">
+      <code>milo.hint.tap</code>
+      <span class="badge lang-only">EN only</span>
+      <span class="hint">Only on a wrong tap</span>
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/milo.hint.tap.mp3">▶</button>
+        <span class="dur">2.28s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Tap the one that&#39;s glowing, {name}!</p>
+      <textarea class="edit" dir="ltr" data-field="prepare::milo.hint.tap::2::en" rows="2" placeholder="Revised English line…">Tap the one that&#39;s glowing, {name}!</textarea>
+    </td>
+    <td class="c-lang ar off">
+      <span class="dash">لا تُقال بالعربية</span>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="prepare::milo.hint.tap::2::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">pause 500 ms</span>
+      <span class="hint">The tooth closes its eyes</span></td></tr>
+  <tr class="line only-ar" data-key="prepare::prepare.step.spray::3" data-id="prepare.step.spray">
+    <td class="c-seq">4</td>
+    <td class="c-id">
+      <code>prepare.step.spray</code>
+      <span class="badge lang-only">AR only</span>
+      <span class="hint">Arabic replays the prompt over the beat</span>
+    </td>
+    <td class="c-lang en off">
+      <span class="dash">not played in English</span>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/prepare.step.spray.mp3">▶</button>
+        <span class="dur">6.44s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">أول خطوة: العصير السحري — دوس عليه عشان السن ينام.</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="prepare::prepare.step.spray::3::ar" rows="2" placeholder="السطر العربي المعدَّل…">أول خطوة: العصير السحري — دوس عليه عشان السن ينام.</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="prepare::prepare.step.spray::3::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">pause 1900 ms</span>
+      <span class="hint">The juice rises, tips and puffs</span></td></tr>
+  <tr class="line only-en" data-key="prepare::milo.great::4" data-id="milo.great">
+    <td class="c-seq">5</td>
+    <td class="c-id">
+      <code>milo.great</code>
+      <span class="badge lang-only">EN only</span>
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/milo.great.mp3">▶</button>
+        <span class="dur">1.72s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Great job, {name}!</p>
+      <textarea class="edit" dir="ltr" data-field="prepare::milo.great::4::en" rows="2" placeholder="Revised English line…">Great job, {name}!</textarea>
+    </td>
+    <td class="c-lang ar off">
+      <span class="dash">لا تُقال بالعربية</span>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="prepare::milo.great::4::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line" data-key="prepare::prepare.step.brush::5" data-id="prepare.step.brush">
+    <td class="c-seq">6</td>
+    <td class="c-id">
+      <code>prepare.step.brush</code>
+      
+      <span class="hint">Step 2 prompt</span>
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/prepare.step.brush.mp3">▶</button>
+        <span class="dur">1.76s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Now pick up the little shower!</p>
+      <textarea class="edit" dir="ltr" data-field="prepare::prepare.step.brush::5::en" rows="2" placeholder="Revised English line…">Now pick up the little shower!</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/prepare.step.brush.mp3">▶</button>
+        <span class="dur">7.10s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">تاني خطوة: نمسك الدش الصغير!</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="prepare::prepare.step.brush::5::ar" rows="2" placeholder="السطر العربي المعدَّل…">تاني خطوة: نمسك الدش الصغير!</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="prepare::prepare.step.brush::5::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt tap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">waits for the child</span><span class="hint">Child picks up the brush</span></td></tr>
+  <tr class="line only-en" data-key="prepare::prepare.step.scrub::6" data-id="prepare.step.scrub">
+    <td class="c-seq">7</td>
+    <td class="c-id">
+      <code>prepare.step.scrub</code>
+      <span class="badge lang-only">EN only</span>
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/prepare.step.scrub.mp3">▶</button>
+        <span class="dur">2.74s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Press each sticky spot and I&#39;ll wash it clean!</p>
+      <textarea class="edit" dir="ltr" data-field="prepare::prepare.step.scrub::6::en" rows="2" placeholder="Revised English line…">Press each sticky spot and I&#39;ll wash it clean!</textarea>
+    </td>
+    <td class="c-lang ar off">
+      <span class="dash">لا تُقال بالعربية</span>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="prepare::prepare.step.scrub::6::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt tap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">waits for the child</span><span class="hint">Child presses each of four sticky spots</span></td></tr><tr class="evt sfx"><td class="c-seq">8</td><td colspan="4">
+      <span class="tag">sound effect</span>
+      <button class="play" data-src="../../app/public/audio/ar/decay-removal-sfx.mp3">▶</button>
+      <code>ar/decay-removal-sfx.mp3</code>
+      <span class="badge lang-only">AR only</span>
+      <span class="hint">Plays once, on the first spot only</span></td></tr>
+  <tr class="line only-en" data-key="prepare::milo.praise.1::7" data-id="milo.praise.1">
+    <td class="c-seq">8</td>
+    <td class="c-id">
+      <code>milo.praise.1</code>
+      <span class="badge lang-only">EN only</span>
+      <span class="hint">After the 1st spot</span>
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/milo.praise.1.mp3">▶</button>
+        <span class="dur">1.30s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Great job, {name}!</p>
+      <textarea class="edit" dir="ltr" data-field="prepare::milo.praise.1::7::en" rows="2" placeholder="Revised English line…">Great job, {name}!</textarea>
+    </td>
+    <td class="c-lang ar off">
+      <span class="dash">لا تُقال بالعربية</span>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="prepare::milo.praise.1::7::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line only-en" data-key="prepare::milo.praise.2::8" data-id="milo.praise.2">
+    <td class="c-seq">9</td>
+    <td class="c-id">
+      <code>milo.praise.2</code>
+      <span class="badge lang-only">EN only</span>
+      <span class="hint">After the 2nd spot</span>
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/milo.praise.2.mp3">▶</button>
+        <span class="dur">1.49s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Ooh, look at it shine!</p>
+      <textarea class="edit" dir="ltr" data-field="prepare::milo.praise.2::8::en" rows="2" placeholder="Revised English line…">Ooh, look at it shine!</textarea>
+    </td>
+    <td class="c-lang ar off">
+      <span class="dash">لا تُقال بالعربية</span>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="prepare::milo.praise.2::8::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line only-en" data-key="prepare::milo.praise.3::9" data-id="milo.praise.3">
+    <td class="c-seq">10</td>
+    <td class="c-id">
+      <code>milo.praise.3</code>
+      <span class="badge lang-only">EN only</span>
+      <span class="hint">After the 3rd spot</span>
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/milo.praise.3.mp3">▶</button>
+        <span class="dur">2.09s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Nice one! That tickled a little.</p>
+      <textarea class="edit" dir="ltr" data-field="prepare::milo.praise.3::9::en" rows="2" placeholder="Revised English line…">Nice one! That tickled a little.</textarea>
+    </td>
+    <td class="c-lang ar off">
+      <span class="dash">لا تُقال بالعربية</span>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="prepare::milo.praise.3::9::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt note"><td class="c-seq"></td><td colspan="4">
+    
+    <span class="hint">milo.praise.4 exists in both languages and has a clip, but the 4th spot ends the step before it can play. It is never heard.</span></td></tr>
+  <tr class="line" data-key="prepare::prepare.done::10" data-id="prepare.done">
+    <td class="c-seq">11</td>
+    <td class="c-id">
+      <code>prepare.done</code>
+      
+      <span class="hint">Tooth clean — awards the star</span>
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/prepare.done.mp3">▶</button>
+        <span class="dur">3.06s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Every spot gone — that tooth is sparkling, {name}!</p>
+      <textarea class="edit" dir="ltr" data-field="prepare::prepare.done::10::en" rows="2" placeholder="Revised English line…">Every spot gone — that tooth is sparkling, {name}!</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/prepare.done.mp3">▶</button>
+        <span class="dur">8.92s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">كل النقط راحت — السنّة بقت لامعة يا {name}!</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="prepare::prepare.done::10::ar" rows="2" placeholder="السطر العربي المعدَّل…">كل النقط راحت — السنّة بقت لامعة يا {name}!</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="prepare::prepare.done::10::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line only-en" data-key="prepare::story.reversal::11" data-id="story.reversal">
+    <td class="c-seq">12</td>
+    <td class="c-id">
+      <code>story.reversal</code>
+      <span class="badge lang-only">EN only</span>
+      <span class="hint">Interstitial (check-up path)</span>
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/story.reversal.mp3">▶</button>
+        <span class="dur">5.02s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">You helped me get ready, {name}. Now I&#39;ll stay right beside you while you practise your visit!</p>
+      <textarea class="edit" dir="ltr" data-field="prepare::story.reversal::11::en" rows="2" placeholder="Revised English line…">You helped me get ready, {name}. Now I&#39;ll stay right beside you while you practise your visit!</textarea>
+    </td>
+    <td class="c-lang ar off">
+      <span class="dash">لا تُقال بالعربية</span>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="prepare::story.reversal::11::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line only-en" data-key="prepare::story.calmer3::12" data-id="story.calmer3">
+    <td class="c-seq">13</td>
+    <td class="c-id">
+      <code>story.calmer3</code>
+      <span class="badge lang-only">EN only</span>
+      <span class="hint">Interstitial (treatment path)</span>
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/story.calmer3.mp3">▶</button>
+        <span class="dur">3.11s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">We got the tooth all ready together. I&#39;m feeling good!</p>
+      <textarea class="edit" dir="ltr" data-field="prepare::story.calmer3::12::en" rows="2" placeholder="Revised English line…">We got the tooth all ready together. I&#39;m feeling good!</textarea>
+    </td>
+    <td class="c-lang ar off">
+      <span class="dash">لا تُقال بالعربية</span>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="prepare::story.calmer3::12::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr></tbody>
+  </table>
+  </div>
+</section>
+<section class="screen" id="s-visit">
+  <header class="s-head">
+    <h2><span class="num">08</span>Your dental visit</h2>
+    <code class="src">src/screens/VisitScreen.tsx</code>
+  </header>
+  
+  <p class="blurb">The walk-through, and the one screen where the two languages are built differently. English speaks five separate step lines with a 900 ms pause between them. Arabic plays a single 35.5 s recording and moves the picture on timed cues underneath it.</p>
+  <div class="shots"><figure>
+        <div class="pair">
+          <div><img loading="lazy" src="shots/en-12-visit-meet.png" alt="12-visit-meet in English"><figcaption>English</figcaption></div>
+          <div><img loading="lazy" src="shots/ar-12-visit-meet.png" alt="12-visit-meet in Arabic"><figcaption>العربية</figcaption></div>
+        </div>
+      </figure><figure>
+        <div class="pair">
+          <div><img loading="lazy" src="shots/en-13-visit-stop.png" alt="13-visit-stop in English"><figcaption>English</figcaption></div>
+          <div><img loading="lazy" src="shots/ar-13-visit-stop.png" alt="13-visit-stop in Arabic"><figcaption>العربية</figcaption></div>
+        </div>
+      </figure><figure>
+        <div class="pair">
+          <div><img loading="lazy" src="shots/en-14-visit-paused.png" alt="14-visit-paused in English"><figcaption>English</figcaption></div>
+          <div><img loading="lazy" src="shots/ar-14-visit-paused.png" alt="14-visit-paused in Arabic"><figcaption>العربية</figcaption></div>
+        </div>
+      </figure><figure>
+        <div class="pair">
+          <div><img loading="lazy" src="shots/en-15-visit-steps.png" alt="15-visit-steps in English"><figcaption>English</figcaption></div>
+          <div><img loading="lazy" src="shots/ar-15-visit-steps.png" alt="15-visit-steps in Arabic"><figcaption>العربية</figcaption></div>
+        </div>
+      </figure></div>
+  <div class="totals">
+    <span>Spoken runtime — English <strong>44.3s</strong></span>
+    <span><bdi>العربية</bdi> <strong>95.3s</strong></span>
+    <span class="muted">excludes pauses and time waiting for the child</span>
+  </div>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>#</th><th>String</th><th>English</th><th>العربية</th><th>Note</th></tr></thead>
+    <tbody>
+  <tr class="line" data-key="visit::visit.meetDr::0" data-id="visit.meetDr">
+    <td class="c-seq">1</td>
+    <td class="c-id">
+      <code>visit.meetDr</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/visit.meetDr.mp3">▶</button>
+        <span class="dur">5.11s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Let&#39;s meet your dentist! Dentists wear a mask to keep everything clean. Tap the mask!</p>
+      <textarea class="edit" dir="ltr" data-field="visit::visit.meetDr::0::en" rows="2" placeholder="Revised English line…">Let&#39;s meet your dentist! Dentists wear a mask to keep everything clean. Tap the mask!</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/visit.meetDr.mp3">▶</button>
+        <span class="dur">4.80s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">يلا نتعرف على دكتورتك! دكاترة الأسنان بيلبسوا ماسك عشان كل حاجة تفضل نضيفة. دوس على الماسك!</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="visit::visit.meetDr::0::ar" rows="2" placeholder="السطر العربي المعدَّل…">يلا نتعرف على دكتورتك! دكاترة الأسنان بيلبسوا ماسك عشان كل حاجة تفضل نضيفة. دوس على الماسك!</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="visit::visit.meetDr::0::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line only-ar" data-key="visit::visit.maskPrompt::1" data-id="visit.maskPrompt">
+    <td class="c-seq">2</td>
+    <td class="c-id">
+      <code>visit.maskPrompt</code>
+      <span class="badge lang-only">AR only</span>
+      
+    </td>
+    <td class="c-lang en off">
+      <span class="dash">not played in English</span>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/visit.maskPrompt.mp3">▶</button>
+        <span class="dur">11.88s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">دكتورتك لابسة الماسك. ندوس عليه لما نكون جاهزين.</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="visit::visit.maskPrompt::1::ar" rows="2" placeholder="السطر العربي المعدَّل…">دكتورتك لابسة الماسك. ندوس عليه لما نكون جاهزين.</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="visit::visit.maskPrompt::1::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt tap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">waits for the child</span><span class="hint">Child taps the mask</span></td></tr>
+  <tr class="line" data-key="visit::visit.maskOff::2" data-id="visit.maskOff">
+    <td class="c-seq">3</td>
+    <td class="c-id">
+      <code>visit.maskOff</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/visit.maskOff.mp3">▶</button>
+        <span class="dur">3.85s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">See? It&#39;s still your dentist underneath, smiling at you!</p>
+      <textarea class="edit" dir="ltr" data-field="visit::visit.maskOff::2::en" rows="2" placeholder="Revised English line…">See? It&#39;s still your dentist underneath, smiling at you!</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/visit.maskOff.mp3">▶</button>
+        <span class="dur">5.44s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">شفت؟ دي دكتورتك نفسها تحت الماسك، وبتبتسم لنا!</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="visit::visit.maskOff::2::ar" rows="2" placeholder="السطر العربي المعدَّل…">شفت؟ دي دكتورتك نفسها تحت الماسك، وبتبتسم لنا!</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="visit::visit.maskOff::2::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line only-ar" data-key="visit::visit.handPrompt::3" data-id="visit.handPrompt">
+    <td class="c-seq">4</td>
+    <td class="c-id">
+      <code>visit.handPrompt</code>
+      <span class="badge lang-only">AR only</span>
+      
+    </td>
+    <td class="c-lang en off">
+      <span class="dash">not played in English</span>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/visit.handPrompt.mp3">▶</button>
+        <span class="dur">22.76s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">نرفع إيدنا لما نحب دكتورتك توقف.</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="visit::visit.handPrompt::3::ar" rows="2" placeholder="السطر العربي المعدَّل…">نرفع إيدنا لما نحب دكتورتك توقف.</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="visit::visit.handPrompt::3::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line only-en" data-key="visit::visit.stopSignal::4" data-id="visit.stopSignal">
+    <td class="c-seq">5</td>
+    <td class="c-id">
+      <code>visit.stopSignal</code>
+      <span class="badge lang-only">EN only</span>
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/visit.stopSignal.mp3">▶</button>
+        <span class="dur">7.62s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Here&#39;s a superpower, {name}: if you ever want a break, just raise your hand — and the dentist pauses. Try it!</p>
+      <textarea class="edit" dir="ltr" data-field="visit::visit.stopSignal::4::en" rows="2" placeholder="Revised English line…">Here&#39;s a superpower, {name}: if you ever want a break, just raise your hand — and the dentist pauses. Try it!</textarea>
+    </td>
+    <td class="c-lang ar off">
+      <span class="dash">لا تُقال بالعربية</span>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="visit::visit.stopSignal::4::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt tap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">waits for the child</span><span class="hint">Child raises the stop hand</span></td></tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">pause 1500 ms</span>
+      <span class="hint">Everything freezes</span></td></tr>
+  <tr class="line" data-key="visit::visit.stopSignalDone::5" data-id="visit.stopSignalDone">
+    <td class="c-seq">6</td>
+    <td class="c-id">
+      <code>visit.stopSignalDone</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/visit.stopSignalDone.mp3">▶</button>
+        <span class="dur">2.42s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Perfect! You&#39;re the boss of your visit.</p>
+      <textarea class="edit" dir="ltr" data-field="visit::visit.stopSignalDone::5::en" rows="2" placeholder="Revised English line…">Perfect! You&#39;re the boss of your visit.</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/visit.stopSignalDone.mp3">▶</button>
+        <span class="dur">4.33s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">تمام! دي علامة الوقف — نقدر نستخدمها في أي وقت.</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="visit::visit.stopSignalDone::5::ar" rows="2" placeholder="السطر العربي المعدَّل…">تمام! دي علامة الوقف — نقدر نستخدمها في أي وقت.</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="visit::visit.stopSignalDone::5::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line only-ar" data-key="visit::visit.simulation::6" data-id="visit.simulation">
+    <td class="c-seq">7</td>
+    <td class="c-id">
+      <code>visit.simulation</code>
+      <span class="badge lang-only">AR only</span>
+      <span class="hint">One recording; picture cues at 7.54 s, 15.74 s, 20.18 s, 28.74 s</span>
+    </td>
+    <td class="c-lang en off">
+      <span class="dash">not played in English</span>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/visit.simulation.mp3">▶</button>
+        <span class="dur">35.52s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">دلوقتي هنجرب مع بعض كل خطوات الزيارة.</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="visit::visit.simulation::6::ar" rows="2" placeholder="السطر العربي المعدَّل…">دلوقتي هنجرب مع بعض كل خطوات الزيارة.</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="visit::visit.simulation::6::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line only-en" data-key="visit::visit.step.chair::7" data-id="visit.step.chair">
+    <td class="c-seq">8</td>
+    <td class="c-id">
+      <code>visit.step.chair</code>
+      <span class="badge lang-only">EN only</span>
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/visit.step.chair.mp3">▶</button>
+        <span class="dur">5.53s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">First you sit in the big comfy chair. It leans back slowly, like a lazy chair ride.</p>
+      <textarea class="edit" dir="ltr" data-field="visit::visit.step.chair::7::en" rows="2" placeholder="Revised English line…">First you sit in the big comfy chair. It leans back slowly, like a lazy chair ride.</textarea>
+    </td>
+    <td class="c-lang ar off">
+      <span class="dash">لا تُقال بالعربية</span>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="visit::visit.step.chair::7::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">pause 900 ms</span><span class="badge lang-only">EN only</span>
+      </td></tr>
+  <tr class="line only-en" data-key="visit::visit.step.light::8" data-id="visit.step.light">
+    <td class="c-seq">9</td>
+    <td class="c-id">
+      <code>visit.step.light</code>
+      <span class="badge lang-only">EN only</span>
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/visit.step.light.mp3">▶</button>
+        <span class="dur">3.71s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Then the sunshine light turns on so your dentist can see your teeth.</p>
+      <textarea class="edit" dir="ltr" data-field="visit::visit.step.light::8::en" rows="2" placeholder="Revised English line…">Then the sunshine light turns on so your dentist can see your teeth.</textarea>
+    </td>
+    <td class="c-lang ar off">
+      <span class="dash">لا تُقال بالعربية</span>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="visit::visit.step.light::8::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">pause 900 ms</span><span class="badge lang-only">EN only</span>
+      </td></tr>
+  <tr class="line only-en" data-key="visit::visit.step.mirror::9" data-id="visit.step.mirror">
+    <td class="c-seq">10</td>
+    <td class="c-id">
+      <code>visit.step.mirror</code>
+      <span class="badge lang-only">EN only</span>
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/visit.step.mirror.mp3">▶</button>
+        <span class="dur">2.65s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Your dentist checks your teeth with the little mirror.</p>
+      <textarea class="edit" dir="ltr" data-field="visit::visit.step.mirror::9::en" rows="2" placeholder="Revised English line…">Your dentist checks your teeth with the little mirror.</textarea>
+    </td>
+    <td class="c-lang ar off">
+      <span class="dash">لا تُقال بالعربية</span>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="visit::visit.step.mirror::9::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">pause 900 ms</span><span class="badge lang-only">EN only</span>
+      </td></tr>
+  <tr class="line only-en" data-key="visit::visit.step.sleepy::10" data-id="visit.step.sleepy">
+    <td class="c-seq">11</td>
+    <td class="c-id">
+      <code>visit.step.sleepy</code>
+      <span class="badge lang-only">EN only</span>
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/visit.step.sleepy.mp3">▶</button>
+        <span class="dur">3.25s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Next comes the magic juice. It makes your tooth sleepy.</p>
+      <textarea class="edit" dir="ltr" data-field="visit::visit.step.sleepy::10::en" rows="2" placeholder="Revised English line…">Next comes the magic juice. It makes your tooth sleepy.</textarea>
+    </td>
+    <td class="c-lang ar off">
+      <span class="dash">لا تُقال بالعربية</span>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="visit::visit.step.sleepy::10::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">pause 900 ms</span><span class="badge lang-only">EN only</span>
+      </td></tr>
+  <tr class="line" data-key="visit::visit.step.clean::11" data-id="visit.step.clean">
+    <td class="c-seq">12</td>
+    <td class="c-id">
+      <code>visit.step.clean</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/visit.step.clean.mp3">▶</button>
+        <span class="dur">3.67s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Now we&#39;re cleaning your teeth with the tiny brush until they&#39;re shiny!</p>
+      <textarea class="edit" dir="ltr" data-field="visit::visit.step.clean::11::en" rows="2" placeholder="Revised English line…">Now we&#39;re cleaning your teeth with the tiny brush until they&#39;re shiny!</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/visit.step.clean.mp3">▶</button>
+        <span class="dur">10.22s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">آخر خطوة: الفرشة الصغيرة تنضّف سناننا لحد ما تلمع!</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="visit::visit.step.clean::11::ar" rows="2" placeholder="السطر العربي المعدَّل…">آخر خطوة: الفرشة الصغيرة تنضّف سناننا لحد ما تلمع!</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="visit::visit.step.clean::11::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">pause 900 ms</span><span class="badge lang-only">EN only</span>
+      </td></tr>
+  <tr class="line has-silent" data-key="visit::visit.done::12" data-id="visit.done">
+    <td class="c-seq">13</td>
+    <td class="c-id">
+      <code>visit.done</code>
+      
+      <span class="hint">Awards the star</span>
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/visit.done.mp3">▶</button>
+        <span class="dur">4.60s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">And that&#39;s the whole visit, {name}! You knew every single step!</p>
+      <textarea class="edit" dir="ltr" data-field="visit::visit.done::12::en" rows="2" placeholder="Revised English line…">And that&#39;s the whole visit, {name}! You knew every single step!</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/visit.done.mp3">▶</button>
+        <span class="dur">0.35s</span><span class="badge silent" title="5060-byte placeholder measuring -91 dB. Nothing is heard.">SILENT</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">خلصت الزيارة يا {name}! عرفنا المكان والأدوات وكل خطوة — وكمان عرفنا إزاي نطلب وقفة!</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="visit::visit.done::12::ar" rows="2" placeholder="السطر العربي المعدَّل…">خلصت الزيارة يا {name}! عرفنا المكان والأدوات وكل خطوة — وكمان عرفنا إزاي نطلب وقفة!</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="visit::visit.done::12::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line only-en" data-key="visit::milo.starEarned::13" data-id="milo.starEarned">
+    <td class="c-seq">14</td>
+    <td class="c-id">
+      <code>milo.starEarned</code>
+      <span class="badge lang-only">EN only</span>
+      <span class="hint">The visit is the only module with no interstitial, so this plays instead</span>
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/milo.starEarned.mp3">▶</button>
+        <span class="dur">1.95s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">You earned a star, {name}!</p>
+      <textarea class="edit" dir="ltr" data-field="visit::milo.starEarned::13::en" rows="2" placeholder="Revised English line…">You earned a star, {name}!</textarea>
+    </td>
+    <td class="c-lang ar off">
+      <span class="dash">لا تُقال بالعربية</span>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="visit::milo.starEarned::13::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr></tbody>
+  </table>
+  </div>
+</section>
+<section class="screen" id="s-reward">
+  <header class="s-head">
+    <h2><span class="num">09</span>Dental Hero certificate</h2>
+    <code class="src">src/screens/RewardScreen.tsx</code>
+  </header>
+  
+  <p class="blurb">Five stars, three bursts at 0 / 350 / 700 ms, and the certificate the parent can print or share.</p>
+  <div class="shots"><figure>
+        <div class="pair">
+          <div><img loading="lazy" src="shots/en-16-reward.png" alt="16-reward in English"><figcaption>English</figcaption></div>
+          <div><img loading="lazy" src="shots/ar-16-reward.png" alt="16-reward in Arabic"><figcaption>العربية</figcaption></div>
+        </div>
+      </figure></div>
+  <div class="totals">
+    <span>Spoken runtime — English <strong>8.0s</strong></span>
+    <span><bdi>العربية</bdi> <strong>11.6s</strong></span>
+    <span class="muted">excludes pauses and time waiting for the child</span>
+  </div>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>#</th><th>String</th><th>English</th><th>العربية</th><th>Note</th></tr></thead>
+    <tbody>
+  <tr class="line" data-key="reward::reward.narration::0" data-id="reward.narration">
+    <td class="c-seq">1</td>
+    <td class="c-id">
+      <code>reward.narration</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/reward.narration.mp3">▶</button>
+        <span class="dur">8.03s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">You did it, {name}! Five stars! You know the clinic, the tools, and the dentist. You are a true Dental Hero!</p>
+      <textarea class="edit" dir="ltr" data-field="reward::reward.narration::0::en" rows="2" placeholder="Revised English line…">You did it, {name}! Five stars! You know the clinic, the tools, and the dentist. You are a true Dental Hero!</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/reward.narration.mp3">▶</button>
+        <span class="dur">11.56s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">عاش يا {name}! جمعنا كل النجوم! بقينا عارفين العيادة والأدوات وخطوات الزيارة — بقينا مستكشفين سنان بجد!</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="reward::reward.narration::0::ar" rows="2" placeholder="السطر العربي المعدَّل…">عاش يا {name}! جمعنا كل النجوم! بقينا عارفين العيادة والأدوات وخطوات الزيارة — بقينا مستكشفين سنان بجد!</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="reward::reward.narration::0::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt note"><td class="c-seq"></td><td colspan="4">
+    
+    <span class="hint">Also shown, never spoken: reward.congrats, reward.hero, story.together, cert.title, cert.awardedTo, cert.for, cert.defaultName.</span></td></tr></tbody>
+  </table>
+  </div>
+</section>
+
+<h2 style="margin:1.6rem 0 .8rem">Built, voiced, and unreachable</h2>
+
+<section class="screen unreachable" id="s-spray">
+  <header class="s-head">
+    <h2><span class="num dead">!</span>Quiet Counting Mission</h2>
+    <code class="src">src/screens/SprayScreen.tsx</code>
+  </header>
+  <p class="warn"><strong>Never runs in the shipped game.</strong> checkup.json has no spray module, and ModuleHost filters it out of treatment.json. Defect D1.</p>
+  <p class="blurb"></p>
+  
+  <div class="totals">
+    <span>Spoken runtime — English <strong>20.6s</strong></span>
+    <span><bdi>العربية</bdi> <strong>4.2s</strong></span>
+    <span class="muted">excludes pauses and time waiting for the child</span>
+  </div>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>#</th><th>String</th><th>English</th><th>العربية</th><th>Note</th></tr></thead>
+    <tbody>
+  <tr class="line has-silent" data-key="spray::spray.intro::0" data-id="spray.intro">
+    <td class="c-seq">1</td>
+    <td class="c-id">
+      <code>spray.intro</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/spray.intro.mp3">▶</button>
+        <span class="dur">7.75s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">The tooth wants a quiet little rest, {name}. You can close your eyes if you like. Count with me, slowly, to ten.</p>
+      <textarea class="edit" dir="ltr" data-field="spray::spray.intro::0::en" rows="2" placeholder="Revised English line…">The tooth wants a quiet little rest, {name}. You can close your eyes if you like. Count with me, slowly, to ten.</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/spray.intro.mp3">▶</button>
+        <span class="dur">0.35s</span><span class="badge silent" title="5060-byte placeholder measuring -91 dB. Nothing is heard.">SILENT</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">ناخد لحظة هادية مع ميلو يا {name}. ممكن نغمّض عينينا أو نبص على النجمة — ويلا نعدّ سوا لحد عشرة.</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="spray::spray.intro::0::ar" rows="2" placeholder="السطر العربي المعدَّل…">ناخد لحظة هادية مع ميلو يا {name}. ممكن نغمّض عينينا أو نبص على النجمة — ويلا نعدّ سوا لحد عشرة.</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="spray::spray.intro::0::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">pause 600 ms</span>
+      </td></tr>
+  <tr class="line has-silent" data-key="spray::spray.count.1::1" data-id="spray.count.1">
+    <td class="c-seq">2</td>
+    <td class="c-id">
+      <code>spray.count.1</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/spray.count.1.mp3">▶</button>
+        <span class="dur">0.70s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">One</p>
+      <textarea class="edit" dir="ltr" data-field="spray::spray.count.1::1::en" rows="2" placeholder="Revised English line…">One</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/spray.count.1.mp3">▶</button>
+        <span class="dur">0.35s</span><span class="badge silent" title="5060-byte placeholder measuring -91 dB. Nothing is heard.">SILENT</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">واحد</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="spray::spray.count.1::1::ar" rows="2" placeholder="السطر العربي المعدَّل…">واحد</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="spray::spray.count.1::1::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">pause 600 ms</span>
+      </td></tr>
+  <tr class="line has-silent" data-key="spray::spray.count.2::2" data-id="spray.count.2">
+    <td class="c-seq">3</td>
+    <td class="c-id">
+      <code>spray.count.2</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/spray.count.2.mp3">▶</button>
+        <span class="dur">0.74s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Two</p>
+      <textarea class="edit" dir="ltr" data-field="spray::spray.count.2::2::en" rows="2" placeholder="Revised English line…">Two</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/spray.count.2.mp3">▶</button>
+        <span class="dur">0.35s</span><span class="badge silent" title="5060-byte placeholder measuring -91 dB. Nothing is heard.">SILENT</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">اتنين</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="spray::spray.count.2::2::ar" rows="2" placeholder="السطر العربي المعدَّل…">اتنين</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="spray::spray.count.2::2::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">pause 600 ms</span>
+      </td></tr>
+  <tr class="line has-silent" data-key="spray::spray.count.3::3" data-id="spray.count.3">
+    <td class="c-seq">4</td>
+    <td class="c-id">
+      <code>spray.count.3</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/spray.count.3.mp3">▶</button>
+        <span class="dur">0.97s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Three</p>
+      <textarea class="edit" dir="ltr" data-field="spray::spray.count.3::3::en" rows="2" placeholder="Revised English line…">Three</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/spray.count.3.mp3">▶</button>
+        <span class="dur">0.35s</span><span class="badge silent" title="5060-byte placeholder measuring -91 dB. Nothing is heard.">SILENT</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">تلاتة</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="spray::spray.count.3::3::ar" rows="2" placeholder="السطر العربي المعدَّل…">تلاتة</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="spray::spray.count.3::3::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">pause 600 ms</span>
+      </td></tr>
+  <tr class="line has-silent" data-key="spray::spray.count.4::4" data-id="spray.count.4">
+    <td class="c-seq">5</td>
+    <td class="c-id">
+      <code>spray.count.4</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/spray.count.4.mp3">▶</button>
+        <span class="dur">0.84s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Four</p>
+      <textarea class="edit" dir="ltr" data-field="spray::spray.count.4::4::en" rows="2" placeholder="Revised English line…">Four</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/spray.count.4.mp3">▶</button>
+        <span class="dur">0.35s</span><span class="badge silent" title="5060-byte placeholder measuring -91 dB. Nothing is heard.">SILENT</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">أربعة</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="spray::spray.count.4::4::ar" rows="2" placeholder="السطر العربي المعدَّل…">أربعة</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="spray::spray.count.4::4::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">pause 600 ms</span>
+      </td></tr>
+  <tr class="line has-silent" data-key="spray::spray.count.5::5" data-id="spray.count.5">
+    <td class="c-seq">6</td>
+    <td class="c-id">
+      <code>spray.count.5</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/spray.count.5.mp3">▶</button>
+        <span class="dur">0.84s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Five</p>
+      <textarea class="edit" dir="ltr" data-field="spray::spray.count.5::5::en" rows="2" placeholder="Revised English line…">Five</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/spray.count.5.mp3">▶</button>
+        <span class="dur">0.35s</span><span class="badge silent" title="5060-byte placeholder measuring -91 dB. Nothing is heard.">SILENT</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">خمسة</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="spray::spray.count.5::5::ar" rows="2" placeholder="السطر العربي المعدَّل…">خمسة</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="spray::spray.count.5::5::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">pause 600 ms</span>
+      </td></tr>
+  <tr class="line has-silent" data-key="spray::spray.count.6::6" data-id="spray.count.6">
+    <td class="c-seq">7</td>
+    <td class="c-id">
+      <code>spray.count.6</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/spray.count.6.mp3">▶</button>
+        <span class="dur">0.84s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Six</p>
+      <textarea class="edit" dir="ltr" data-field="spray::spray.count.6::6::en" rows="2" placeholder="Revised English line…">Six</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/spray.count.6.mp3">▶</button>
+        <span class="dur">0.35s</span><span class="badge silent" title="5060-byte placeholder measuring -91 dB. Nothing is heard.">SILENT</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">ستة</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="spray::spray.count.6::6::ar" rows="2" placeholder="السطر العربي المعدَّل…">ستة</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="spray::spray.count.6::6::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">pause 600 ms</span>
+      </td></tr>
+  <tr class="line has-silent" data-key="spray::spray.count.7::7" data-id="spray.count.7">
+    <td class="c-seq">8</td>
+    <td class="c-id">
+      <code>spray.count.7</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/spray.count.7.mp3">▶</button>
+        <span class="dur">0.97s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Seven</p>
+      <textarea class="edit" dir="ltr" data-field="spray::spray.count.7::7::en" rows="2" placeholder="Revised English line…">Seven</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/spray.count.7.mp3">▶</button>
+        <span class="dur">0.35s</span><span class="badge silent" title="5060-byte placeholder measuring -91 dB. Nothing is heard.">SILENT</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">سبعة</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="spray::spray.count.7::7::ar" rows="2" placeholder="السطر العربي المعدَّل…">سبعة</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="spray::spray.count.7::7::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">pause 600 ms</span>
+      </td></tr>
+  <tr class="line has-silent" data-key="spray::spray.count.8::8" data-id="spray.count.8">
+    <td class="c-seq">9</td>
+    <td class="c-id">
+      <code>spray.count.8</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/spray.count.8.mp3">▶</button>
+        <span class="dur">0.93s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Eight</p>
+      <textarea class="edit" dir="ltr" data-field="spray::spray.count.8::8::en" rows="2" placeholder="Revised English line…">Eight</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/spray.count.8.mp3">▶</button>
+        <span class="dur">0.35s</span><span class="badge silent" title="5060-byte placeholder measuring -91 dB. Nothing is heard.">SILENT</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">تمانية</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="spray::spray.count.8::8::ar" rows="2" placeholder="السطر العربي المعدَّل…">تمانية</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="spray::spray.count.8::8::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">pause 600 ms</span>
+      </td></tr>
+  <tr class="line has-silent" data-key="spray::spray.count.9::9" data-id="spray.count.9">
+    <td class="c-seq">10</td>
+    <td class="c-id">
+      <code>spray.count.9</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/spray.count.9.mp3">▶</button>
+        <span class="dur">0.79s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Nine</p>
+      <textarea class="edit" dir="ltr" data-field="spray::spray.count.9::9::en" rows="2" placeholder="Revised English line…">Nine</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/spray.count.9.mp3">▶</button>
+        <span class="dur">0.35s</span><span class="badge silent" title="5060-byte placeholder measuring -91 dB. Nothing is heard.">SILENT</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">تسعة</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="spray::spray.count.9::9::ar" rows="2" placeholder="السطر العربي المعدَّل…">تسعة</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="spray::spray.count.9::9::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">pause 600 ms</span>
+      </td></tr>
+  <tr class="line has-silent" data-key="spray::spray.count.10::10" data-id="spray.count.10">
+    <td class="c-seq">11</td>
+    <td class="c-id">
+      <code>spray.count.10</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/spray.count.10.mp3">▶</button>
+        <span class="dur">0.88s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Ten</p>
+      <textarea class="edit" dir="ltr" data-field="spray::spray.count.10::10::en" rows="2" placeholder="Revised English line…">Ten</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/spray.count.10.mp3">▶</button>
+        <span class="dur">0.35s</span><span class="badge silent" title="5060-byte placeholder measuring -91 dB. Nothing is heard.">SILENT</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">عشرة!</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="spray::spray.count.10::10::ar" rows="2" placeholder="السطر العربي المعدَّل…">عشرة!</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="spray::spray.count.10::10::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
+      <span class="tag">pause 600 ms</span>
+      </td></tr>
+  <tr class="line has-silent" data-key="spray::spray.done::11" data-id="spray.done">
+    <td class="c-seq">12</td>
+    <td class="c-id">
+      <code>spray.done</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/spray.done.mp3">▶</button>
+        <span class="dur">4.37s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Great counting with me, {name}! The tooth feels calm and cozy now.</p>
+      <textarea class="edit" dir="ltr" data-field="spray::spray.done::11::en" rows="2" placeholder="Revised English line…">Great counting with me, {name}! The tooth feels calm and cozy now.</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/spray.done.mp3">▶</button>
+        <span class="dur">0.35s</span><span class="badge silent" title="5060-byte placeholder measuring -91 dB. Nothing is heard.">SILENT</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">عاش يا {name}! أخدنا نفس هادي، وخدنا وقتنا قبل ما نكمّل.</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="spray::spray.done::11::ar" rows="2" placeholder="السطر العربي المعدَّل…">عاش يا {name}! أخدنا نفس هادي، وخدنا وقتنا قبل ما نكمّل.</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="spray::spray.done::11::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr></tbody>
+  </table>
+  </div>
+</section>
+<section class="screen unreachable" id="s-practice-brush">
+  <header class="s-head">
+    <h2><span class="num dead">!</span>Make the Tooth Sparkle</h2>
+    <code class="src">src/screens/PracticeBrushScreen.tsx</code>
+  </header>
+  <p class="warn"><strong>Never runs in the shipped game.</strong> No path manifest routes to the practice-brush kind. Its behaviour was folded into Prepare. Defect D2.</p>
+  <p class="blurb"></p>
+  
+  <div class="totals">
+    <span>Spoken runtime — English <strong>20.5s</strong></span>
+    <span><bdi>العربية</bdi> <strong>11.1s</strong></span>
+    <span class="muted">excludes pauses and time waiting for the child</span>
+  </div>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>#</th><th>String</th><th>English</th><th>العربية</th><th>Note</th></tr></thead>
+    <tbody>
+  <tr class="line has-silent" data-key="practice-brush::practice.brush.intro::0" data-id="practice.brush.intro">
+    <td class="c-seq">1</td>
+    <td class="c-id">
+      <code>practice.brush.intro</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/practice.brush.intro.mp3">▶</button>
+        <span class="dur">5.16s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Oh no, {name} — this tooth has sticky spots! Grab the brush and clean them all!</p>
+      <textarea class="edit" dir="ltr" data-field="practice-brush::practice.brush.intro::0::en" rows="2" placeholder="Revised English line…">Oh no, {name} — this tooth has sticky spots! Grab the brush and clean them all!</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/practice.brush.intro.mp3">▶</button>
+        <span class="dur">0.35s</span><span class="badge silent" title="5060-byte placeholder measuring -91 dB. Nothing is heard.">SILENT</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">فيه شوية نقط لازقة على السنّة دي يا {name}! نمسك الفرشة وننضّفهم كلهم!</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="practice-brush::practice.brush.intro::0::ar" rows="2" placeholder="السطر العربي المعدَّل…">فيه شوية نقط لازقة على السنّة دي يا {name}! نمسك الفرشة وننضّفهم كلهم!</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="practice-brush::practice.brush.intro::0::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line has-silent" data-key="practice-brush::tool.brush.name::1" data-id="tool.brush.name">
+    <td class="c-seq">2</td>
+    <td class="c-id">
+      <code>tool.brush.name</code>
+      
+      <span class="hint">On tapping the brush</span>
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/tool.brush.name.mp3">▶</button>
+        <span class="dur">1.25s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Polishing Brush</p>
+      <textarea class="edit" dir="ltr" data-field="practice-brush::tool.brush.name::1::en" rows="2" placeholder="Revised English line…">Polishing Brush</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/tool.brush.name.mp3">▶</button>
+        <span class="dur">0.35s</span><span class="badge silent" title="5060-byte placeholder measuring -91 dB. Nothing is heard.">SILENT</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">الدش الصغنون</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="practice-brush::tool.brush.name::1::ar" rows="2" placeholder="السطر العربي المعدَّل…">الدش الصغنون</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="practice-brush::tool.brush.name::1::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line has-silent" data-key="practice-brush::milo.hint.tap::2" data-id="milo.hint.tap">
+    <td class="c-seq">3</td>
+    <td class="c-id">
+      <code>milo.hint.tap</code>
+      
+      <span class="hint">On a spot tapped without the brush</span>
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/milo.hint.tap.mp3">▶</button>
+        <span class="dur">2.28s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Tap the one that&#39;s glowing, {name}!</p>
+      <textarea class="edit" dir="ltr" data-field="practice-brush::milo.hint.tap::2::en" rows="2" placeholder="Revised English line…">Tap the one that&#39;s glowing, {name}!</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/milo.hint.tap.mp3">▶</button>
+        <span class="dur">0.35s</span><span class="badge silent" title="5060-byte placeholder measuring -91 dB. Nothing is heard.">SILENT</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">خد وقتك يا {name}. دوس على اللي بينوّر!</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="practice-brush::milo.hint.tap::2::ar" rows="2" placeholder="السطر العربي المعدَّل…">خد وقتك يا {name}. دوس على اللي بينوّر!</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="practice-brush::milo.hint.tap::2::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line" data-key="practice-brush::milo.praise.1::3" data-id="milo.praise.1">
+    <td class="c-seq">4</td>
+    <td class="c-id">
+      <code>milo.praise.1</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/milo.praise.1.mp3">▶</button>
+        <span class="dur">1.30s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Great job, {name}!</p>
+      <textarea class="edit" dir="ltr" data-field="practice-brush::milo.praise.1::3::en" rows="2" placeholder="Revised English line…">Great job, {name}!</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/milo.praise.1.mp3">▶</button>
+        <span class="dur">2.23s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">عاش يا {name}! نضّفتها.</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="practice-brush::milo.praise.1::3::ar" rows="2" placeholder="السطر العربي المعدَّل…">عاش يا {name}! نضّفتها.</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="practice-brush::milo.praise.1::3::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line" data-key="practice-brush::milo.praise.2::4" data-id="milo.praise.2">
+    <td class="c-seq">5</td>
+    <td class="c-id">
+      <code>milo.praise.2</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/milo.praise.2.mp3">▶</button>
+        <span class="dur">1.49s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Ooh, look at it shine!</p>
+      <textarea class="edit" dir="ltr" data-field="practice-brush::milo.praise.2::4::en" rows="2" placeholder="Revised English line…">Ooh, look at it shine!</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/milo.praise.2.mp3">▶</button>
+        <span class="dur">2.00s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">شوف كده — بقت لامعة!</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="practice-brush::milo.praise.2::4::ar" rows="2" placeholder="السطر العربي المعدَّل…">شوف كده — بقت لامعة!</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="practice-brush::milo.praise.2::4::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line" data-key="practice-brush::milo.praise.3::5" data-id="milo.praise.3">
+    <td class="c-seq">6</td>
+    <td class="c-id">
+      <code>milo.praise.3</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/milo.praise.3.mp3">▶</button>
+        <span class="dur">2.09s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Nice one! That tickled a little.</p>
+      <textarea class="edit" dir="ltr" data-field="practice-brush::milo.praise.3::5::en" rows="2" placeholder="Revised English line…">Nice one! That tickled a little.</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/milo.praise.3.mp3">▶</button>
+        <span class="dur">2.23s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">حلو! دي دغدغت السنّة شوية.</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="practice-brush::milo.praise.3::5::ar" rows="2" placeholder="السطر العربي المعدَّل…">حلو! دي دغدغت السنّة شوية.</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="practice-brush::milo.praise.3::5::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line" data-key="practice-brush::milo.praise.4::6" data-id="milo.praise.4">
+    <td class="c-seq">7</td>
+    <td class="c-id">
+      <code>milo.praise.4</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/milo.praise.4.mp3">▶</button>
+        <span class="dur">2.37s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Sparkly! You&#39;re good at this, {name}.</p>
+      <textarea class="edit" dir="ltr" data-field="practice-brush::milo.praise.4::6::en" rows="2" placeholder="Revised English line…">Sparkly! You&#39;re good at this, {name}.</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/milo.praise.4.mp3">▶</button>
+        <span class="dur">3.25s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">برافو يا {name}! إيدك خفيفة.</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="practice-brush::milo.praise.4::6::ar" rows="2" placeholder="السطر العربي المعدَّل…">برافو يا {name}! إيدك خفيفة.</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="practice-brush::milo.praise.4::6::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line has-silent" data-key="practice-brush::practice.brush.done::7" data-id="practice.brush.done">
+    <td class="c-seq">8</td>
+    <td class="c-id">
+      <code>practice.brush.done</code>
+      
+      
+    </td>
+    <td class="c-lang en">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/en/practice.brush.done.mp3">▶</button>
+        <span class="dur">4.55s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+      </div>
+      <p class="orig" dir="ltr">Wow! You made it sparkle, {name}! What a clean tooth!</p>
+      <textarea class="edit" dir="ltr" data-field="practice-brush::practice.brush.done::7::en" rows="2" placeholder="Revised English line…">Wow! You made it sparkle, {name}! What a clean tooth!</textarea>
+    </td>
+    <td class="c-lang ar">
+      
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/practice.brush.done.mp3">▶</button>
+        <span class="dur">0.35s</span><span class="badge silent" title="5060-byte placeholder measuring -91 dB. Nothing is heard.">SILENT</span>
+      </div>
+      <p class="orig" dir="rtl" lang="ar">عاش يا {name}! الفرشة خلّت السنّة نضيفة ولامعة!</p>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="practice-brush::practice.brush.done::7::ar" rows="2" placeholder="السطر العربي المعدَّل…">عاش يا {name}! الفرشة خلّت السنّة نضيفة ولامعة!</textarea>
+    </td>
+    <td class="c-note"><textarea class="note" data-field="practice-brush::practice.brush.done::7::note" rows="2" placeholder="Note / action…"></textarea></td>
+  </tr></tbody>
+  </table>
+  </div>
+</section>
+
+<section class="screen">
+  <header class="s-head"><h2><span class="num dead">!</span>Clips nothing plays</h2></header>
+  <p class="blurb">The generator bakes a clip for every string key, whether or not anything speaks it. 64 keys — 2.5 minutes of audio across the two languages — are downloaded and precached onto every device without ever being heard. They fall into two very different piles.</p>
+
+  <h3 style="font-size:.95rem;margin:1rem 0 .3rem">Shown on screen, never spoken (38)</h3>
+  <p class="blurb">Button labels, screen titles, object names, the certificate wording. The child reads these (or a parent does) — but a pre-reader never hears them. Either the clip should not be generated, or the line should be spoken. Right now it is neither.</p>
+  <div class="orphans"><div><code>app.title</code></div><div><code>app.subtitle</code></div><div><code>ui.start</code></div><div><code>ui.next</code></div><div><code>ui.playAgain</code></div><div><code>ui.certificate</code></div><div><code>ui.shareCertificate</code></div><div><code>ui.printCertificate</code></div><div><code>ui.hudTitle</code></div><div><code>parent.forParents</code></div><div><code>parent.whichVisit</code></div><div><code>parent.checkup</code></div><div><code>parent.treatment</code></div><div><code>parent.childName</code></div><div><code>parent.namePlaceholder</code></div><div><code>parent.skip</code></div><div><code>clinic.title</code></div><div><code>clinic.chair.name</code></div><div><code>clinic.light.name</code></div><div><code>clinic.suction.name</code></div><div><code>clinic.syringe.name</code></div><div><code>tool.mirror.name</code></div><div><code>tool.explorer.name</code></div><div><code>tool.spray.name</code></div><div><code>practice.brush.title</code></div><div><code>prepare.title</code></div><div><code>spray.title</code></div><div><code>visit.title</code></div><div><code>reward.congrats</code></div><div><code>reward.hero</code></div><div><code>cert.title</code></div><div><code>cert.awardedTo</code></div><div><code>cert.for</code></div><div><code>cert.defaultName</code></div><div><code>friend.vocative</code></div><div><code>story.together</code></div><div><code>ui.startOver</code></div><div><code>ui.startOverConfirm</code></div></div>
+
+  <h3 style="font-size:.95rem;margin:1.2rem 0 .3rem">Retired copy (26)</h3>
+  <p class="blurb">Not shown anywhere either. The features these belonged to are gone: the rinse bowl and side table as pressable clinic objects, the rubber-dam ring and umbrella steps, the per-tool “fun fact” second sentence, and the five instruments (suction, syringe, xray, ring, umbrella) cut when the board dropped from nine tools to four. Safe to delete, copy and clips together.</p>
+  <div class="orphans"><div><code>clinic.sink.name</code></div><div><code>clinic.sink.desc</code></div><div><code>clinic.table.name</code></div><div><code>clinic.table.desc</code></div><div><code>tools.groupDone</code></div><div><code>tool.mirror.fact</code></div><div><code>tool.explorer.fact</code></div><div><code>tool.suction.name</code></div><div><code>tool.suction.desc</code></div><div><code>tool.suction.fact</code></div><div><code>tool.syringe.name</code></div><div><code>tool.syringe.desc</code></div><div><code>tool.syringe.fact</code></div><div><code>tool.brush.fact</code></div><div><code>tool.xray.name</code></div><div><code>tool.xray.desc</code></div><div><code>tool.xray.fact</code></div><div><code>tool.ring.name</code></div><div><code>tool.ring.desc</code></div><div><code>tool.ring.fact</code></div><div><code>tool.umbrella.name</code></div><div><code>tool.umbrella.desc</code></div><div><code>tool.umbrella.fact</code></div><div><code>tool.spray.fact</code></div><div><code>prepare.step.ring</code></div><div><code>prepare.step.umbrella</code></div></div>
+</section>
+</main>
+
+<footer>Generated from the source of truth: the screen components, <code>strings/*.json</code>, the clip files themselves, and <code>Arabic-narration-used/manifest.json</code>.</footer>
+
+<script>
+(function(){
+  var KEY='dental-narration-review-v1';
+  var store={};
+  try{store=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){store={}}
+
+  function countDirty(){
+    var n=Object.keys(store).length;
+    document.getElementById('dirty').textContent = n? n+' edit'+(n>1?'s':'')+' saved locally' : '';
+  }
+  function save(){ try{localStorage.setItem(KEY,JSON.stringify(store))}catch(e){} countDirty(); }
+
+  document.querySelectorAll('textarea').forEach(function(t){
+    var f=t.dataset.field, base=t.value;
+    t.dataset.base=base;
+    if(store[f]!==undefined && store[f]!==base){ t.value=store[f]; t.classList.add('dirty'); }
+    t.addEventListener('input',function(){
+      if(t.value===t.dataset.base){ delete store[f]; t.classList.remove('dirty'); }
+      else { store[f]=t.value; t.classList.add('dirty'); }
+      save();
+    });
+  });
+  countDirty();
+
+  // one clip at a time
+  var playing=null, cur=null;
+  document.addEventListener('click',function(e){
+    var b=e.target.closest('.play'); if(!b) return;
+    if(cur){ cur.pause(); }
+    if(playing===b){ playing.classList.remove('playing'); playing=null; cur=null; return; }
+    if(playing) playing.classList.remove('playing');
+    cur=new Audio(b.dataset.src); playing=b; b.classList.add('playing');
+    cur.play().then(function(){ b.classList.remove('missing'); })
+      .catch(function(){ b.classList.remove('playing'); b.classList.add('missing'); b.title='Clip would not play — open this file from inside the repo.'; playing=null; });
+    cur.onended=function(){ b.classList.remove('playing'); playing=null; cur=null; };
+  });
+
+  // language mode
+  var modes={'m-both':'','m-en':'only-en','m-ar':'only-ar'};
+  Object.keys(modes).forEach(function(id){
+    document.getElementById(id).addEventListener('click',function(){
+      document.body.className=modes[id];
+      Object.keys(modes).forEach(function(o){ document.getElementById(o).classList.toggle('on',o===id); });
+    });
+  });
+
+  document.getElementById('theme').addEventListener('click',function(){
+    var r=document.documentElement;
+    var now=r.getAttribute('data-theme');
+    var next = now==='dark' ? 'light' : now==='light' ? null : (matchMedia('(prefers-color-scheme: dark)').matches?'light':'dark');
+    if(next) r.setAttribute('data-theme',next); else r.removeAttribute('data-theme');
+  });
+
+  document.getElementById('reset').addEventListener('click',function(){
+    if(!confirm('Discard every edit saved in this browser?')) return;
+    store={}; save();
+    document.querySelectorAll('textarea').forEach(function(t){ t.value=t.dataset.base; t.classList.remove('dirty'); });
+  });
+
+  document.getElementById('export').addEventListener('click',function(){
+    var en={}, ar={}, notes=[], regen={en:[],ar:[]};
+    Object.keys(store).forEach(function(f){
+      var p=f.split('::'); // screen :: stringId :: index :: field
+      var sid=p[1], field=p[3];
+      if(field==='note'){ notes.push({screen:p[0], string:sid, note:store[f]}); return; }
+      if(field==='en'){ en[sid]=store[f]; regen.en.push(sid); }
+      if(field==='ar'){ ar[sid]=store[f]; regen.ar.push(sid); }
+    });
+    var out={
+      generated:new Date().toISOString(),
+      note:'Paste stringPatch.en into app/src/content/strings/en.json (same for ar), then regenerate the clips listed in regenerate.',
+      stringPatch:{en:en,ar:ar},
+      regenerate:regen,
+      notes:notes
+    };
+    var blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='narration-edits-'+new Date().toISOString().slice(0,10)+'.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+})();
+</script>
+</body>
+</html>
