@@ -65,6 +65,10 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
   useEffect(() => {
     let alive = true
     const intro = async () => {
+      if (lang === 'ar') {
+        setIntroDone(true)
+        return
+      }
       await audio.say(lang, 'prepare.intro')
       if (!alive) return
       await audio.say(lang, SEQUENCE[0].stepId)
@@ -93,7 +97,7 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
     setStep(next)
     if (next < SEQUENCE.length) {
       setIntroDone(false)
-      await audio.say(lang, 'milo.great')
+      if (lang !== 'ar') await audio.say(lang, 'milo.great')
       await audio.say(lang, SEQUENCE[next].stepId)
       setIntroDone(true)
     } else if (!doneRef.current) {
@@ -108,7 +112,7 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
     if (toolId !== SEQUENCE[step].toolId) {
       setWiggleId(toolId)
       later(() => setWiggleId(null), 450)
-      void audio.say(lang, 'milo.hint.tap')
+      if (lang !== 'ar') void audio.say(lang, 'milo.hint.tap')
       return
     }
 
@@ -125,7 +129,7 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
     setActing(toolId)
     setScrubbing(true)
     decayRemovalSfxStarted.current = false
-    void audio.say(lang, 'prepare.step.scrub')
+    if (lang !== 'ar') void audio.say(lang, 'prepare.step.scrub')
   }
 
   /** A sticky spot has been pressed: send the brush to it, then wipe it. */
@@ -149,7 +153,7 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
         // A different line each time. Indexed by how many spots have gone, so
         // the four are heard in order whichever order they are pressed in.
         const cleaned = next.filter(dirty => !dirty).length
-        void audio.say(lang, `milo.praise.${Math.min(cleaned, PRAISE_LINES)}` as StringId)
+        if (lang !== 'ar') void audio.say(lang, `milo.praise.${Math.min(cleaned, PRAISE_LINES)}` as StringId)
         later(() => setBrushAt(BRUSH_PARK), 420)
       } else {
         setScrubbing(false)

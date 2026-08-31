@@ -156,6 +156,49 @@ test('Arabic prepare brush plays the recorded decay-removal sound when stains co
   expect(starSfx).not.toHaveBeenCalled()
 })
 
+test('Arabic prepare uses only the recorded dentist narration lines', async () => {
+  vi.useFakeTimers()
+  useGame.getState().setLang('ar')
+  vi.spyOn(audio, 'playDecayRemovalSfx').mockImplementation(() => {})
+  const onComplete = vi.fn()
+  render(<PrepareScreen module={mod('prepare')} onComplete={onComplete} />)
+  await finishPrepareIntro()
+
+  await act(async () => {
+    fireEvent.click(screen.getByTestId('prep-brush'))
+  })
+  await act(async () => {
+    fireEvent.click(screen.getByTestId('prep-spray'))
+    await vi.advanceTimersByTimeAsync(2500)
+  })
+  await act(async () => {
+    fireEvent.click(screen.getByTestId('prep-brush'))
+  })
+  for (const i of [0, 1, 2, 3]) {
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(`plaque-${i}`))
+      await vi.advanceTimersByTimeAsync(1200)
+    })
+  }
+
+  expect(audio.say).toHaveBeenCalledWith('ar', 'prepare.step.brush')
+  expect(audio.say).toHaveBeenCalledWith('ar', 'prepare.done')
+  for (const id of [
+    'prepare.intro',
+    'prepare.step.spray',
+    'prepare.step.scrub',
+    'milo.great',
+    'milo.hint.tap',
+    'milo.praise.1',
+    'milo.praise.2',
+    'milo.praise.3',
+    'milo.praise.4',
+  ]) {
+    expect(audio.say).not.toHaveBeenCalledWith('ar', id)
+  }
+  expect(onComplete).toHaveBeenCalledTimes(1)
+})
+
 test('English prepare brush does not add Arabic decay removal sounds', async () => {
   vi.useFakeTimers()
   const eraseSfx = vi.spyOn(audio, 'playEraseSfx').mockImplementation(() => {})

@@ -136,11 +136,11 @@ export function ModuleHost({ registry = defaultRegistry }: { registry?: ModuleRe
     handoverTimer.current = setTimeout(() => setHandingOver(false), screenChange.lock * 1000)
 
     // English keeps Milo's interstitial story moments. Arabic moves straight to
-    // the next phase so the child does not see the waving tooth quote overlay.
+    // the next phase and does not add generated Milo filler over recorded lines.
     if (current.beatId && lang !== 'ar') {
       const doneCount = finished.length + 1
       setBeat({ stringId: current.beatId, calm: Math.min(1, doneCount / (modules.length - 1)) })
-    } else {
+    } else if (lang !== 'ar') {
       void audio.say(lang, 'milo.starEarned')
     }
     const from = origin ?? { x: window.innerWidth / 2, y: window.innerHeight / 2 }

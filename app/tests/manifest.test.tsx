@@ -101,6 +101,7 @@ describe('ModuleHost engine', () => {
     expect(screen.queryByText('done-spray')).not.toBeInTheDocument()
     expect(screen.getByText('done-visit')).toBeInTheDocument()
     expect(useGame.getState().stars).toMatchObject({ clinic: true, tools: true, prepare: true, spray: true })
+    if (lang === 'ar') expect(audio.say).not.toHaveBeenCalledWith('ar', 'milo.starEarned')
   })
 
   test('completing a module with a beat shows Milo\'s story line and tapping dismisses it', () => {
