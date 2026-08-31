@@ -84,7 +84,7 @@ const entries = [
   },
   {
     id: 'visit.maskPrompt',
-    source: 'Arabic-narration-redo/07-dentist-visit/recordings/الدكتورة.m4a.mp4',
+    source: 'Arabic-narration-redo/مقدمة الدكتورة 2.m4a.mp4',
     target: 'app/public/audio/ar/visit.maskPrompt.mp3',
     screenshot: '09-dentist-masked.png',
     frame: 'Dentist mask prompt before tapping',
