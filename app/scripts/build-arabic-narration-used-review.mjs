@@ -228,7 +228,23 @@ entries.push(
       target: 'app/public/audio/ar/visit.simulation.mp3',
       screenshot: '19-visit-simulation.png',
       frame: 'Dentist visit walkthrough starts',
-      note: 'Long walkthrough narration for the dentist simulation.',
+      note: 'Long walkthrough narration up through the sleepy-juice step.',
+    },
+    {
+      id: 'visit.step.count',
+      source: 'Arabic-narration/phase 4 why we close eyes.ogg',
+      target: 'app/public/audio/ar/visit.step.count.mp3',
+      screenshot: '20-visit-count-close-eyes.png',
+      frame: 'Before counting in the visit walkthrough',
+      note: 'Explains closing eyes before counting.',
+    },
+    {
+      id: 'visit.countToTen',
+      source: 'Arabic-narration/phase 4 coutning 1 to 10.ogg',
+      target: 'app/public/audio/ar/visit.countToTen.mp3',
+      screenshot: '21-visit-count-to-ten.png',
+      frame: 'Counting from 1 to 10 in the visit walkthrough',
+      note: 'One continuous recording for the full count.',
     },
     {
       id: 'visit.step.clean',
@@ -345,7 +361,13 @@ async function captureScreenshots() {
   await page.addInitScript(() => {
     HTMLMediaElement.prototype.play = function play() {
       const src = this.currentSrc || this.src || ''
-      const delay = src.includes('prepare.done') || src.includes('visit.maskOff') ? 1600 : 30
+      const delay =
+        src.includes('prepare.done') ||
+        src.includes('visit.maskOff') ||
+        src.includes('visit.step.count') ||
+        src.includes('visit.countToTen')
+          ? 1600
+          : 30
       window.setTimeout(() => this.dispatchEvent(new Event('ended')), delay)
       return Promise.resolve()
     }
@@ -427,6 +449,16 @@ async function captureScreenshots() {
   await page.getByTestId('paused-label').waitFor({ state: 'hidden' })
   await page.getByTestId('visit-scene').waitFor({ state: 'visible' })
   await shot(page, '19-visit-simulation.png')
+  await page.waitForFunction(
+    () => document.querySelector('[data-testid="visit-frame-count"]')?.getAttribute('data-active') === 'true',
+    undefined,
+    { timeout: 45_000 },
+  )
+  await shot(page, '20-visit-count-close-eyes.png')
+  await page.waitForFunction(
+    () => document.querySelector('[data-testid="visit-frame-count-ten"]')?.getAttribute('data-active') === 'true',
+  )
+  await shot(page, '21-visit-count-to-ten.png')
 
   await seedSession(page, { clinic: true, tools: true, prepare: true, spray: true, visit: true })
   await page.getByTestId('reward-screen').waitFor({ state: 'visible' })

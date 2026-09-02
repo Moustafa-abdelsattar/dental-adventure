@@ -252,11 +252,23 @@ test('Arabic simulation uses one narration track with timed visual cues', async 
   useGame.getState().setLang('ar')
   const onComplete = vi.fn()
   let finishSimulation!: () => void
+  let finishCount!: () => void
+  let finishCountToTen!: () => void
   let finishClean!: () => void
   vi.mocked(audio.say).mockImplementation((_, id) => {
     if (id === 'visit.simulation') {
       return new Promise(resolve => {
         finishSimulation = resolve
+      })
+    }
+    if (id === 'visit.step.count') {
+      return new Promise(resolve => {
+        finishCount = resolve
+      })
+    }
+    if (id === 'visit.countToTen') {
+      return new Promise(resolve => {
+        finishCountToTen = resolve
       })
     }
     if (id === 'visit.step.clean') {
@@ -313,10 +325,25 @@ test('Arabic simulation uses one narration track with timed visual cues', async 
     finishSimulation()
     await Promise.resolve()
   })
-  expect(audio.say).not.toHaveBeenCalledWith('ar', 'visit.step.count')
 
   await act(async () => {
     await vi.advanceTimersByTimeAsync(6780)
+  })
+  expect(audio.say).toHaveBeenCalledWith('ar', 'visit.step.count')
+  expect(screen.getByTestId('visit-frame-count')).toHaveAttribute('data-active', 'true')
+  expect(audio.say).not.toHaveBeenCalledWith('ar', 'visit.countToTen')
+
+  await act(async () => {
+    finishCount()
+    await Promise.resolve()
+  })
+  expect(audio.say).toHaveBeenCalledWith('ar', 'visit.countToTen')
+  expect(screen.getByTestId('visit-frame-count-ten')).toHaveAttribute('data-active', 'true')
+  expect(audio.say).not.toHaveBeenCalledWith('ar', 'visit.step.clean')
+
+  await act(async () => {
+    finishCountToTen()
+    await Promise.resolve()
   })
   expect(audio.say).toHaveBeenCalledWith('ar', 'visit.step.clean')
   expect(screen.getByTestId('visit-frame-clean')).toHaveAttribute('data-active', 'true')
@@ -355,8 +382,7 @@ async function runSimulation() {
   return vi.mocked(audio.say).mock.calls.map(c => c[1])
 }
 
-// Both journeys walk the same five beats; the countdown is no longer part of
-// the visit simulation.
+// English walks the five core visit beats without the Arabic count inserts.
 for (const path of ['checkup', 'treatment'] as const) {
   test(`the ${path} visit walks all five steps in order without counting`, async () => {
     vi.useFakeTimers()

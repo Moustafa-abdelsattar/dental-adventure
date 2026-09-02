@@ -16,7 +16,7 @@ const ART_W = 820
 const ART_H = 1168
 
 /** Every cut frame, all on that one canvas. */
-const FRAMES = ['chair', 'light', 'mirror', 'sleepy', 'clean', 'hand'] as const
+const FRAMES = ['chair', 'light', 'mirror', 'sleepy', 'count', 'count-ten', 'clean', 'hand'] as const
 type Frame = (typeof FRAMES)[number]
 
 interface Step {
@@ -36,6 +36,13 @@ const STEPS: Step[] = [
   { id: 'mirror', stringId: 'visit.step.mirror', frame: 'mirror' },
   { id: 'sleepy', stringId: 'visit.step.sleepy', frame: 'sleepy' },
   { id: 'clean', stringId: 'visit.step.clean', frame: 'clean' },
+]
+
+const AR_STEPS: Step[] = [
+  ...STEPS.slice(0, 4),
+  { id: 'count', stringId: 'visit.step.count', frame: 'count' },
+  { id: 'count-ten', stringId: 'visit.countToTen', frame: 'count-ten' },
+  STEPS[4],
 ]
 
 const STEP_PAUSE_MS = 900
@@ -164,6 +171,18 @@ export function VisitScreen({ onComplete }: ModuleProps) {
         timers.forEach(window.clearTimeout)
         if (cancelled) return
         setStep(4)
+        setStepCopy('visit.step.count')
+        setLineDone(false)
+        await audio.say(lang, 'visit.step.count')
+        if (cancelled) return
+        setLineDone(true)
+        setStep(5)
+        setStepCopy('visit.countToTen')
+        setLineDone(false)
+        await audio.say(lang, 'visit.countToTen')
+        if (cancelled) return
+        setLineDone(true)
+        setStep(6)
         setStepCopy('visit.step.clean')
         setLineDone(false)
         await Promise.all([audio.say(lang, 'visit.step.clean'), waitMs(AR_CLEAN_DURATION_MS)])
@@ -197,7 +216,8 @@ export function VisitScreen({ onComplete }: ModuleProps) {
   // Which frame is on screen. The stop signal gets the boy with his hand up, so
   // the child sees the thing they are being asked to do rather than only a
   // button offering it.
-  const current = step >= 0 ? STEPS[step] : undefined
+  const displaySteps = lang === 'ar' ? AR_STEPS : STEPS
+  const current = step >= 0 ? displaySteps[step] : undefined
   const art: Frame =
     phase === 'meet'
       ? 'chair'
@@ -219,7 +239,7 @@ export function VisitScreen({ onComplete }: ModuleProps) {
           {phase === 'meet' && t(lang, meetCopy)}
           {phase === 'stop' && t(lang, stopCopy)}
           {phase === 'steps' && step < 0 && t(lang, 'visit.simulation')}
-          {phase === 'steps' && step >= 0 && t(lang, stepCopy ?? STEPS[step].stringId)}
+          {phase === 'steps' && step >= 0 && t(lang, stepCopy ?? displaySteps[step].stringId)}
           {phase === 'done' && t(lang, 'visit.done')}
         </>
       }
@@ -361,7 +381,7 @@ export function VisitScreen({ onComplete }: ModuleProps) {
 
       {phase === 'steps' && (
         <div className="absolute bottom-[12%] left-1/2 -translate-x-1/2 z-10 flex gap-2" aria-hidden>
-          {STEPS.map((s, i) => (
+          {displaySteps.map((s, i) => (
             <span
               key={s.id}
               className={`w-3 h-3 rounded-full transition-colors ${i <= step ? 'bg-grape' : 'bg-grape/25'}`}

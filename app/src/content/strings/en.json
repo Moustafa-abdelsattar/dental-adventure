@@ -107,6 +107,8 @@
   "visit.step.light": "Then the sunshine light turns on so your dentist can see your teeth.",
   "visit.step.mirror": "Your dentist checks your teeth with the little mirror.",
   "visit.step.sleepy": "Next comes the magic juice. It makes your tooth sleepy.",
+  "visit.step.count": "You can close your eyes while we count together.",
+  "visit.countToTen": "One, two, three, four, five, six, seven, eight, nine, ten.",
   "visit.step.clean": "Now we're cleaning your teeth with the tiny brush until they're shiny!",
   "visit.done": "And that's the whole visit, {name}! You knew every single step!",
   "reward.congrats": "Congratulations, {name}!",
