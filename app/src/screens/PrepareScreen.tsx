@@ -68,10 +68,13 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
   useEffect(() => {
     let alive = true
     const intro = async () => {
-      if (lang === 'ar') {
-        setIntroDone(true)
-        return
-      }
+      // Arabic used to skip both of these, on the understanding that
+      // `prepare.intro` was generated filler and would follow the recorded
+      // voice with a robot one. It is not generated: the clip is
+      // `Arabic-narration/phase 3 intro.ogg`, the human recording, and it has
+      // been shipping unplayed. Skipping it left an Arabic child on this screen
+      // in silence with no instruction, and pushed the step-1 prompt onto the
+      // tap it was asking for — heard after the action rather than before it.
       await audio.say(lang, 'prepare.intro')
       if (!alive) return
       await audio.say(lang, SEQUENCE[0].stepId)
@@ -125,9 +128,13 @@ export function PrepareScreen({ onComplete }: ModuleProps) {
       setSleepy(true)
       setSprayVisible(false)
       later(() => setSprayVisible(true), SPRAY_EYES_LEAD_MS)
+      // Nothing is said over the beat. Arabic used to replay the step-1 prompt
+      // here, because with the intro skipped this was the only chance to hear
+      // it; now that it plays up front like English, repeating it would say the
+      // same sentence twice in a row — and it asks for a tap that has already
+      // happened. The juice is watched, in both languages.
       const visualDone = new Promise<void>(resolve => later(resolve, SPRAY_EYES_LEAD_MS + SPRAY_MS))
-      const narrationDone = lang === 'ar' ? audio.say(lang, 'prepare.step.spray') : Promise.resolve()
-      void Promise.all([visualDone, narrationDone]).then(() => finishStep(step + 1))
+      void visualDone.then(() => finishStep(step + 1))
       return
     }
 

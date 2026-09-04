@@ -187,10 +187,14 @@ test('Arabic prepare uses only the recorded dentist narration lines', async () =
   }
 
   expect(audio.say).toHaveBeenCalledWith('ar', 'prepare.step.brush')
-  expect(audio.say).toHaveBeenCalledWith('ar', 'prepare.step.spray')
   expect(audio.say).toHaveBeenCalledWith('ar', 'prepare.done')
+  // Recorded, so Arabic gets them. `prepare.intro` is the human voice from
+  // `Arabic-narration/phase 3 intro.ogg`; it was skipped for a while as
+  // generated filler, which it never was.
+  expect(audio.say).toHaveBeenCalledWith('ar', 'prepare.intro')
+  // The step-1 prompt is spoken once, up front — not again over the juice beat.
+  expect(audio.say.mock.calls.filter(([l, id]) => l === 'ar' && id === 'prepare.step.spray')).toHaveLength(1)
   for (const id of [
-    'prepare.intro',
     'prepare.step.scrub',
     'milo.great',
     'milo.hint.tap',
