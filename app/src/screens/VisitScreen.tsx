@@ -41,7 +41,12 @@ const STEPS: Step[] = [
 const AR_STEPS: Step[] = [
   ...STEPS.slice(0, 4),
   { id: 'count', stringId: 'visit.step.count', frame: 'count' },
-  { id: 'count-ten', stringId: 'visit.countToTen', frame: 'count-ten' },
+  // The two counting pictures are one moment, not two: eyes shut on seven
+  // fingers, then eyes open on all ten. Holding the ten-finger frame for the
+  // whole recording showed a child ten fingers while they were still hearing
+  // "one", so the count runs on the eyes-closed frame and the ten arrives with
+  // the word for it. See AR_TEN_REVEAL_MS.
+  { id: 'count-ten', stringId: 'visit.countToTen', frame: 'count', thenFrame: 'count-ten' },
   STEPS[4],
 ]
 
@@ -55,6 +60,10 @@ const AR_SIMULATION_CUES = [
 ]
 const AR_SIMULATION_DURATION_MS = 35_520
 const AR_CLEAN_DURATION_MS = 10_219
+/** The `visit.countToTen` recording, measured. */
+const AR_COUNT_TEN_DURATION_MS = 9_237
+/** How long the ten-finger frame holds at the end of it — the word "عشرة". */
+const AR_TEN_REVEAL_MS = 1_200
 
 /**
  * The visit simulation: meet the dentist (mask reveal), learn the raise-your-hand
@@ -179,6 +188,17 @@ export function VisitScreen({ onComplete }: ModuleProps) {
         setStep(5)
         setStepCopy('visit.countToTen')
         setLineDone(false)
+        // `thenFrame` normally swaps when the line ends; here it has to swap
+        // just before it does, so the ten-finger frame lands on the last number
+        // rather than after the counting is over.
+        timers.push(
+          window.setTimeout(
+            () => {
+              if (!cancelled) setLineDone(true)
+            },
+            Math.max(0, AR_COUNT_TEN_DURATION_MS - AR_TEN_REVEAL_MS),
+          ),
+        )
         await audio.say(lang, 'visit.countToTen')
         if (cancelled) return
         setLineDone(true)

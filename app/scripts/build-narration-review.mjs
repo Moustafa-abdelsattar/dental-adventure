@@ -214,11 +214,11 @@ const SCREENS = [
         ],
       },
       {
-        title: 'Arabic — then one recorded line each',
+        title: 'Arabic — then one recorded line each. The two counting pictures are one moment',
         only: 'ar',
         frames: [
-          { src: 'visit-step-count', label: 'count', at: 'visit.step.count' },
-          { src: 'visit-step-count-ten', label: 'count to ten', at: 'visit.countToTen' },
+          { src: 'visit-step-count', label: 'count', at: 'eyes shut, 7 fingers — holds through the whole count' },
+          { src: 'visit-step-count-ten', label: 'count to ten', at: 'last 1.2 s only — arrives on "عشرة"' },
           { src: 'visit-step-clean', label: 'clean', at: 'visit.step.clean' },
         ],
       },

@@ -338,6 +338,15 @@ test('Arabic simulation uses one narration track with timed visual cues', async 
     await Promise.resolve()
   })
   expect(audio.say).toHaveBeenCalledWith('ar', 'visit.countToTen')
+  // The count runs on the eyes-closed frame. Showing all ten fingers here would
+  // put the answer on screen while the child is still hearing "one".
+  expect(screen.getByTestId('visit-frame-count')).toHaveAttribute('data-active', 'true')
+  expect(screen.getByTestId('visit-frame-count-ten')).not.toHaveAttribute('data-active', 'true')
+
+  // …and the ten-finger frame lands 1.2s before the recording ends, on "عشرة".
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(9237 - 1200)
+  })
   expect(screen.getByTestId('visit-frame-count-ten')).toHaveAttribute('data-active', 'true')
   expect(audio.say).not.toHaveBeenCalledWith('ar', 'visit.step.clean')
 
