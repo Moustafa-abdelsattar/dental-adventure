@@ -252,6 +252,8 @@
   "visit.step.sleepy": 0.35,
   "visit.stopSignal": 2.965,
   "visit.stopSignalDone": 4.331,
-  "visit.title": 0.35
+  "visit.title": 0.35,
+  "visit.countToTen": 9.237,
+  "visit.step.count": 7.381
  }
 }

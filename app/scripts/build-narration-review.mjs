@@ -190,6 +190,19 @@ const SCREENS = [
     title: 'Your dental visit',
     file: 'src/screens/VisitScreen.tsx',
     shots: ['12-visit-meet', '13-visit-stop', '14-visit-paused', '15-visit-steps'],
+    // The frames themselves, in order. Screenshots cannot catch these — the
+    // Arabic run is a 35 s recording with the picture changing underneath it —
+    // and this is the screen where the two languages see different pictures.
+    frames: [
+      { src: 'visit-step-chair', label: 'chair' },
+      { src: 'visit-step-light', label: 'light' },
+      { src: 'visit-step-mirror', label: 'mirror' },
+      { src: 'visit-step-sleepy', label: 'sleepy juice' },
+      { src: 'visit-step-count', label: 'count', only: 'ar' },
+      { src: 'visit-step-count-ten', label: 'count to ten', only: 'ar' },
+      { src: 'visit-step-clean', label: 'clean' },
+      { src: 'visit-step-hand', label: 'stop signal', note: 'shown during the stop-hand beat, not the walk-through' },
+    ],
     blurb:
       'The walk-through, and the one screen where the two languages are built differently. English speaks five separate step lines with a 900 ms pause between them. Arabic plays a single 35.5 s recording and moves the picture on timed cues underneath it.',
     events: [
@@ -389,6 +402,15 @@ function screenSection(s, unreachable = false) {
       </figure>`,
     )
     .join('')
+  const frames = (s.frames ?? [])
+    .map(
+      f => `<figure class="frame${f.only ? ' only-' + f.only : ''}">
+        <img loading="lazy" src="../../app/public/art/${esc(f.src)}.webp" alt="${esc(f.label)}">
+        <figcaption>${esc(f.label)}${f.only ? `<span class="badge lang-only">${f.only.toUpperCase()} only</span>` : ''}${f.note ? `<span class="hint">${esc(f.note)}</span>` : ''}</figcaption>
+      </figure>`,
+    )
+    .join('')
+
   return `
 <section class="screen${unreachable ? ' unreachable' : ''}" id="s-${esc(s.id)}">
   <header class="s-head">
@@ -398,6 +420,7 @@ function screenSection(s, unreachable = false) {
   ${unreachable ? `<p class="warn"><strong>Never runs in the shipped game.</strong> ${esc(s.why)}</p>` : ''}
   <p class="blurb">${esc(s.blurb ?? '')}</p>
   ${shots ? `<div class="shots">${shots}</div>` : ''}
+  ${frames ? `<div class="framestrip"><div class="state">the picture sequence, in order</div><div class="frames">${frames}</div></div>` : ''}
   <div class="totals">
     <span>Spoken runtime — English <strong>${enTotal.toFixed(1)}s</strong></span>
     <span><bdi>العربية</bdi> <strong>${arTotal.toFixed(1)}s</strong></span>
@@ -485,6 +508,15 @@ figure{margin:0}
   box-shadow:0 2px 10px rgba(34,31,51,.07)}
 figcaption{font-size:.72rem;color:var(--muted);text-align:center;margin-top:.25rem}
 @media(max-width:1150px){.pair img{width:168px}}
+.framestrip{margin:0 0 1rem}
+.frames{display:flex;gap:.6rem;flex-wrap:wrap;align-items:flex-start}
+.frame{margin:0;width:112px}
+.frame img{width:100%;border-radius:9px;border:1px solid var(--line);background:#fff;display:block}
+.frame figcaption{font-size:.7rem;color:var(--muted);text-align:center;margin-top:.25rem;line-height:1.3}
+.frame .badge{display:block;margin:.2rem auto 0;width:fit-content}
+.frame .hint{font-size:.66rem;margin-top:.15rem}
+body.only-en .frame.only-ar{display:none}
+body.only-ar .frame.only-en{display:none}
 .totals{display:flex;gap:1rem;flex-wrap:wrap;font-size:.82rem;margin-bottom:.6rem;color:var(--muted)}
 .totals strong{color:var(--ink)}
 .tablewrap{overflow-x:auto}
