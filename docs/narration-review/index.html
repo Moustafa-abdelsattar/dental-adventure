@@ -836,18 +836,18 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
   
   <div class="totals">
     <span>Spoken runtime — English <strong>31.0s</strong></span>
-    <span><bdi>العربية</bdi> <strong>35.9s</strong></span>
+    <span><bdi>العربية</bdi> <strong>22.5s</strong></span>
     <span class="muted">excludes pauses and time waiting for the child</span>
   </div>
   <div class="tablewrap">
   <table>
     <thead><tr><th>#</th><th>String</th><th>English <span class="pen">click to edit</span></th><th><bdi>العربية</bdi> <span class="pen">click to edit</span></th><th>Note</th></tr></thead>
     <tbody>
-  <tr class="line" data-key="prepare::prepare.intro::0" data-id="prepare.intro">
+  <tr class="line only-en" data-key="prepare::prepare.intro::0" data-id="prepare.intro">
     <td class="c-seq">1</td>
     <td class="c-id">
       <code>prepare.intro</code>
-      
+      <span class="badge lang-only">EN only</span>
       
     </td>
     <td class="c-lang en">
@@ -858,21 +858,14 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
       <textarea class="edit" dir="ltr" data-field="prepare::prepare.intro::0::en"
         rows="1">Let&#39;s get this tooth ready, {name}! Two steps, together.</textarea>
       <p class="was" dir="ltr" hidden><span>was</span> Let&#39;s get this tooth ready, {name}! Two steps, together.</p></td>
-    <td class="c-lang ar">
-      <div class="row-top">
-        <button class="play" data-src="../../app/public/audio/ar/prepare.intro.mp3" aria-label="Play prepare.intro">▶</button>
-        <span class="dur">6.96s</span><span class="badge tts" title="Still Edge TTS — no human recording imported for this line">TTS</span>
-      </div>
-      <textarea class="edit" dir="rtl" lang="ar" data-field="prepare::prepare.intro::0::ar"
-        rows="1">هنجهّز السن ده يا {name}! خطوتين بس، مع بعض.</textarea>
-      <p class="was" dir="rtl" lang="ar" hidden><span>was</span> هنجهّز السن ده يا {name}! خطوتين بس، مع بعض.</p></td>
+    <td class="c-lang ar off"><span class="dash">لا تُقال بالعربية</span></td>
     <td class="c-note"><textarea class="note" data-field="prepare::prepare.intro::0::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr>
-  <tr class="line" data-key="prepare::prepare.step.spray::1" data-id="prepare.step.spray">
+  <tr class="line only-en" data-key="prepare::prepare.step.spray::1" data-id="prepare.step.spray">
     <td class="c-seq">2</td>
     <td class="c-id">
       <code>prepare.step.spray</code>
-      
+      <span class="badge lang-only">EN only</span>
       <span class="hint">Step 1 prompt</span>
     </td>
     <td class="c-lang en">
@@ -883,16 +876,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
       <textarea class="edit" dir="ltr" data-field="prepare::prepare.step.spray::1::en"
         rows="1">First, the magic juice. Tap it to make the tooth sleepy.</textarea>
       <p class="was" dir="ltr" hidden><span>was</span> First, the magic juice. Tap it to make the tooth sleepy.</p></td>
-    <td class="c-lang ar">
-      <div class="row-top">
-        <button class="play" data-src="../../app/public/audio/ar/prepare.step.spray.mp3" aria-label="Play prepare.step.spray">▶</button>
-        <span class="dur">6.44s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
-      </div>
-      <textarea class="edit" dir="rtl" lang="ar" data-field="prepare::prepare.step.spray::1::ar"
-        rows="1">أول خطوة: العصير السحري — دوس عليه عشان السن ينام.</textarea>
-      <p class="was" dir="rtl" lang="ar" hidden><span>was</span> أول خطوة: العصير السحري — دوس عليه عشان السن ينام.</p></td>
+    <td class="c-lang ar off"><span class="dash">لا تُقال بالعربية</span></td>
     <td class="c-note"><textarea class="note" data-field="prepare::prepare.step.spray::1::note" rows="1" placeholder="Note / action…"></textarea></td>
-  </tr><tr class="evt tap"><td class="c-seq"></td><td colspan="4">
+  </tr><tr class="evt note"><td class="c-seq"></td><td colspan="4">
+    <span class="badge lang-only">AR only</span>
+    <span class="hint">Arabic says nothing on arrival. `8815468 &quot;Remove generated Arabic tooth prep filler&quot;` returns early before both lines above, to keep the recorded voice from being followed by TTS — so an Arabic child meets this screen in silence, with no instruction, and hears the step-1 prompt only after they have already tapped. See defect D6.</span></td></tr><tr class="evt tap"><td class="c-seq"></td><td colspan="4">
       <span class="tag">waits for the child</span><span class="hint">Child taps the juice (a wrong tool wiggles instead)</span></td></tr>
   <tr class="line only-en" data-key="prepare::milo.hint.tap::2" data-id="milo.hint.tap">
     <td class="c-seq">3</td>
@@ -919,7 +907,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-id">
       <code>prepare.step.spray</code>
       <span class="badge lang-only">AR only</span>
-      <span class="hint">Arabic replays the prompt over the beat</span>
+      <span class="hint">The only time Arabic hears this line — after the tap it is asking for</span>
     </td>
     <td class="c-lang en off"><span class="dash">not played in English</span></td>
     <td class="c-lang ar">

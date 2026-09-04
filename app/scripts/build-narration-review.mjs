@@ -162,12 +162,13 @@ const SCREENS = [
     blurb:
       'Two steps: the sleepy juice, then the polishing brush. The juice is watched; the cleaning is done by the child, one sticky spot at a time. This screen runs on BOTH paths — a child booked for a first check-up is shown the sleepy juice here. See defect D2.',
     events: [
-      { kind: 'line', id: 'prepare.intro' },
-      { kind: 'line', id: 'prepare.step.spray', label: 'Step 1 prompt' },
+      { kind: 'line', id: 'prepare.intro', only: 'en' },
+      { kind: 'line', id: 'prepare.step.spray', only: 'en', label: 'Step 1 prompt' },
+      { kind: 'note', only: 'ar', text: 'Arabic says nothing on arrival. `8815468 "Remove generated Arabic tooth prep filler"` returns early before both lines above, to keep the recorded voice from being followed by TTS — so an Arabic child meets this screen in silence, with no instruction, and hears the step-1 prompt only after they have already tapped. See defect D6.' },
       { kind: 'tap', label: 'Child taps the juice (a wrong tool wiggles instead)' },
       { kind: 'line', id: 'milo.hint.tap', only: 'en', label: 'Only on a wrong tap' },
       { kind: 'gap', ms: 500, label: 'The tooth closes its eyes' },
-      { kind: 'line', id: 'prepare.step.spray', only: 'ar', label: 'Arabic replays the prompt over the beat' },
+      { kind: 'line', id: 'prepare.step.spray', only: 'ar', label: 'The only time Arabic hears this line — after the tap it is asking for' },
       { kind: 'gap', ms: 1900, label: 'The juice rises, tips and puffs' },
       { kind: 'line', id: 'milo.great', only: 'en' },
       { kind: 'line', id: 'prepare.step.brush', label: 'Step 2 prompt' },

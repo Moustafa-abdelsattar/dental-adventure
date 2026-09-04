@@ -61,6 +61,17 @@ are caught by the test suites, which are green (124 unit, 5 e2e).
   never heard. The synthesised `playEraseSfx` is not the counterpart: it is
   called only from the unreachable `PracticeBrushScreen`, and is itself gated on
   `lang === 'ar'`. Decide what cleaning a spot should sound like, once.
+- [ ] **D6 — The Arabic tooth screen opens in silence, and prompts after the
+  fact.** `PrepareScreen`'s intro effect returns early for Arabic, so neither
+  `prepare.intro` nor the step-1 prompt is spoken on arrival. An Arabic child
+  meets the screen with no instruction at all; the line *"first step: the magic
+  juice — press it so the tooth sleeps"* is then played on the tap it was
+  asking for, arriving after the action instead of before it. English hears both
+  lines up front. This was deliberate — `8815468 "Remove generated Arabic tooth
+  prep filler"` cut them because the Arabic `prepare.intro` is TTS and would
+  follow a recorded line with a robot one — so the fix is to record
+  `prepare.intro` in Arabic and restore the opening, not to un-gate the TTS.
+
 - [ ] **D5 — Six Arabic lines the game speaks are silent files.** 93 of the 126
   Arabic clips are byte-identical 5060-byte placeholders measuring −91 dB —
   digital silence. Most are for copy Arabic never speaks, so they only waste
