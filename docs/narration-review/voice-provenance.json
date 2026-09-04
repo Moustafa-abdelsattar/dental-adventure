@@ -1,0 +1,456 @@
+{
+ "app.subtitle": {
+  "voice": "silent"
+ },
+ "app.title": {
+  "voice": "silent"
+ },
+ "cert.awardedTo": {
+  "voice": "silent"
+ },
+ "cert.defaultName": {
+  "voice": "silent"
+ },
+ "cert.for": {
+  "voice": "silent"
+ },
+ "cert.title": {
+  "voice": "silent"
+ },
+ "clinic.chair.desc": {
+  "voice": "recorded",
+  "source": "Arabic-narration/chair.ogg",
+  "corr": 1
+ },
+ "clinic.chair.name": {
+  "voice": "silent"
+ },
+ "clinic.done": {
+  "voice": "silent"
+ },
+ "clinic.intro": {
+  "voice": "recorded",
+  "source": "Arabic-narration/start 2.ogg",
+  "corr": 1
+ },
+ "clinic.light.desc": {
+  "voice": "recorded",
+  "source": "Arabic-narration/light.ogg",
+  "corr": 1
+ },
+ "clinic.light.name": {
+  "voice": "silent"
+ },
+ "clinic.sink.desc": {
+  "voice": "silent"
+ },
+ "clinic.sink.name": {
+  "voice": "silent"
+ },
+ "clinic.suction.desc": {
+  "voice": "recorded",
+  "source": "Arabic-narration/suction.ogg",
+  "corr": 1
+ },
+ "clinic.suction.name": {
+  "voice": "silent"
+ },
+ "clinic.syringe.desc": {
+  "voice": "recorded",
+  "source": "Arabic-narration/syrgine phase 1.ogg",
+  "corr": 1
+ },
+ "clinic.syringe.name": {
+  "voice": "silent"
+ },
+ "clinic.table.desc": {
+  "voice": "silent"
+ },
+ "clinic.table.name": {
+  "voice": "silent"
+ },
+ "clinic.title": {
+  "voice": "silent"
+ },
+ "decay-removal-sfx": {
+  "voice": "recorded",
+  "source": "Arabic-narration/الاصوات و هو بيشيل السوسة.m4a.mp4",
+  "corr": 1
+ },
+ "friend.vocative": {
+  "voice": "silent"
+ },
+ "lang.greet": {
+  "voice": "silent"
+ },
+ "milo.great": {
+  "voice": "silent"
+ },
+ "milo.hint.tap": {
+  "voice": "silent"
+ },
+ "milo.praise.1": {
+  "voice": "recorded",
+  "source": "Arabic-narration-used/recordings/milo.praise.1.mp3",
+  "corr": 1
+ },
+ "milo.praise.2": {
+  "voice": "recorded",
+  "source": "Arabic-narration-used/recordings/milo.praise.2.mp3",
+  "corr": 1
+ },
+ "milo.praise.3": {
+  "voice": "recorded",
+  "source": "Arabic-narration-used/recordings/milo.praise.3.mp3",
+  "corr": 1
+ },
+ "milo.praise.4": {
+  "voice": "recorded",
+  "source": "Arabic-narration-used/recordings/milo.praise.4.mp3",
+  "corr": 1
+ },
+ "milo.starEarned": {
+  "voice": "silent"
+ },
+ "milo.welcome": {
+  "voice": "recorded",
+  "source": "Arabic-narration/start.ogg",
+  "corr": 1
+ },
+ "milo.welcomeBack": {
+  "voice": "silent"
+ },
+ "parent.checkup": {
+  "voice": "silent"
+ },
+ "parent.childName": {
+  "voice": "silent"
+ },
+ "parent.forParents": {
+  "voice": "silent"
+ },
+ "parent.namePlaceholder": {
+  "voice": "silent"
+ },
+ "parent.skip": {
+  "voice": "silent"
+ },
+ "parent.treatment": {
+  "voice": "silent"
+ },
+ "parent.whichVisit": {
+  "voice": "silent"
+ },
+ "practice.brush.done": {
+  "voice": "silent"
+ },
+ "practice.brush.intro": {
+  "voice": "silent"
+ },
+ "practice.brush.title": {
+  "voice": "silent"
+ },
+ "prepare.done": {
+  "voice": "recorded",
+  "source": "Arabic-narration/بعد ما يشيل السوسة.m4a.mp4",
+  "corr": 1
+ },
+ "prepare.intro": {
+  "voice": "recorded",
+  "source": "Arabic-narration/phase 3 intro.ogg",
+  "corr": 1
+ },
+ "prepare.step.brush": {
+  "voice": "recorded",
+  "source": "Arabic-narration/�خطوة الدش الصغنون.m4a.mp4",
+  "corr": 1
+ },
+ "prepare.step.ring": {
+  "voice": "silent"
+ },
+ "prepare.step.scrub": {
+  "voice": "silent"
+ },
+ "prepare.step.spray": {
+  "voice": "recorded",
+  "source": "Arabic-narration/phase 3 spraying the sleepy juice.ogg",
+  "corr": 1
+ },
+ "prepare.step.umbrella": {
+  "voice": "silent"
+ },
+ "prepare.title": {
+  "voice": "silent"
+ },
+ "reward.congrats": {
+  "voice": "silent"
+ },
+ "reward.hero": {
+  "voice": "silent"
+ },
+ "reward.narration": {
+  "voice": "recorded",
+  "source": "Arabic-narration/final certificate.ogg",
+  "corr": 1
+ },
+ "spray.count.1": {
+  "voice": "silent"
+ },
+ "spray.count.10": {
+  "voice": "silent"
+ },
+ "spray.count.2": {
+  "voice": "silent"
+ },
+ "spray.count.3": {
+  "voice": "silent"
+ },
+ "spray.count.4": {
+  "voice": "silent"
+ },
+ "spray.count.5": {
+  "voice": "silent"
+ },
+ "spray.count.6": {
+  "voice": "silent"
+ },
+ "spray.count.7": {
+  "voice": "silent"
+ },
+ "spray.count.8": {
+  "voice": "silent"
+ },
+ "spray.count.9": {
+  "voice": "silent"
+ },
+ "spray.done": {
+  "voice": "silent"
+ },
+ "spray.intro": {
+  "voice": "silent"
+ },
+ "spray.title": {
+  "voice": "silent"
+ },
+ "story.calmer1": {
+  "voice": "recorded",
+  "source": "Arabic-narration/praising part one.ogg",
+  "corr": 1
+ },
+ "story.calmer2": {
+  "voice": "recorded",
+  "source": "Arabic-narration/this demonstrates that we finished phase 2.ogg",
+  "corr": 1
+ },
+ "story.calmer3": {
+  "voice": "recorded",
+  "source": "Arabic-narration/praising part 3 after polishing.ogg",
+  "corr": 1
+ },
+ "story.reversal": {
+  "voice": "silent"
+ },
+ "story.together": {
+  "voice": "silent"
+ },
+ "tool.brush.desc": {
+  "voice": "recorded",
+  "source": "Arabic-narration/tools-3.ogg",
+  "corr": 1
+ },
+ "tool.brush.fact": {
+  "voice": "silent"
+ },
+ "tool.brush.name": {
+  "voice": "silent"
+ },
+ "tool.explorer.desc": {
+  "voice": "recorded",
+  "source": "Arabic-narration/tools-checker.ogg",
+  "corr": 1
+ },
+ "tool.explorer.fact": {
+  "voice": "silent"
+ },
+ "tool.explorer.name": {
+  "voice": "silent"
+ },
+ "tool.mirror.desc": {
+  "voice": "recorded",
+  "source": "Arabic-narration/tools-mirror.ogg",
+  "corr": 1
+ },
+ "tool.mirror.fact": {
+  "voice": "silent"
+ },
+ "tool.mirror.name": {
+  "voice": "silent"
+ },
+ "tool.ring.desc": {
+  "voice": "silent"
+ },
+ "tool.ring.fact": {
+  "voice": "silent"
+ },
+ "tool.ring.name": {
+  "voice": "silent"
+ },
+ "tool.spray.desc": {
+  "voice": "recorded",
+  "source": "Arabic-narration/tools-sleepyjuice.ogg",
+  "corr": 1
+ },
+ "tool.spray.fact": {
+  "voice": "silent"
+ },
+ "tool.spray.name": {
+  "voice": "silent"
+ },
+ "tool.suction.desc": {
+  "voice": "silent"
+ },
+ "tool.suction.fact": {
+  "voice": "silent"
+ },
+ "tool.suction.name": {
+  "voice": "silent"
+ },
+ "tool.syringe.desc": {
+  "voice": "silent"
+ },
+ "tool.syringe.fact": {
+  "voice": "silent"
+ },
+ "tool.syringe.name": {
+  "voice": "silent"
+ },
+ "tool.umbrella.desc": {
+  "voice": "silent"
+ },
+ "tool.umbrella.fact": {
+  "voice": "silent"
+ },
+ "tool.umbrella.name": {
+  "voice": "silent"
+ },
+ "tool.xray.desc": {
+  "voice": "silent"
+ },
+ "tool.xray.fact": {
+  "voice": "silent"
+ },
+ "tool.xray.name": {
+  "voice": "silent"
+ },
+ "tools.done": {
+  "voice": "silent"
+ },
+ "tools.groupDone": {
+  "voice": "silent"
+ },
+ "tools.intro": {
+  "voice": "recorded",
+  "source": "Arabic-narration/scratch phase 2.ogg",
+  "corr": 1
+ },
+ "tools.title": {
+  "voice": "recorded",
+  "source": "Arabic-narration/phase 2 start.ogg",
+  "corr": 1
+ },
+ "ui.certificate": {
+  "voice": "silent"
+ },
+ "ui.hudTitle": {
+  "voice": "silent"
+ },
+ "ui.next": {
+  "voice": "silent"
+ },
+ "ui.playAgain": {
+  "voice": "silent"
+ },
+ "ui.printCertificate": {
+  "voice": "silent"
+ },
+ "ui.shareCertificate": {
+  "voice": "silent"
+ },
+ "ui.start": {
+  "voice": "silent"
+ },
+ "ui.startOver": {
+  "voice": "silent"
+ },
+ "ui.startOverConfirm": {
+  "voice": "silent"
+ },
+ "visit.countToTen": {
+  "voice": "recorded",
+  "source": "Arabic-narration/phase 4 coutning 1 to 10.ogg",
+  "corr": 1
+ },
+ "visit.done": {
+  "voice": "silent"
+ },
+ "visit.handPrompt": {
+  "voice": "recorded",
+  "source": "Arabic-narration-redo/07-dentist-visit/recordings/ازاى هيرفع ايده معدل.m4a.mp4",
+  "corr": 1
+ },
+ "visit.maskOff": {
+  "voice": "recorded",
+  "source": "Arabic-narration/phase 4 after mask.ogg",
+  "corr": 1
+ },
+ "visit.maskPrompt": {
+  "voice": "recorded",
+  "source": "Arabic-narration-redo/07-dentist-visit/recordings/الدكتورة.m4a.mp4",
+  "corr": 1
+ },
+ "visit.meetDr": {
+  "voice": "recorded",
+  "source": "Arabic-narration-redo/07-dentist-visit/recordings/مقدمة الدكتورة.m4a.mp4",
+  "corr": 1
+ },
+ "visit.simulation": {
+  "voice": "recorded",
+  "source": "Arabic-narration/phase 4 simulation.ogg",
+  "corr": 1
+ },
+ "visit.step.chair": {
+  "voice": "silent"
+ },
+ "visit.step.clean": {
+  "voice": "recorded",
+  "source": "Arabic-narration/phase 3 polishing the tooth after the sleepy juice.ogg",
+  "corr": 1
+ },
+ "visit.step.count": {
+  "voice": "recorded",
+  "source": "Arabic-narration/phase 4 why we close eyes.ogg",
+  "corr": 1
+ },
+ "visit.step.light": {
+  "voice": "silent"
+ },
+ "visit.step.mirror": {
+  "voice": "silent"
+ },
+ "visit.step.sleepy": {
+  "voice": "silent"
+ },
+ "visit.stopSignal": {
+  "voice": "recorded",
+  "source": "Arabic-narration/phase 4 the moment the hand appears as clickable.ogg",
+  "corr": 1
+ },
+ "visit.stopSignalDone": {
+  "voice": "recorded",
+  "source": "Arabic-narration/phase 4 when he raised his hand.ogg",
+  "corr": 1
+ },
+ "visit.title": {
+  "voice": "silent"
+ }
+}

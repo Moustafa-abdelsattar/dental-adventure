@@ -42,11 +42,15 @@ for (const lang of ['en', 'ar']) {
 }
 if (measured) writeFileSync(DUR_CACHE, JSON.stringify(DUR, null, 1))
 
-// Which Arabic clips are real human recordings rather than Edge TTS.
-const usedManifest = ROOT('Arabic-narration-used/manifest.json')
-const RECORDED = new Set(
-  existsSync(usedManifest) ? JSON.parse(readFileSync(usedManifest, 'utf8')).map(e => e.id) : [],
-)
+// Which Arabic clips are human recordings, established from the audio itself by
+// scripts/fingerprint-arabic-voice.mjs. Reading it off
+// Arabic-narration-used/manifest.json was wrong: that manifest covers only the
+// second import batch, so recordings from the first (the .ogg intake) were being
+// reported as TTS — prepare.intro among them, which a later commit then cut as
+// "generated filler".
+const provPath = ROOT('docs/narration-review/voice-provenance.json')
+const PROV = existsSync(provPath) ? JSON.parse(readFileSync(provPath, 'utf8')) : {}
+const voiceOf = id => PROV[id]?.voice ?? null
 
 const dur = (lang, id) => DUR[lang]?.[id] ?? null
 
@@ -164,7 +168,7 @@ const SCREENS = [
     events: [
       { kind: 'line', id: 'prepare.intro', only: 'en' },
       { kind: 'line', id: 'prepare.step.spray', only: 'en', label: 'Step 1 prompt' },
-      { kind: 'note', only: 'ar', text: 'Arabic says nothing on arrival. `8815468 "Remove generated Arabic tooth prep filler"` returns early before both lines above, to keep the recorded voice from being followed by TTS — so an Arabic child meets this screen in silence, with no instruction, and hears the step-1 prompt only after they have already tapped. See defect D6.' },
+      { kind: 'note', only: 'ar', text: 'Arabic says nothing on arrival: 8815468 "Remove generated Arabic tooth prep filler" returns early before both lines above, so an Arabic child meets this screen in silence and hears the step-1 prompt only after they have already tapped. The premise was wrong — ar/prepare.intro.mp3 is not generated. It correlates at 1.000 with Arabic-narration/phase 3 intro.ogg: 6.95s of the human voice, already in the bundle and already precached, just never played. Dropping the early return is the whole fix. See defect D6.' },
       { kind: 'tap', label: 'Child taps the juice (a wrong tool wiggles instead)' },
       { kind: 'line', id: 'milo.hint.tap', only: 'en', label: 'Only on a wrong tap' },
       { kind: 'gap', ms: 500, label: 'The tooth closes its eyes' },
@@ -317,9 +321,10 @@ function voiceBadge(lang, id) {
   if (isSilent(lang, id))
     return `<span class="badge silent" title="5060-byte placeholder measuring -91 dB. Nothing is heard.">SILENT</span>`
   if (lang === 'en') return `<span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>`
-  return RECORDED.has(id)
-    ? `<span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>`
-    : `<span class="badge tts" title="Still Edge TTS — no human recording imported for this line">TTS</span>`
+  const p = PROV[id]
+  if (p?.voice === 'recorded')
+    return `<span class="badge rec" title="Human recording — matched to ${esc(p.source)} at ${p.corr} correlation">recorded</span>`
+  return `<span class="badge tts" title="No human recording matched this clip">TTS</span>`
 }
 
 function lineRow(e, screenId, i) {
@@ -439,6 +444,8 @@ function screenSection(s, unreachable = false) {
 const enAll = Object.values(DUR.en).reduce((a, b) => a + b, 0)
 const arAll = Object.values(DUR.ar).reduce((a, b) => a + b, 0)
 const arRealAudio = Object.keys(DUR.ar).length - SILENT.ar.size
+const arRecordedCount = Object.values(PROV).filter(v => v.voice === 'recorded').length
+const arTtsCount = Object.values(PROV).filter(v => v.voice === 'tts').length
 // Lines the shipped game actually speaks, whose clip is silence.
 const LIVE_SILENT = []
 for (const sc of SCREENS)
@@ -603,7 +610,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
   <div class="stats">
     <div class="stat"><b>${enAll.toFixed(0)}s</b><span>English, all clips</span></div>
     <div class="stat"><b>${arAll.toFixed(0)}s</b><span>Arabic, all clips</span></div>
-    <div class="stat"><b>${arRealAudio}</b><span>Arabic clips with any audio at all</span></div>
+    <div class="stat"><b>${arRecordedCount}</b><span>Arabic clips voiced by a person</span></div>
     <div class="stat"><b>${SILENT.ar.size}</b><span>Arabic clips that are silence</span></div>
     <div class="stat"><b>${unspoken.length}</b><span>clips nothing plays</span></div>
   </div>
@@ -611,9 +618,9 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
 
 <div class="alarm">
   <h2>⚠ ${LIVE_SILENT.length} lines the game speaks are silent files</h2>
-  <p>${SILENT.ar.size} of the ${Object.keys(DUR.ar).length} Arabic clips are byte-identical 5060-byte placeholders measuring −91 dB. Most are for copy Arabic never speaks, so they cost only bandwidth — but these are on the live path, and an Arabic-speaking child hears nothing where a voice is meant to be. Verified on the deployed build, not just locally.</p>
+  <p>${SILENT.ar.size} of the ${Object.keys(DUR.ar).length} Arabic clips are byte-identical 5060-byte placeholders measuring −91 dB. Arabic has <strong>no TTS fallback at all</strong> — every clip is either a human recording (${arRecordedCount} of them) or silence, so a line without a recording is not read by a robot voice, it simply says nothing. Most of the silence is for copy Arabic never speaks and costs only bandwidth. These ${LIVE_SILENT.length} are on the live path, and an Arabic-speaking child hears nothing where a voice is meant to be. Verified on the deployed build, not just locally.</p>
   <ul>${LIVE_SILENT.map(x => `<li><code>${esc(x.id)}</code> <span class="hint">${esc(x.lang.toUpperCase())} · ${esc(x.screen)}</span></li>`).join('')}</ul>
-  <p class="hint" style="margin-top:.6rem">All of these are listed in <code>Arabic-narration-used/manifest.json</code> as imported recordings, with <code>runtimeDuration: 0.35</code> recorded against them — so the import wrote the placeholder and logged it. The source recordings may still be good; check <code>Arabic-narration-redo/01-shared-milo-lines/</code> before re-booking the voice.</p>
+  <p class="hint" style="margin-top:.6rem">All of these are listed in <code>Arabic-narration-used/manifest.json</code> as imported recordings, with <code>runtimeDuration: 0.35</code> recorded against them — so the import wrote the placeholder and logged it. Every recording currently on disk has been matched against the shipped clips by <code>scripts/fingerprint-arabic-voice.mjs</code>, and none of them is one of these lines: they need a voice session, they are not waiting unimported. The four takes that are unused (<code>phase 4 before pressing the hand</code>, <code>phase 4 intro on dr lili</code>, <code>phase 4 mask</code>, <code>phase 4 polishing brush last thing</code>) are alternates of visit lines that are already voiced.</p>
 </div>
 
 ${SCREENS.map(s => screenSection(s)).join('')}

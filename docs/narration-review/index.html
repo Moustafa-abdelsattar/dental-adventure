@@ -153,7 +153,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
   <div class="stats">
     <div class="stat"><b>314s</b><span>English, all clips</span></div>
     <div class="stat"><b>335s</b><span>Arabic, all clips</span></div>
-    <div class="stat"><b>35</b><span>Arabic clips with any audio at all</span></div>
+    <div class="stat"><b>35</b><span>Arabic clips voiced by a person</span></div>
     <div class="stat"><b>93</b><span>Arabic clips that are silence</span></div>
     <div class="stat"><b>64</b><span>clips nothing plays</span></div>
   </div>
@@ -161,9 +161,9 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
 
 <div class="alarm">
   <h2>⚠ 6 lines the game speaks are silent files</h2>
-  <p>93 of the 128 Arabic clips are byte-identical 5060-byte placeholders measuring −91 dB. Most are for copy Arabic never speaks, so they cost only bandwidth — but these are on the live path, and an Arabic-speaking child hears nothing where a voice is meant to be. Verified on the deployed build, not just locally.</p>
+  <p>93 of the 128 Arabic clips are byte-identical 5060-byte placeholders measuring −91 dB. Arabic has <strong>no TTS fallback at all</strong> — every clip is either a human recording (35 of them) or silence, so a line without a recording is not read by a robot voice, it simply says nothing. Most of the silence is for copy Arabic never speaks and costs only bandwidth. These 6 are on the live path, and an Arabic-speaking child hears nothing where a voice is meant to be. Verified on the deployed build, not just locally.</p>
   <ul><li><code>lang.greet</code> <span class="hint">AR · Choose language</span></li><li><code>milo.welcomeBack</code> <span class="hint">AR · Welcome</span></li><li><code>milo.hint.tap</code> <span class="hint">AR · Meet the dental clinic</span></li><li><code>clinic.done</code> <span class="hint">AR · Meet the dental clinic</span></li><li><code>tools.done</code> <span class="hint">AR · Meet the friendly tools</span></li><li><code>visit.done</code> <span class="hint">AR · Your dental visit</span></li></ul>
-  <p class="hint" style="margin-top:.6rem">All of these are listed in <code>Arabic-narration-used/manifest.json</code> as imported recordings, with <code>runtimeDuration: 0.35</code> recorded against them — so the import wrote the placeholder and logged it. The source recordings may still be good; check <code>Arabic-narration-redo/01-shared-milo-lines/</code> before re-booking the voice.</p>
+  <p class="hint" style="margin-top:.6rem">All of these are listed in <code>Arabic-narration-used/manifest.json</code> as imported recordings, with <code>runtimeDuration: 0.35</code> recorded against them — so the import wrote the placeholder and logged it. Every recording currently on disk has been matched against the shipped clips by <code>scripts/fingerprint-arabic-voice.mjs</code>, and none of them is one of these lines: they need a voice session, they are not waiting unimported. The four takes that are unused (<code>phase 4 before pressing the hand</code>, <code>phase 4 intro on dr lili</code>, <code>phase 4 mask</code>, <code>phase 4 polishing brush last thing</code>) are alternates of visit lines that are already voiced.</p>
 </div>
 
 
@@ -322,7 +322,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/milo.welcome.mp3" aria-label="Play milo.welcome">▶</button>
-        <span class="dur">7.10s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">7.10s</span><span class="badge rec" title="Human recording — matched to Arabic-narration/start.ogg at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="welcome::milo.welcome::0::ar"
         rows="1">أهلاً يا {name}! أنا ميلو السنّة. النهارده هنستكشف عيادة السنان سوا.</textarea>
@@ -405,7 +405,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/clinic.intro.mp3" aria-label="Play clinic.intro">▶</button>
-        <span class="dur">11.84s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">11.84s</span><span class="badge rec" title="Human recording — matched to Arabic-narration/start 2.ogg at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="clinic::clinic.intro::0::ar"
         rows="1">دي عيادة السنان يا {name}! كل حاجة هنا ليها شغلانة صغيرة — ندوس على أي حاجة عشان نعرفها.</textarea>
@@ -457,7 +457,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/clinic.light.desc.mp3" aria-label="Play clinic.light.desc">▶</button>
-        <span class="dur">7.00s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">7.00s</span><span class="badge rec" title="Human recording — matched to Arabic-narration/light.ogg at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="clinic::clinic.light.desc::2::ar"
         rows="1">أنا زي الشمس! بنوّر عشان الدكتور يقدر يشوف سنانك كويس. ☀️</textarea>
@@ -482,7 +482,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/clinic.suction.desc.mp3" aria-label="Play clinic.suction.desc">▶</button>
-        <span class="dur">8.53s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">8.53s</span><span class="badge rec" title="Human recording — matched to Arabic-narration/suction.ogg at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="clinic::clinic.suction.desc::3::ar"
         rows="1">أنا زي الشاليموه! بشرب الميّه من بوقك.</textarea>
@@ -507,7 +507,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/clinic.chair.desc.mp3" aria-label="Play clinic.chair.desc">▶</button>
-        <span class="dur">10.99s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">10.99s</span><span class="badge rec" title="Human recording — matched to Arabic-narration/chair.ogg at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="clinic::clinic.chair.desc::4::ar"
         rows="1">أنا كرسي الأسنان! زي المرجيحة، بطلع وأنزل عشان تبقى مرتاح ومبسوط. 🪑</textarea>
@@ -532,7 +532,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/clinic.syringe.desc.mp3" aria-label="Play clinic.syringe.desc">▶</button>
-        <span class="dur">7.15s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">7.15s</span><span class="badge rec" title="Human recording — matched to Arabic-narration/syrgine phase 1.ogg at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="clinic::clinic.syringe.desc::5::ar"
         rows="1">برش ميّه وهوا عشان أنضّف سنانك.</textarea>
@@ -628,7 +628,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/tools.title.mp3" aria-label="Play tools.title">▶</button>
-        <span class="dur">8.94s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">8.94s</span><span class="badge rec" title="Human recording — matched to Arabic-narration/phase 2 start.ogg at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="tools::tools.title::0::ar"
         rows="1">نتعرّف على الأدوات</textarea>
@@ -653,7 +653,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/tools.intro.mp3" aria-label="Play tools.intro">▶</button>
-        <span class="dur">9.45s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">9.45s</span><span class="badge rec" title="Human recording — matched to Arabic-narration/scratch phase 2.ogg at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="tools::tools.intro::1::ar"
         rows="1">دلوقتي هنتعرّف على أدوات الدكتور يا {name}. نخربش على كل مربع عشان نلاقي الأداة!</textarea>
@@ -679,7 +679,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/tool.mirror.desc.mp3" aria-label="Play tool.mirror.desc">▶</button>
-        <span class="dur">5.72s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">5.72s</span><span class="badge rec" title="Human recording — matched to Arabic-narration/tools-mirror.ogg at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="tools::tool.mirror.desc::2::ar"
         rows="1">بساعد الدكتور يشوف سنانك من كل ناحية. 🪞</textarea>
@@ -704,7 +704,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/tool.explorer.desc.mp3" aria-label="Play tool.explorer.desc">▶</button>
-        <span class="dur">7.23s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">7.23s</span><span class="badge rec" title="Human recording — matched to Arabic-narration/tools-checker.ogg at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="tools::tool.explorer.desc::3::ar"
         rows="1">بكشف على سنانك واحدة واحدة. 🔎</textarea>
@@ -729,7 +729,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/tool.spray.desc.mp3" aria-label="Play tool.spray.desc">▶</button>
-        <span class="dur">10.60s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">10.60s</span><span class="badge rec" title="Human recording — matched to Arabic-narration/tools-sleepyjuice.ogg at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="tools::tool.spray.desc::4::ar"
         rows="1">أنا العصير السحري! بنوّم السن شوية. 🧃✨</textarea>
@@ -754,7 +754,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/tool.brush.desc.mp3" aria-label="Play tool.brush.desc">▶</button>
-        <span class="dur">11.09s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">11.09s</span><span class="badge rec" title="Human recording — matched to Arabic-narration/tools-3.ogg at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="tools::tool.brush.desc::5::ar"
         rows="1">أنا زي الدش! بنضّف سنانك لحد ما تلمع. 🚿</textarea>
@@ -880,7 +880,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-note"><textarea class="note" data-field="prepare::prepare.step.spray::1::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr><tr class="evt note"><td class="c-seq"></td><td colspan="4">
     <span class="badge lang-only">AR only</span>
-    <span class="hint">Arabic says nothing on arrival. `8815468 &quot;Remove generated Arabic tooth prep filler&quot;` returns early before both lines above, to keep the recorded voice from being followed by TTS — so an Arabic child meets this screen in silence, with no instruction, and hears the step-1 prompt only after they have already tapped. See defect D6.</span></td></tr><tr class="evt tap"><td class="c-seq"></td><td colspan="4">
+    <span class="hint">Arabic says nothing on arrival: 8815468 &quot;Remove generated Arabic tooth prep filler&quot; returns early before both lines above, so an Arabic child meets this screen in silence and hears the step-1 prompt only after they have already tapped. The premise was wrong — ar/prepare.intro.mp3 is not generated. It correlates at 1.000 with Arabic-narration/phase 3 intro.ogg: 6.95s of the human voice, already in the bundle and already precached, just never played. Dropping the early return is the whole fix. See defect D6.</span></td></tr><tr class="evt tap"><td class="c-seq"></td><td colspan="4">
       <span class="tag">waits for the child</span><span class="hint">Child taps the juice (a wrong tool wiggles instead)</span></td></tr>
   <tr class="line only-en" data-key="prepare::milo.hint.tap::2" data-id="milo.hint.tap">
     <td class="c-seq">3</td>
@@ -913,7 +913,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/prepare.step.spray.mp3" aria-label="Play prepare.step.spray">▶</button>
-        <span class="dur">6.44s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">6.44s</span><span class="badge rec" title="Human recording — matched to Arabic-narration/phase 3 spraying the sleepy juice.ogg at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="prepare::prepare.step.spray::3::ar"
         rows="1">أول خطوة: العصير السحري — دوس عليه عشان السن ينام.</textarea>
@@ -958,7 +958,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/prepare.step.brush.mp3" aria-label="Play prepare.step.brush">▶</button>
-        <span class="dur">7.10s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">7.10s</span><span class="badge rec" title="Human recording — matched to Arabic-narration/�خطوة الدش الصغنون.m4a.mp4 at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="prepare::prepare.step.brush::5::ar"
         rows="1">تاني خطوة: نمسك الدش الصغير!</textarea>
@@ -1064,7 +1064,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/prepare.done.mp3" aria-label="Play prepare.done">▶</button>
-        <span class="dur">8.92s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">8.92s</span><span class="badge rec" title="Human recording — matched to Arabic-narration/بعد ما يشيل السوسة.m4a.mp4 at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="prepare::prepare.done::10::ar"
         rows="1">كل النقط راحت — السنّة بقت لامعة يا {name}!</textarea>
@@ -1194,7 +1194,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/visit.meetDr.mp3" aria-label="Play visit.meetDr">▶</button>
-        <span class="dur">4.80s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">4.80s</span><span class="badge rec" title="Human recording — matched to Arabic-narration-redo/07-dentist-visit/recordings/مقدمة الدكتورة.m4a.mp4 at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="visit::visit.meetDr::0::ar"
         rows="1">يلا نتعرف على دكتورتك! دكاترة الأسنان بيلبسوا ماسك عشان كل حاجة تفضل نضيفة. دوس على الماسك!</textarea>
@@ -1212,7 +1212,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/visit.maskPrompt.mp3" aria-label="Play visit.maskPrompt">▶</button>
-        <span class="dur">11.88s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">11.88s</span><span class="badge rec" title="Human recording — matched to Arabic-narration-redo/07-dentist-visit/recordings/الدكتورة.m4a.mp4 at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="visit::visit.maskPrompt::1::ar"
         rows="1">دكتورتك لابسة الماسك. ندوس عليه لما نكون جاهزين.</textarea>
@@ -1238,7 +1238,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/visit.maskOff.mp3" aria-label="Play visit.maskOff">▶</button>
-        <span class="dur">5.44s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">5.44s</span><span class="badge rec" title="Human recording — matched to Arabic-narration/phase 4 after mask.ogg at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="visit::visit.maskOff::2::ar"
         rows="1">شفت؟ دي دكتورتك نفسها تحت الماسك، وبتبتسم لنا!</textarea>
@@ -1256,7 +1256,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/visit.handPrompt.mp3" aria-label="Play visit.handPrompt">▶</button>
-        <span class="dur">22.76s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">22.76s</span><span class="badge rec" title="Human recording — matched to Arabic-narration-redo/07-dentist-visit/recordings/ازاى هيرفع ايده معدل.m4a.mp4 at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="visit::visit.handPrompt::3::ar"
         rows="1">نرفع إيدنا لما نحب دكتورتك توقف.</textarea>
@@ -1302,7 +1302,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/visit.stopSignalDone.mp3" aria-label="Play visit.stopSignalDone">▶</button>
-        <span class="dur">4.33s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">4.33s</span><span class="badge rec" title="Human recording — matched to Arabic-narration/phase 4 when he raised his hand.ogg at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="visit::visit.stopSignalDone::5::ar"
         rows="1">تمام! دي علامة الوقف — نقدر نستخدمها في أي وقت.</textarea>
@@ -1320,7 +1320,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/visit.simulation.mp3" aria-label="Play visit.simulation">▶</button>
-        <span class="dur">35.52s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">35.52s</span><span class="badge rec" title="Human recording — matched to Arabic-narration/phase 4 simulation.ogg at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="visit::visit.simulation::6::ar"
         rows="1">دلوقتي هنجرب مع بعض كل خطوات الزيارة.</textarea>
@@ -1338,7 +1338,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/visit.step.count.mp3" aria-label="Play visit.step.count">▶</button>
-        <span class="dur">7.38s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">7.38s</span><span class="badge rec" title="Human recording — matched to Arabic-narration/phase 4 why we close eyes.ogg at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="visit::visit.step.count::7::ar"
         rows="1">ممكن نغمّض عينينا وإحنا بنعد سوا.</textarea>
@@ -1356,7 +1356,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/visit.countToTen.mp3" aria-label="Play visit.countToTen">▶</button>
-        <span class="dur">9.24s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">9.24s</span><span class="badge rec" title="Human recording — matched to Arabic-narration/phase 4 coutning 1 to 10.ogg at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="visit::visit.countToTen::8::ar"
         rows="1">واحد، اتنين، تلاتة، أربعة، خمسة، ستة، سبعة، تمانية، تسعة، عشرة.</textarea>
@@ -1461,7 +1461,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/visit.step.clean.mp3" aria-label="Play visit.step.clean">▶</button>
-        <span class="dur">10.22s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">10.22s</span><span class="badge rec" title="Human recording — matched to Arabic-narration/phase 3 polishing the tooth after the sleepy juice.ogg at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="visit::visit.step.clean::13::ar"
         rows="1">آخر خطوة: الفرشة الصغيرة تنضّف سناننا لحد ما تلمع!</textarea>
@@ -1558,7 +1558,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/reward.narration.mp3" aria-label="Play reward.narration">▶</button>
-        <span class="dur">11.56s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">11.56s</span><span class="badge rec" title="Human recording — matched to Arabic-narration/final certificate.ogg at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="reward::reward.narration::0::ar"
         rows="1">عاش يا {name}! جمعنا كل النجوم! بقينا عارفين العيادة والأدوات وخطوات الزيارة — بقينا مستكشفين سنان بجد!</textarea>
@@ -2027,7 +2027,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/milo.praise.1.mp3" aria-label="Play milo.praise.1">▶</button>
-        <span class="dur">2.23s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">2.23s</span><span class="badge rec" title="Human recording — matched to Arabic-narration-used/recordings/milo.praise.1.mp3 at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="practice-brush::milo.praise.1::3::ar"
         rows="1">عاش يا {name}! نضّفتها.</textarea>
@@ -2052,7 +2052,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/milo.praise.2.mp3" aria-label="Play milo.praise.2">▶</button>
-        <span class="dur">2.00s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">2.00s</span><span class="badge rec" title="Human recording — matched to Arabic-narration-used/recordings/milo.praise.2.mp3 at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="practice-brush::milo.praise.2::4::ar"
         rows="1">شوف كده — بقت لامعة!</textarea>
@@ -2077,7 +2077,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/milo.praise.3.mp3" aria-label="Play milo.praise.3">▶</button>
-        <span class="dur">2.23s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">2.23s</span><span class="badge rec" title="Human recording — matched to Arabic-narration-used/recordings/milo.praise.3.mp3 at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="practice-brush::milo.praise.3::5::ar"
         rows="1">حلو! دي دغدغت السنّة شوية.</textarea>
@@ -2102,7 +2102,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/milo.praise.4.mp3" aria-label="Play milo.praise.4">▶</button>
-        <span class="dur">3.25s</span><span class="badge rec" title="Human recording imported from Arabic-narration-used/">recorded</span>
+        <span class="dur">3.25s</span><span class="badge rec" title="Human recording — matched to Arabic-narration-used/recordings/milo.praise.4.mp3 at 1 correlation">recorded</span>
       </div>
       <textarea class="edit" dir="rtl" lang="ar" data-field="practice-brush::milo.praise.4::6::ar"
         rows="1">برافو يا {name}! إيدك خفيفة.</textarea>
