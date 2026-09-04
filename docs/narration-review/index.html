@@ -64,10 +64,10 @@ figcaption{font-size:.72rem;color:var(--muted);text-align:center;margin-top:.25r
 .frame{margin:0;width:112px}
 .frame img{width:100%;border-radius:9px;border:1px solid var(--line);background:#fff;display:block}
 .frame figcaption{font-size:.7rem;color:var(--muted);text-align:center;margin-top:.25rem;line-height:1.3}
-.frame .badge{display:block;margin:.2rem auto 0;width:fit-content}
-.frame .hint{font-size:.66rem;margin-top:.15rem}
-body.only-en .frame.only-ar{display:none}
-body.only-ar .frame.only-en{display:none}
+.frame .at{display:block;font-size:.66rem;color:var(--accent);margin-top:.1rem}
+.fgroup{margin-bottom:.9rem}
+body.only-en .fgroup.only-ar{display:none}
+body.only-ar .fgroup.only-en{display:none}
 .totals{display:flex;gap:1rem;flex-wrap:wrap;font-size:.82rem;margin-bottom:.6rem;color:var(--muted)}
 .totals strong{color:var(--ink)}
 .tablewrap{overflow-x:auto}
@@ -1142,31 +1142,58 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
           <div><img loading="lazy" src="shots/ar-15-visit-steps.png" alt="visit steps in Arabic"><figcaption><bdi>العربية</bdi></figcaption></div>
         </div>
       </figure></div>
-  <div class="framestrip"><div class="state">the picture sequence, in order</div><div class="frames"><figure class="frame">
-        <img loading="lazy" src="../../app/public/art/visit-step-chair.webp" alt="chair">
-        <figcaption>chair</figcaption>
-      </figure><figure class="frame">
-        <img loading="lazy" src="../../app/public/art/visit-step-light.webp" alt="light">
-        <figcaption>light</figcaption>
-      </figure><figure class="frame">
-        <img loading="lazy" src="../../app/public/art/visit-step-mirror.webp" alt="mirror">
-        <figcaption>mirror</figcaption>
-      </figure><figure class="frame">
-        <img loading="lazy" src="../../app/public/art/visit-step-sleepy.webp" alt="sleepy juice">
-        <figcaption>sleepy juice</figcaption>
-      </figure><figure class="frame only-ar">
-        <img loading="lazy" src="../../app/public/art/visit-step-count.webp" alt="count">
-        <figcaption>count<span class="badge lang-only">AR only</span></figcaption>
-      </figure><figure class="frame only-ar">
-        <img loading="lazy" src="../../app/public/art/visit-step-count-ten.webp" alt="count to ten">
-        <figcaption>count to ten<span class="badge lang-only">AR only</span></figcaption>
-      </figure><figure class="frame">
-        <img loading="lazy" src="../../app/public/art/visit-step-clean.webp" alt="clean">
-        <figcaption>clean</figcaption>
-      </figure><figure class="frame">
-        <img loading="lazy" src="../../app/public/art/visit-step-hand.webp" alt="stop signal">
-        <figcaption>stop signal<span class="hint">shown during the stop-hand beat, not the walk-through</span></figcaption>
-      </figure></div></div>
+  <div class="framestrip"><div class="fgroup">
+        <div class="state">Before the walk-through — the stop-signal beat</div>
+        <div class="frames"><figure class="frame">
+              <img loading="lazy" src="../../app/public/art/visit-step-hand.webp" alt="stop signal">
+              <figcaption>stop signal</figcaption>
+            </figure></div>
+      </div><div class="fgroup only-ar">
+        <div class="state">Arabic — all four run under one 35.52 s recording (visit.simulation)</div>
+        <div class="frames"><figure class="frame">
+              <img loading="lazy" src="../../app/public/art/visit-step-chair.webp" alt="chair">
+              <figcaption>chair<span class="at">from 0:00</span></figcaption>
+            </figure><figure class="frame">
+              <img loading="lazy" src="../../app/public/art/visit-step-light.webp" alt="light">
+              <figcaption>light<span class="at">+15.7 s</span></figcaption>
+            </figure><figure class="frame">
+              <img loading="lazy" src="../../app/public/art/visit-step-mirror.webp" alt="mirror">
+              <figcaption>mirror<span class="at">+20.2 s</span></figcaption>
+            </figure><figure class="frame">
+              <img loading="lazy" src="../../app/public/art/visit-step-sleepy.webp" alt="sleepy juice">
+              <figcaption>sleepy juice<span class="at">+28.8 s — holds to the end</span></figcaption>
+            </figure></div>
+      </div><div class="fgroup only-ar">
+        <div class="state">Arabic — then one recorded line each</div>
+        <div class="frames"><figure class="frame">
+              <img loading="lazy" src="../../app/public/art/visit-step-count.webp" alt="count">
+              <figcaption>count<span class="at">visit.step.count</span></figcaption>
+            </figure><figure class="frame">
+              <img loading="lazy" src="../../app/public/art/visit-step-count-ten.webp" alt="count to ten">
+              <figcaption>count to ten<span class="at">visit.countToTen</span></figcaption>
+            </figure><figure class="frame">
+              <img loading="lazy" src="../../app/public/art/visit-step-clean.webp" alt="clean">
+              <figcaption>clean<span class="at">visit.step.clean</span></figcaption>
+            </figure></div>
+      </div><div class="fgroup only-en">
+        <div class="state">English — one spoken line per frame, 900 ms between; no counting frames</div>
+        <div class="frames"><figure class="frame">
+              <img loading="lazy" src="../../app/public/art/visit-step-chair.webp" alt="chair">
+              <figcaption>chair</figcaption>
+            </figure><figure class="frame">
+              <img loading="lazy" src="../../app/public/art/visit-step-light.webp" alt="light">
+              <figcaption>light</figcaption>
+            </figure><figure class="frame">
+              <img loading="lazy" src="../../app/public/art/visit-step-mirror.webp" alt="mirror">
+              <figcaption>mirror</figcaption>
+            </figure><figure class="frame">
+              <img loading="lazy" src="../../app/public/art/visit-step-sleepy.webp" alt="sleepy juice">
+              <figcaption>sleepy juice</figcaption>
+            </figure><figure class="frame">
+              <img loading="lazy" src="../../app/public/art/visit-step-clean.webp" alt="clean">
+              <figcaption>clean</figcaption>
+            </figure></div>
+      </div></div>
   <div class="totals">
     <span>Spoken runtime — English <strong>44.3s</strong></span>
     <span><bdi>العربية</bdi> <strong>111.9s</strong></span>
