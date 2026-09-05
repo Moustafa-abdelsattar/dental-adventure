@@ -14,15 +14,22 @@ export const STRING_IDS = Object.keys(en) as StringId[]
  * uses the same nickname — pre-generated audio clips stay in sync with text.
  */
 export function vocativeFor(lang: Lang, id: string): string {
-  const pool = (tables[lang]['friend.vocative'] ?? '').split('|')
+  const pool = (tableFor(lang)['friend.vocative'] ?? '').split('|')
   let h = 0
   for (let i = 0; i < id.length; i++) h = (h + id.charCodeAt(i)) % 997
   return (pool[h % pool.length] ?? pool[0]).trim()
 }
 
+/**
+ * A second line of defence behind the store's `sanitize`. Every screen calls
+ * `t`, so an unknown language reaching it takes the whole game down with it —
+ * cheap enough to fall back to English and keep the child playing.
+ */
+const tableFor = (lang: Lang) => tables[lang] ?? tables.en
+
 export function t(lang: Lang, id: StringId, vars: { name?: string } = {}): string {
-  const table = tables[lang]
-  const name = vars.name?.trim() || vocativeFor(lang, id)
+  const table = tableFor(lang)
+  const name = String(vars.name ?? '').trim() || vocativeFor(lang, id)
   const out = (table[id] ?? id).replaceAll('{name}', name)
   // a lowercase nickname can land at the start of a line ("champ's Adventure")
   return lang === 'en' ? out.charAt(0).toUpperCase() + out.slice(1) : out

@@ -50,7 +50,6 @@ if (measured) writeFileSync(DUR_CACHE, JSON.stringify(DUR, null, 1))
 // "generated filler".
 const provPath = ROOT('docs/narration-review/voice-provenance.json')
 const PROV = existsSync(provPath) ? JSON.parse(readFileSync(provPath, 'utf8')) : {}
-const voiceOf = id => PROV[id]?.voice ?? null
 
 const dur = (lang, id) => DUR[lang]?.[id] ?? null
 
@@ -476,9 +475,7 @@ function screenSection(s, unreachable = false) {
 
 const enAll = Object.values(DUR.en).reduce((a, b) => a + b, 0)
 const arAll = Object.values(DUR.ar).reduce((a, b) => a + b, 0)
-const arRealAudio = Object.keys(DUR.ar).length - SILENT.ar.size
 const arRecordedCount = Object.values(PROV).filter(v => v.voice === 'recorded').length
-const arTtsCount = Object.values(PROV).filter(v => v.voice === 'tts').length
 // Lines the shipped game actually speaks, whose clip is silence.
 const LIVE_SILENT = []
 for (const sc of SCREENS)
