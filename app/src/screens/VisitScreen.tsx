@@ -81,14 +81,10 @@ const AR_JUICE_COUNT_CUES = [
 /** Measured length of the counting line, which is the one that swaps picture
  *  mid-sentence. The recorded Arabic takes nearly three times as long to count
  *  to ten as the synthesised English does. */
-const COUNT_TEN_MS: Record<Lang, number> = { en: 3_204, ar: 9_237 }
+const COUNT_TEN_MS: Record<Lang, number> = { en: 3_480, ar: 9_237 }
 /** How far through that line the ten-finger frame arrives — a share, not a
  *  fixed offset, so it lands on the last word in both languages rather than a
- *  third of the way into the short one.
- *
- *  The lengths above drift whenever a clip is regenerated — changing the
- *  English voice moved this line from 3.48s to 3.20s — so re-read them from
- *  docs/narration-review/clip-durations.json after any narration run. */
+ *  third of the way into the short one. */
 const TEN_REVEAL_AT = 0.87
 
 /**

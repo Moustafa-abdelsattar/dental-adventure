@@ -30,12 +30,7 @@ const KEY = env.match(/ELEVENLABS_API_KEY=(\S+)/)[1]
 //   ar: 'UR972wNGq3zluze0LoIp'
 //   en: 'bIHbv24MWmeRgasZH58o'  ("Will" — young American male)
 const OWNER_VOICE = 'vWDp3PLsTWjIhBxxUKh9'
-// English moved to its own owner-picked voice on 2026-09-06. Arabic no longer
-// comes from here at all — every Arabic clip that has audio is a human
-// recording imported from Arabic-narration/, so running this with --lang=ar
-// --wipe would overwrite the voice sessions with synthesis. Don't.
-const EN_VOICE = 'tnSpp4vdxKPjI9w0GnoV'
-const VOICE_IDS = { ar: OWNER_VOICE, en: EN_VOICE }
+const VOICE_IDS = { ar: OWNER_VOICE, en: OWNER_VOICE }
 // Multilingual over turbo: turbo clips Egyptian colloquial short of its last
 // syllable often enough to hear it across a hundred lines.
 const MODEL = 'eleven_multilingual_v2'
