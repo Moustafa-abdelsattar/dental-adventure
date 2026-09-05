@@ -233,16 +233,22 @@ export function VisitScreen({ onComplete }: ModuleProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase])
 
-  // Which frame is on screen. The stop signal gets the boy with his hand up, so
-  // the child sees the thing they are being asked to do rather than only a
-  // button offering it.
+  // Which frame is on screen.
+  //
+  // The stop signal is two pictures of the same boy in the same chair: hands in
+  // his lap, and hand up. He waits with his hands down while the button is
+  // offered, and puts his hand up when the child presses it. Showing him with
+  // his hand already up gave the answer away — the child watched someone else
+  // do the thing instead of doing it and seeing him follow.
   const displaySteps = lang === 'ar' ? AR_STEPS : STEPS
   const current = step >= 0 ? displaySteps[step] : undefined
   const art: Frame =
     phase === 'meet'
       ? 'chair'
       : phase === 'stop'
-        ? 'hand'
+        ? frozen
+          ? 'hand'
+          : 'chair'
         : phase === 'done'
           ? 'clean'
           : !current

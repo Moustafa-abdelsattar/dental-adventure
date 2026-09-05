@@ -202,10 +202,17 @@ test('hand cannot be raised until the stop signal narration finishes', async () 
   })
   expect(screen.getByTestId('raise-hand')).not.toBeDisabled()
 
+  // He waits with his hands down while the button is on offer...
+  expect(screen.getByTestId('visit-frame-chair')).toHaveAttribute('data-active', 'true')
+  expect(screen.getByTestId('visit-frame-hand')).not.toHaveAttribute('data-active', 'true')
+
   await act(async () => {
     fireEvent.click(screen.getByTestId('raise-hand'))
   })
   expect(screen.getByTestId('paused-label')).toBeInTheDocument()
+  // ...and puts his hand up because the child pressed it.
+  expect(screen.getByTestId('visit-frame-hand')).toHaveAttribute('data-active', 'true')
+  expect(screen.getByTestId('visit-frame-chair')).not.toHaveAttribute('data-active', 'true')
 })
 
 test('Arabic visit plays the hand prompt before allowing the hand tap', async () => {
