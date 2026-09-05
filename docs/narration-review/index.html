@@ -133,7 +133,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
 
 <header class="top">
   <h1>Dental Adventure — narration review</h1>
-  <span class="sub">every screen · both languages · 255 clips</span>
+  <span class="sub">every screen · both languages · 256 clips</span>
   <span class="spacer"></span>
   <button id="m-both" class="on">Both</button>
   <button id="m-en">English</button>
@@ -152,7 +152,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
   <p class="hint">Audio plays from <code>app/public/audio/</code> next door, so open this file from inside the repo. Rebuild it with <code>node scripts/build-narration-review.mjs</code>; refresh the screenshots with <code>node scripts/capture-narration-review.mjs</code>.</p>
   <div class="stats">
     <div class="stat"><b>319s</b><span>English, all clips</span></div>
-    <div class="stat"><b>335s</b><span>Arabic, all clips</span></div>
+    <div class="stat"><b>361s</b><span>Arabic, all clips</span></div>
     <div class="stat"><b>35</b><span>Arabic clips voiced by a person</span></div>
     <div class="stat"><b>93</b><span>Arabic clips that are silence</span></div>
     <div class="stat"><b>64</b><span>clips nothing plays</span></div>
@@ -161,7 +161,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
 
 <div class="alarm">
   <h2>⚠ 6 lines the game speaks are silent files</h2>
-  <p>93 of the 128 Arabic clips are byte-identical 5060-byte placeholders measuring −91 dB. Arabic has <strong>no TTS fallback at all</strong> — every clip is either a human recording (35 of them) or silence, so a line without a recording is not read by a robot voice, it simply says nothing. Most of the silence is for copy Arabic never speaks and costs only bandwidth. These 6 are on the live path, and an Arabic-speaking child hears nothing where a voice is meant to be. Verified on the deployed build, not just locally.</p>
+  <p>93 of the 129 Arabic clips are byte-identical 5060-byte placeholders measuring −91 dB. Arabic has <strong>no TTS fallback at all</strong> — every clip is either a human recording (35 of them) or silence, so a line without a recording is not read by a robot voice, it simply says nothing. Most of the silence is for copy Arabic never speaks and costs only bandwidth. These 6 are on the live path, and an Arabic-speaking child hears nothing where a voice is meant to be. Verified on the deployed build, not just locally.</p>
   <ul><li><code>lang.greet</code> <span class="hint">AR · Choose language</span></li><li><code>milo.welcomeBack</code> <span class="hint">AR · Welcome</span></li><li><code>milo.hint.tap</code> <span class="hint">AR · Meet the dental clinic</span></li><li><code>clinic.done</code> <span class="hint">AR · Meet the dental clinic</span></li><li><code>tools.done</code> <span class="hint">AR · Meet the friendly tools</span></li><li><code>visit.done</code> <span class="hint">AR · Your dental visit</span></li></ul>
   <p class="hint" style="margin-top:.6rem">All of these are listed in <code>Arabic-narration-used/manifest.json</code> as imported recordings, with <code>runtimeDuration: 0.35</code> recorded against them — so the import wrote the placeholder and logged it. Every recording currently on disk has been matched against the shipped clips by <code>scripts/fingerprint-arabic-voice.mjs</code>, and none of them is one of these lines: they need a voice session, they are not waiting unimported. The four takes that are unused (<code>phase 4 before pressing the hand</code>, <code>phase 4 intro on dr lili</code>, <code>phase 4 mask</code>, <code>phase 4 polishing brush last thing</code>) are alternates of visit lines that are already voiced.</p>
 </div>
@@ -1164,16 +1164,19 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
               <figcaption>sleepy juice<span class="at">+28.8 s — holds to the end</span></figcaption>
             </figure></div>
       </div><div class="fgroup only-ar">
-        <div class="state">Arabic — then one recorded line each. The two counting pictures are one moment</div>
+        <div class="state">Arabic — part two (4.2) drives these three</div>
         <div class="frames"><figure class="frame">
+              <img loading="lazy" src="../../app/public/art/visit-step-sleepy.webp" alt="sleepy juice">
+              <figcaption>sleepy juice<span class="at">holds the first 9 s of 4.2, while it explains the juice</span></figcaption>
+            </figure><figure class="frame">
               <img loading="lazy" src="../../app/public/art/visit-step-count.webp" alt="count">
-              <figcaption>count<span class="at">eyes shut, 7 fingers — holds through the whole count</span></figcaption>
+              <figcaption>count<span class="at">+9.1 s — eyes shut, a beat before &quot;واحد&quot;</span></figcaption>
             </figure><figure class="frame">
               <img loading="lazy" src="../../app/public/art/visit-step-count-ten.webp" alt="count to ten">
-              <figcaption>count to ten<span class="at">last 1.2 s only — arrives on &quot;عشرة&quot;</span></figcaption>
+              <figcaption>count to ten<span class="at">+25.4 s — on &quot;عشرة&quot;</span></figcaption>
             </figure><figure class="frame">
               <img loading="lazy" src="../../app/public/art/visit-step-clean.webp" alt="clean">
-              <figcaption>clean<span class="at">visit.step.clean</span></figcaption>
+              <figcaption>clean<span class="at">after 4.2 ends, on visit.step.clean</span></figcaption>
             </figure></div>
       </div><div class="fgroup only-en">
         <div class="state">English — the same seven, one spoken line per frame, 900 ms between</div>
@@ -1202,7 +1205,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
       </div></div>
   <div class="totals">
     <span>Spoken runtime — English <strong>50.0s</strong></span>
-    <span><bdi>العربية</bdi> <strong>111.9s</strong></span>
+    <span><bdi>العربية</bdi> <strong>122.1s</strong></span>
     <span class="muted">excludes pauses and time waiting for the child</span>
   </div>
   <div class="tablewrap">
@@ -1347,7 +1350,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-id">
       <code>visit.simulation</code>
       <span class="badge lang-only">AR only</span>
-      <span class="hint">One recording through sleepy juice; picture cues at 7.54 s, 15.74 s, 20.18 s, 28.74 s</span>
+      <span class="hint">Part one (4.1). Picture cues at 7.54 s, 15.74 s, 20.18 s, 28.74 s; ends with the sleepy juice on screen</span>
     </td>
     <td class="c-lang en off"><span class="dash">not played in English</span></td>
     <td class="c-lang ar">
@@ -1360,8 +1363,26 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
       <p class="was" dir="rtl" lang="ar" hidden><span>was</span> دلوقتي هنجرب مع بعض كل خطوات الزيارة.</p></td>
     <td class="c-note"><textarea class="note" data-field="visit::visit.simulation::6::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr>
-  <tr class="line only-en" data-key="visit::visit.step.chair::7" data-id="visit.step.chair">
+  <tr class="line only-ar" data-key="visit::visit.juiceCount::7" data-id="visit.juiceCount">
     <td class="c-seq">8</td>
+    <td class="c-id">
+      <code>visit.juiceCount</code>
+      <span class="badge lang-only">AR only</span>
+      <span class="hint">Part two (4.2). The juice picture holds for its first 9 s, then eyes close for the count; word timings transcribed from the recording</span>
+    </td>
+    <td class="c-lang en off"><span class="dash">not played in English</span></td>
+    <td class="c-lang ar">
+      <div class="row-top">
+        <button class="play" data-src="../../app/public/audio/ar/visit.juiceCount.mp3" aria-label="Play visit.juiceCount">▶</button>
+        <span class="dur">26.82s</span><span class="badge tts" title="No human recording matched this clip">TTS</span>
+      </div>
+      <textarea class="edit" dir="rtl" lang="ar" data-field="visit::visit.juiceCount::7::ar"
+        rows="1">العصير ده بتاع السوسة بس، فهحتاج منك إنك تغمض عينك وتعد من واحد لعشرة. واحد، اتنين، تلاتة، أربعة، خمسة، ستة، سبعة، تمانية، تسعة، عشرة.</textarea>
+      <p class="was" dir="rtl" lang="ar" hidden><span>was</span> العصير ده بتاع السوسة بس، فهحتاج منك إنك تغمض عينك وتعد من واحد لعشرة. واحد، اتنين، تلاتة، أربعة، خمسة، ستة، سبعة، تمانية، تسعة، عشرة.</p></td>
+    <td class="c-note"><textarea class="note" data-field="visit::visit.juiceCount::7::note" rows="1" placeholder="Note / action…"></textarea></td>
+  </tr>
+  <tr class="line only-en" data-key="visit::visit.step.chair::8" data-id="visit.step.chair">
+    <td class="c-seq">9</td>
     <td class="c-id">
       <code>visit.step.chair</code>
       <span class="badge lang-only">EN only</span>
@@ -1372,16 +1393,16 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
         <button class="play" data-src="../../app/public/audio/en/visit.step.chair.mp3" aria-label="Play visit.step.chair">▶</button>
         <span class="dur">5.53s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
-      <textarea class="edit" dir="ltr" data-field="visit::visit.step.chair::7::en"
+      <textarea class="edit" dir="ltr" data-field="visit::visit.step.chair::8::en"
         rows="1">First you sit in the big comfy chair. It leans back slowly, like a lazy chair ride.</textarea>
       <p class="was" dir="ltr" hidden><span>was</span> First you sit in the big comfy chair. It leans back slowly, like a lazy chair ride.</p></td>
     <td class="c-lang ar off"><span class="dash">لا تُقال بالعربية</span></td>
-    <td class="c-note"><textarea class="note" data-field="visit::visit.step.chair::7::note" rows="1" placeholder="Note / action…"></textarea></td>
+    <td class="c-note"><textarea class="note" data-field="visit::visit.step.chair::8::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
       <span class="tag">pause 900 ms</span><span class="badge lang-only">EN only</span>
       </td></tr>
-  <tr class="line only-en" data-key="visit::visit.step.light::8" data-id="visit.step.light">
-    <td class="c-seq">9</td>
+  <tr class="line only-en" data-key="visit::visit.step.light::9" data-id="visit.step.light">
+    <td class="c-seq">10</td>
     <td class="c-id">
       <code>visit.step.light</code>
       <span class="badge lang-only">EN only</span>
@@ -1392,16 +1413,16 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
         <button class="play" data-src="../../app/public/audio/en/visit.step.light.mp3" aria-label="Play visit.step.light">▶</button>
         <span class="dur">3.71s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
-      <textarea class="edit" dir="ltr" data-field="visit::visit.step.light::8::en"
+      <textarea class="edit" dir="ltr" data-field="visit::visit.step.light::9::en"
         rows="1">Then the sunshine light turns on so your dentist can see your teeth.</textarea>
       <p class="was" dir="ltr" hidden><span>was</span> Then the sunshine light turns on so your dentist can see your teeth.</p></td>
     <td class="c-lang ar off"><span class="dash">لا تُقال بالعربية</span></td>
-    <td class="c-note"><textarea class="note" data-field="visit::visit.step.light::8::note" rows="1" placeholder="Note / action…"></textarea></td>
+    <td class="c-note"><textarea class="note" data-field="visit::visit.step.light::9::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
       <span class="tag">pause 900 ms</span><span class="badge lang-only">EN only</span>
       </td></tr>
-  <tr class="line only-en" data-key="visit::visit.step.mirror::9" data-id="visit.step.mirror">
-    <td class="c-seq">10</td>
+  <tr class="line only-en" data-key="visit::visit.step.mirror::10" data-id="visit.step.mirror">
+    <td class="c-seq">11</td>
     <td class="c-id">
       <code>visit.step.mirror</code>
       <span class="badge lang-only">EN only</span>
@@ -1412,16 +1433,16 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
         <button class="play" data-src="../../app/public/audio/en/visit.step.mirror.mp3" aria-label="Play visit.step.mirror">▶</button>
         <span class="dur">2.65s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
-      <textarea class="edit" dir="ltr" data-field="visit::visit.step.mirror::9::en"
+      <textarea class="edit" dir="ltr" data-field="visit::visit.step.mirror::10::en"
         rows="1">Your dentist checks your teeth with the little mirror.</textarea>
       <p class="was" dir="ltr" hidden><span>was</span> Your dentist checks your teeth with the little mirror.</p></td>
     <td class="c-lang ar off"><span class="dash">لا تُقال بالعربية</span></td>
-    <td class="c-note"><textarea class="note" data-field="visit::visit.step.mirror::9::note" rows="1" placeholder="Note / action…"></textarea></td>
+    <td class="c-note"><textarea class="note" data-field="visit::visit.step.mirror::10::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
       <span class="tag">pause 900 ms</span><span class="badge lang-only">EN only</span>
       </td></tr>
-  <tr class="line only-en" data-key="visit::visit.step.sleepy::10" data-id="visit.step.sleepy">
-    <td class="c-seq">11</td>
+  <tr class="line only-en" data-key="visit::visit.step.sleepy::11" data-id="visit.step.sleepy">
+    <td class="c-seq">12</td>
     <td class="c-id">
       <code>visit.step.sleepy</code>
       <span class="badge lang-only">EN only</span>
@@ -1432,66 +1453,54 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
         <button class="play" data-src="../../app/public/audio/en/visit.step.sleepy.mp3" aria-label="Play visit.step.sleepy">▶</button>
         <span class="dur">3.25s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
-      <textarea class="edit" dir="ltr" data-field="visit::visit.step.sleepy::10::en"
+      <textarea class="edit" dir="ltr" data-field="visit::visit.step.sleepy::11::en"
         rows="1">Next comes the magic juice. It makes your tooth sleepy.</textarea>
       <p class="was" dir="ltr" hidden><span>was</span> Next comes the magic juice. It makes your tooth sleepy.</p></td>
     <td class="c-lang ar off"><span class="dash">لا تُقال بالعربية</span></td>
-    <td class="c-note"><textarea class="note" data-field="visit::visit.step.sleepy::10::note" rows="1" placeholder="Note / action…"></textarea></td>
+    <td class="c-note"><textarea class="note" data-field="visit::visit.step.sleepy::11::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
       <span class="tag">pause 900 ms</span><span class="badge lang-only">EN only</span>
       </td></tr>
-  <tr class="line" data-key="visit::visit.step.count::11" data-id="visit.step.count">
-    <td class="c-seq">12</td>
+  <tr class="line only-en" data-key="visit::visit.step.count::12" data-id="visit.step.count">
+    <td class="c-seq">13</td>
     <td class="c-id">
       <code>visit.step.count</code>
-      
-      <span class="hint">Eyes shut. Both languages, since 2026-09-05</span>
+      <span class="badge lang-only">EN only</span>
+      <span class="hint">Eyes shut. English gained this on 2026-09-05</span>
     </td>
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/visit.step.count.mp3" aria-label="Play visit.step.count">▶</button>
         <span class="dur">2.21s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
-      <textarea class="edit" dir="ltr" data-field="visit::visit.step.count::11::en"
+      <textarea class="edit" dir="ltr" data-field="visit::visit.step.count::12::en"
         rows="1">You can close your eyes while we count together.</textarea>
       <p class="was" dir="ltr" hidden><span>was</span> You can close your eyes while we count together.</p></td>
-    <td class="c-lang ar">
-      <div class="row-top">
-        <button class="play" data-src="../../app/public/audio/ar/visit.step.count.mp3" aria-label="Play visit.step.count">▶</button>
-        <span class="dur">7.38s</span><span class="badge rec" title="Human recording — matched to Arabic-narration/phase 4 why we close eyes.ogg at 1 correlation">recorded</span>
-      </div>
-      <textarea class="edit" dir="rtl" lang="ar" data-field="visit::visit.step.count::11::ar"
-        rows="1">ممكن نغمّض عينينا وإحنا بنعد سوا.</textarea>
-      <p class="was" dir="rtl" lang="ar" hidden><span>was</span> ممكن نغمّض عينينا وإحنا بنعد سوا.</p></td>
-    <td class="c-note"><textarea class="note" data-field="visit::visit.step.count::11::note" rows="1" placeholder="Note / action…"></textarea></td>
+    <td class="c-lang ar off"><span class="dash">لا تُقال بالعربية</span></td>
+    <td class="c-note"><textarea class="note" data-field="visit::visit.step.count::12::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr>
-  <tr class="line" data-key="visit::visit.countToTen::12" data-id="visit.countToTen">
-    <td class="c-seq">13</td>
+  <tr class="line only-en" data-key="visit::visit.countToTen::13" data-id="visit.countToTen">
+    <td class="c-seq">14</td>
     <td class="c-id">
       <code>visit.countToTen</code>
-      
-      <span class="hint">The ten-finger frame arrives 87% through, on the last number</span>
+      <span class="badge lang-only">EN only</span>
+      <span class="hint">The ten-finger frame arrives 88% through, on the last number</span>
     </td>
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/visit.countToTen.mp3" aria-label="Play visit.countToTen">▶</button>
         <span class="dur">3.48s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
-      <textarea class="edit" dir="ltr" data-field="visit::visit.countToTen::12::en"
+      <textarea class="edit" dir="ltr" data-field="visit::visit.countToTen::13::en"
         rows="1">One, two, three, four, five, six, seven, eight, nine, ten.</textarea>
       <p class="was" dir="ltr" hidden><span>was</span> One, two, three, four, five, six, seven, eight, nine, ten.</p></td>
-    <td class="c-lang ar">
-      <div class="row-top">
-        <button class="play" data-src="../../app/public/audio/ar/visit.countToTen.mp3" aria-label="Play visit.countToTen">▶</button>
-        <span class="dur">9.24s</span><span class="badge rec" title="Human recording — matched to Arabic-narration/phase 4 coutning 1 to 10.ogg at 1 correlation">recorded</span>
-      </div>
-      <textarea class="edit" dir="rtl" lang="ar" data-field="visit::visit.countToTen::12::ar"
-        rows="1">واحد، اتنين، تلاتة، أربعة، خمسة، ستة، سبعة، تمانية، تسعة، عشرة.</textarea>
-      <p class="was" dir="rtl" lang="ar" hidden><span>was</span> واحد، اتنين، تلاتة، أربعة، خمسة، ستة، سبعة، تمانية، تسعة، عشرة.</p></td>
-    <td class="c-note"><textarea class="note" data-field="visit::visit.countToTen::12::note" rows="1" placeholder="Note / action…"></textarea></td>
-  </tr>
-  <tr class="line" data-key="visit::visit.step.clean::13" data-id="visit.step.clean">
-    <td class="c-seq">14</td>
+    <td class="c-lang ar off"><span class="dash">لا تُقال بالعربية</span></td>
+    <td class="c-note"><textarea class="note" data-field="visit::visit.countToTen::13::note" rows="1" placeholder="Note / action…"></textarea></td>
+  </tr><tr class="evt note"><td class="c-seq"></td><td colspan="4">
+    <span class="badge lang-only">AR only</span>
+    <span class="hint">Arabic reaches both of these inside 4.2 instead, so ar/visit.step.count.mp3 and ar/visit.countToTen.mp3 are no longer played — two recordings, 336 KB, still shipped and precached. Worth removing once the new cut is signed off.</span></td></tr>
+  <tr class="line" data-key="visit::visit.step.clean::14" data-id="visit.step.clean">
+    <td class="c-seq">15</td>
     <td class="c-id">
       <code>visit.step.clean</code>
       
@@ -1502,7 +1511,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
         <button class="play" data-src="../../app/public/audio/en/visit.step.clean.mp3" aria-label="Play visit.step.clean">▶</button>
         <span class="dur">3.67s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
-      <textarea class="edit" dir="ltr" data-field="visit::visit.step.clean::13::en"
+      <textarea class="edit" dir="ltr" data-field="visit::visit.step.clean::14::en"
         rows="1">Now we&#39;re cleaning your teeth with the tiny brush until they&#39;re shiny!</textarea>
       <p class="was" dir="ltr" hidden><span>was</span> Now we&#39;re cleaning your teeth with the tiny brush until they&#39;re shiny!</p></td>
     <td class="c-lang ar">
@@ -1510,15 +1519,15 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
         <button class="play" data-src="../../app/public/audio/ar/visit.step.clean.mp3" aria-label="Play visit.step.clean">▶</button>
         <span class="dur">10.22s</span><span class="badge rec" title="Human recording — matched to Arabic-narration/phase 3 polishing the tooth after the sleepy juice.ogg at 1 correlation">recorded</span>
       </div>
-      <textarea class="edit" dir="rtl" lang="ar" data-field="visit::visit.step.clean::13::ar"
+      <textarea class="edit" dir="rtl" lang="ar" data-field="visit::visit.step.clean::14::ar"
         rows="1">آخر خطوة: الفرشة الصغيرة تنضّف سناننا لحد ما تلمع!</textarea>
       <p class="was" dir="rtl" lang="ar" hidden><span>was</span> آخر خطوة: الفرشة الصغيرة تنضّف سناننا لحد ما تلمع!</p></td>
-    <td class="c-note"><textarea class="note" data-field="visit::visit.step.clean::13::note" rows="1" placeholder="Note / action…"></textarea></td>
+    <td class="c-note"><textarea class="note" data-field="visit::visit.step.clean::14::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
       <span class="tag">pause 900 ms</span><span class="badge lang-only">EN only</span>
       </td></tr>
-  <tr class="line has-silent" data-key="visit::visit.done::14" data-id="visit.done">
-    <td class="c-seq">15</td>
+  <tr class="line has-silent" data-key="visit::visit.done::15" data-id="visit.done">
+    <td class="c-seq">16</td>
     <td class="c-id">
       <code>visit.done</code>
       
@@ -1529,7 +1538,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
         <button class="play" data-src="../../app/public/audio/en/visit.done.mp3" aria-label="Play visit.done">▶</button>
         <span class="dur">4.60s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
-      <textarea class="edit" dir="ltr" data-field="visit::visit.done::14::en"
+      <textarea class="edit" dir="ltr" data-field="visit::visit.done::15::en"
         rows="1">And that&#39;s the whole visit, {name}! You knew every single step!</textarea>
       <p class="was" dir="ltr" hidden><span>was</span> And that&#39;s the whole visit, {name}! You knew every single step!</p></td>
     <td class="c-lang ar">
@@ -1537,13 +1546,13 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
         <button class="play" data-src="../../app/public/audio/ar/visit.done.mp3" aria-label="Play visit.done">▶</button>
         <span class="dur">0.35s</span><span class="badge silent" title="5060-byte placeholder measuring -91 dB. Nothing is heard.">SILENT</span>
       </div>
-      <textarea class="edit" dir="rtl" lang="ar" data-field="visit::visit.done::14::ar"
+      <textarea class="edit" dir="rtl" lang="ar" data-field="visit::visit.done::15::ar"
         rows="1">خلصت الزيارة يا {name}! عرفنا المكان والأدوات وكل خطوة — وكمان عرفنا إزاي نطلب وقفة!</textarea>
       <p class="was" dir="rtl" lang="ar" hidden><span>was</span> خلصت الزيارة يا {name}! عرفنا المكان والأدوات وكل خطوة — وكمان عرفنا إزاي نطلب وقفة!</p></td>
-    <td class="c-note"><textarea class="note" data-field="visit::visit.done::14::note" rows="1" placeholder="Note / action…"></textarea></td>
+    <td class="c-note"><textarea class="note" data-field="visit::visit.done::15::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr>
-  <tr class="line only-en" data-key="visit::milo.starEarned::15" data-id="milo.starEarned">
-    <td class="c-seq">16</td>
+  <tr class="line only-en" data-key="visit::milo.starEarned::16" data-id="milo.starEarned">
+    <td class="c-seq">17</td>
     <td class="c-id">
       <code>milo.starEarned</code>
       <span class="badge lang-only">EN only</span>
@@ -1554,11 +1563,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
         <button class="play" data-src="../../app/public/audio/en/milo.starEarned.mp3" aria-label="Play milo.starEarned">▶</button>
         <span class="dur">1.95s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
-      <textarea class="edit" dir="ltr" data-field="visit::milo.starEarned::15::en"
+      <textarea class="edit" dir="ltr" data-field="visit::milo.starEarned::16::en"
         rows="1">You earned a star, {name}!</textarea>
       <p class="was" dir="ltr" hidden><span>was</span> You earned a star, {name}!</p></td>
     <td class="c-lang ar off"><span class="dash">لا تُقال بالعربية</span></td>
-    <td class="c-note"><textarea class="note" data-field="visit::milo.starEarned::15::note" rows="1" placeholder="Note / action…"></textarea></td>
+    <td class="c-note"><textarea class="note" data-field="visit::milo.starEarned::16::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr></tbody>
   </table>
   </div>

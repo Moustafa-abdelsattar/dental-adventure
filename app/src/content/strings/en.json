@@ -109,6 +109,7 @@
   "visit.step.sleepy": "Next comes the magic juice. It makes your tooth sleepy.",
   "visit.step.count": "You can close your eyes while we count together.",
   "visit.countToTen": "One, two, three, four, five, six, seven, eight, nine, ten.",
+  "visit.juiceCount": "This juice is just for the sticky spot. Close your eyes and count with me from one to ten. One, two, three, four, five, six, seven, eight, nine, ten.",
   "visit.step.clean": "Now we're cleaning your teeth with the tiny brush until they're shiny!",
   "visit.done": "And that's the whole visit, {name}! You knew every single step!",
   "reward.congrats": "Congratulations, {name}!",

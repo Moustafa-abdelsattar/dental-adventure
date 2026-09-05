@@ -63,6 +63,21 @@ const AR_SIMULATION_CUES = [
 ]
 const AR_SIMULATION_DURATION_MS = 35_520
 const AR_CLEAN_DURATION_MS = 10_219
+
+/**
+ * Part two of the Arabic walk-through: one recording that explains the juice
+ * and then counts to ten, so it covers what English says in two separate
+ * lines. Cues are the recording's own word timings, transcribed from it — the
+ * juice is explained to 8.72s, "واحد" lands at 9.66s, and the final "عشرة" at
+ * 25.36s of 26.82s.
+ */
+const AR_JUICE_COUNT_MS = 26_816
+const AR_JUICE_COUNT_CUES = [
+  // eyes close, a beat before the counting starts
+  { atMs: 9_000, step: 4, lineDone: false },
+  // ten fingers, on the word for them
+  { atMs: 25_360, step: 5, lineDone: true },
+]
 /** Measured length of the counting line, which is the one that swaps picture
  *  mid-sentence. The recorded Arabic takes nearly three times as long to count
  *  to ten as the synthesised English does. */
@@ -186,27 +201,22 @@ export function VisitScreen({ onComplete }: ModuleProps) {
         await Promise.all([audio.say(lang, 'visit.simulation'), waitMs(AR_SIMULATION_DURATION_MS)])
         timers.forEach(window.clearTimeout)
         if (cancelled) return
-        setStep(4)
-        setStepCopy('visit.step.count')
-        setLineDone(false)
-        await audio.say(lang, 'visit.step.count')
-        if (cancelled) return
-        setLineDone(true)
-        setStep(5)
-        setStepCopy('visit.countToTen')
-        setLineDone(false)
-        // `thenFrame` normally swaps when the line ends; here it has to swap
-        // just before it does, so the ten-finger frame lands on the last number
-        // rather than after the counting is over.
-        timers.push(
-          window.setTimeout(
-            () => {
-              if (!cancelled) setLineDone(true)
-            },
-            COUNT_TEN_MS[lang] * TEN_REVEAL_AT,
-          ),
-        )
-        await audio.say(lang, 'visit.countToTen')
+
+        // Part two. The sleepy-juice picture stays where the first recording
+        // left it while this one explains what the juice is for; only once it
+        // asks the child to close their eyes does the picture move on.
+        for (const cue of AR_JUICE_COUNT_CUES) {
+          timers.push(
+            window.setTimeout(() => {
+              if (cancelled) return
+              setStep(cue.step)
+              setStepCopy(STEPS[cue.step].stringId)
+              setLineDone(cue.lineDone)
+            }, cue.atMs),
+          )
+        }
+        await Promise.all([audio.say(lang, 'visit.juiceCount'), waitMs(AR_JUICE_COUNT_MS)])
+        timers.forEach(window.clearTimeout)
         if (cancelled) return
         setLineDone(true)
         setStep(6)

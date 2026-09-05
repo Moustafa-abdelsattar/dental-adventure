@@ -262,8 +262,7 @@ test('Arabic simulation uses one narration track with timed visual cues', async 
   useGame.getState().setLang('ar')
   const onComplete = vi.fn()
   let finishSimulation!: () => void
-  let finishCount!: () => void
-  let finishCountToTen!: () => void
+  let finishJuiceCount!: () => void
   let finishClean!: () => void
   vi.mocked(audio.say).mockImplementation((_, id) => {
     if (id === 'visit.simulation') {
@@ -271,14 +270,9 @@ test('Arabic simulation uses one narration track with timed visual cues', async 
         finishSimulation = resolve
       })
     }
-    if (id === 'visit.step.count') {
+    if (id === 'visit.juiceCount') {
       return new Promise(resolve => {
-        finishCount = resolve
-      })
-    }
-    if (id === 'visit.countToTen') {
-      return new Promise(resolve => {
-        finishCountToTen = resolve
+        finishJuiceCount = resolve
       })
     }
     if (id === 'visit.step.clean') {
@@ -336,33 +330,36 @@ test('Arabic simulation uses one narration track with timed visual cues', async 
     await Promise.resolve()
   })
 
+  // The first recording is only over once its own length has elapsed too.
   await act(async () => {
-    await vi.advanceTimersByTimeAsync(6780)
+    await vi.advanceTimersByTimeAsync(6_780)
   })
-  expect(audio.say).toHaveBeenCalledWith('ar', 'visit.step.count')
-  expect(screen.getByTestId('visit-frame-count')).toHaveAttribute('data-active', 'true')
-  expect(audio.say).not.toHaveBeenCalledWith('ar', 'visit.countToTen')
 
+  // Part two starts, and the juice picture holds while it explains the juice.
+  expect(audio.say).toHaveBeenCalledWith('ar', 'visit.juiceCount')
+  expect(audio.say).not.toHaveBeenCalledWith('ar', 'visit.step.count')
   await act(async () => {
-    finishCount()
-    await Promise.resolve()
+    await vi.advanceTimersByTimeAsync(8_900)
   })
-  expect(audio.say).toHaveBeenCalledWith('ar', 'visit.countToTen')
-  // The count runs on the eyes-closed frame. Showing all ten fingers here would
-  // put the answer on screen while the child is still hearing "one".
+  expect(screen.getByTestId('visit-frame-sleepy')).toHaveAttribute('data-active', 'true')
+
+  // At 9s it asks the child to close their eyes — "واحد" follows at 9.66s.
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(200)
+  })
   expect(screen.getByTestId('visit-frame-count')).toHaveAttribute('data-active', 'true')
   expect(screen.getByTestId('visit-frame-count-ten')).not.toHaveAttribute('data-active', 'true')
 
-  // …and the ten-finger frame lands 1.2s before the recording ends, on "عشرة".
+  // The ten fingers arrive on the word for them, at 25.36s of 26.82s.
   await act(async () => {
-    await vi.advanceTimersByTimeAsync(9237 - 1200)
+    await vi.advanceTimersByTimeAsync(25_500 - 9_100)
   })
   expect(screen.getByTestId('visit-frame-count-ten')).toHaveAttribute('data-active', 'true')
   expect(audio.say).not.toHaveBeenCalledWith('ar', 'visit.step.clean')
 
   await act(async () => {
-    finishCountToTen()
-    await Promise.resolve()
+    finishJuiceCount()
+    await vi.advanceTimersByTimeAsync(26_816 - 25_500)
   })
   expect(audio.say).toHaveBeenCalledWith('ar', 'visit.step.clean')
   expect(screen.getByTestId('visit-frame-clean')).toHaveAttribute('data-active', 'true')
