@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'motion/react'
 import { audio } from '../lib/audio'
-import { t, type StringId } from '../lib/i18n'
+import { t, type Lang, type StringId } from '../lib/i18n'
 import { useGame } from '../store/game'
 import { DrNour } from '../game/drnour/DrNour'
 import { GameButton } from '../components/ui/GameButton'
@@ -29,25 +29,28 @@ interface Step {
   pauseMs?: number
 }
 
-/** The whole visit, in order, for every child. */
+/**
+ * The whole visit, in order, for every child, in either language.
+ *
+ * There used to be a second table for Arabic, because only Arabic had the
+ * counting beat — English walked four steps and skipped straight to the
+ * cleaning. Two languages telling a child a different story about the same
+ * appointment is the one thing this screen cannot do, and the counting is the
+ * part that teaches a coping skill, so it is the half that should have spread.
+ */
 const STEPS: Step[] = [
   { id: 'chair', stringId: 'visit.step.chair', frame: 'chair' },
   { id: 'light', stringId: 'visit.step.light', frame: 'light' },
   { id: 'mirror', stringId: 'visit.step.mirror', frame: 'mirror' },
   { id: 'sleepy', stringId: 'visit.step.sleepy', frame: 'sleepy' },
-  { id: 'clean', stringId: 'visit.step.clean', frame: 'clean' },
-]
-
-const AR_STEPS: Step[] = [
-  ...STEPS.slice(0, 4),
   { id: 'count', stringId: 'visit.step.count', frame: 'count' },
   // The two counting pictures are one moment, not two: eyes shut on seven
   // fingers, then eyes open on all ten. Holding the ten-finger frame for the
-  // whole recording showed a child ten fingers while they were still hearing
-  // "one", so the count runs on the eyes-closed frame and the ten arrives with
-  // the word for it. See AR_TEN_REVEAL_MS.
+  // whole line showed a child ten fingers while they were still hearing "one",
+  // so the count runs on the eyes-closed frame and the ten arrives with the
+  // word for it.
   { id: 'count-ten', stringId: 'visit.countToTen', frame: 'count', thenFrame: 'count-ten' },
-  STEPS[4],
+  { id: 'clean', stringId: 'visit.step.clean', frame: 'clean' },
 ]
 
 const STEP_PAUSE_MS = 900
@@ -60,10 +63,14 @@ const AR_SIMULATION_CUES = [
 ]
 const AR_SIMULATION_DURATION_MS = 35_520
 const AR_CLEAN_DURATION_MS = 10_219
-/** The `visit.countToTen` recording, measured. */
-const AR_COUNT_TEN_DURATION_MS = 9_237
-/** How long the ten-finger frame holds at the end of it — the word "عشرة". */
-const AR_TEN_REVEAL_MS = 1_200
+/** Measured length of the counting line, which is the one that swaps picture
+ *  mid-sentence. The recorded Arabic takes nearly three times as long to count
+ *  to ten as the synthesised English does. */
+const COUNT_TEN_MS: Record<Lang, number> = { en: 3_480, ar: 9_237 }
+/** How far through that line the ten-finger frame arrives — a share, not a
+ *  fixed offset, so it lands on the last word in both languages rather than a
+ *  third of the way into the short one. */
+const TEN_REVEAL_AT = 0.87
 
 /**
  * The visit simulation: meet the dentist (mask reveal), learn the raise-your-hand
@@ -196,7 +203,7 @@ export function VisitScreen({ onComplete }: ModuleProps) {
             () => {
               if (!cancelled) setLineDone(true)
             },
-            Math.max(0, AR_COUNT_TEN_DURATION_MS - AR_TEN_REVEAL_MS),
+            COUNT_TEN_MS[lang] * TEN_REVEAL_AT,
           ),
         )
         await audio.say(lang, 'visit.countToTen')
@@ -217,6 +224,13 @@ export function VisitScreen({ onComplete }: ModuleProps) {
         setStep(i)
         setStepCopy(STEPS[i].stringId)
         setLineDone(false)
+        if (STEPS[i].thenFrame) {
+          timers.push(
+            window.setTimeout(() => {
+              if (!cancelled) setLineDone(true)
+            }, COUNT_TEN_MS[lang] * TEN_REVEAL_AT),
+          )
+        }
         await audio.say(lang, STEPS[i].stringId)
         setLineDone(true)
         await new Promise(r => setTimeout(r, STEPS[i].pauseMs ?? STEP_PAUSE_MS))
@@ -240,8 +254,7 @@ export function VisitScreen({ onComplete }: ModuleProps) {
   // offered, and puts his hand up when the child presses it. Showing him with
   // his hand already up gave the answer away — the child watched someone else
   // do the thing instead of doing it and seeing him follow.
-  const displaySteps = lang === 'ar' ? AR_STEPS : STEPS
-  const current = step >= 0 ? displaySteps[step] : undefined
+  const current = step >= 0 ? STEPS[step] : undefined
   const art: Frame =
     phase === 'meet'
       ? 'chair'
@@ -265,7 +278,7 @@ export function VisitScreen({ onComplete }: ModuleProps) {
           {phase === 'meet' && t(lang, meetCopy)}
           {phase === 'stop' && t(lang, stopCopy)}
           {phase === 'steps' && step < 0 && t(lang, 'visit.simulation')}
-          {phase === 'steps' && step >= 0 && t(lang, stepCopy ?? displaySteps[step].stringId)}
+          {phase === 'steps' && step >= 0 && t(lang, stepCopy ?? STEPS[step].stringId)}
           {phase === 'done' && t(lang, 'visit.done')}
         </>
       }
@@ -407,7 +420,7 @@ export function VisitScreen({ onComplete }: ModuleProps) {
 
       {phase === 'steps' && (
         <div className="absolute bottom-[12%] left-1/2 -translate-x-1/2 z-10 flex gap-2" aria-hidden>
-          {displaySteps.map((s, i) => (
+          {STEPS.map((s, i) => (
             <span
               key={s.id}
               className={`w-3 h-3 rounded-full transition-colors ${i <= step ? 'bg-grape' : 'bg-grape/25'}`}

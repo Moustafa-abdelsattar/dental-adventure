@@ -55,16 +55,19 @@ test('full flow: mask → stop signal → five steps → complete, exactly once'
   await act(async () => {
     await vi.advanceTimersByTimeAsync(30_000) // five steps auto-advance
   })
+  // English walks the same seven steps Arabic does, counting included.
   for (const id of [
     'visit.step.chair',
     'visit.step.light',
     'visit.step.mirror',
     'visit.step.sleepy',
+    'visit.step.count',
+    'visit.countToTen',
     'visit.step.clean',
     'visit.done',
   ])
     expect(audio.say).toHaveBeenCalledWith('en', id)
-  expect(audio.say).not.toHaveBeenCalledWith('en', 'visit.step.count')
+  // the counting mission's own numbered clips stay out of the visit
   for (let n = 1; n <= 10; n++) expect(audio.say).not.toHaveBeenCalledWith('en', `spray.count.${n}`)
   expect(onComplete).toHaveBeenCalledTimes(1)
   // manual Next after auto-complete must not double-fire
@@ -405,19 +408,22 @@ for (const path of ['checkup', 'treatment'] as const) {
     useGame.getState().setPath(path)
     const spoken = await runSimulation()
 
+    // Both languages tell the same story in the same order. The Arabic run
+    // reaches these through one long recording with timed cues; English speaks
+    // them one at a time. The sequence has to match either way.
     const steps = [
       'visit.step.chair',
       'visit.step.light',
       'visit.step.mirror',
       'visit.step.sleepy',
+      'visit.step.count',
+      'visit.countToTen',
       'visit.step.clean',
     ]
     for (const id of steps) expect(spoken).toContain(id)
 
     const spokenSteps = spoken.filter(id => steps.includes(id as string))
     expect(spokenSteps).toEqual(steps)
-    expect(spoken).not.toContain('visit.step.count')
-    expect(spoken).not.toContain('visit.countToTen')
     for (let n = 1; n <= 10; n++) expect(spoken).not.toContain(`spray.count.${n}`)
   })
 }

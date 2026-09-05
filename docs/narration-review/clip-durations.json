@@ -124,7 +124,9 @@
   "visit.step.sleepy": 3.251,
   "visit.stopSignal": 7.616,
   "visit.stopSignalDone": 2.415,
-  "visit.title": 1.44
+  "visit.title": 1.44,
+  "visit.countToTen": 3.48,
+  "visit.step.count": 2.208
  },
  "ar": {
   "app.subtitle": 0.35,
