@@ -78,14 +78,21 @@ const AR_JUICE_COUNT_CUES = [
   // ten fingers, on the word for them
   { atMs: 25_360, step: 5, lineDone: true },
 ]
-/** Measured length of the counting line, which is the one that swaps picture
- *  mid-sentence. The recorded Arabic takes nearly three times as long to count
- *  to ten as the synthesised English does. */
-const COUNT_TEN_MS: Record<Lang, number> = { en: 3_480, ar: 9_237 }
-/** How far through that line the ten-finger frame arrives — a share, not a
- *  fixed offset, so it lands on the last word in both languages rather than a
- *  third of the way into the short one. */
-const TEN_REVEAL_AT = 0.87
+/**
+ * When the last number starts in the counting line, measured off the clip
+ * itself by transcribing it.
+ *
+ * This was a share of the line — 87% through — which worked while the English
+ * count was 3.5s of ten words read straight through. It stopped working the
+ * moment that clip was rebuilt with real gaps to count into: 87% of 17.7s is
+ * 15.4s, and "ten" does not start until 17.0s, so the ten fingers would have
+ * gone up during "nine". A proportion is the wrong tool for a line whose last
+ * word is not proportionally placed.
+ *
+ * Arabic does not use this — it reaches the same frame through
+ * AR_JUICE_COUNT_CUES, cued off its own recording.
+ */
+const TEN_REVEAL_MS: Record<Lang, number> = { en: 17_000, ar: 25_360 }
 
 /**
  * The visit simulation: meet the dentist (mask reveal), learn the raise-your-hand
@@ -238,7 +245,7 @@ export function VisitScreen({ onComplete }: ModuleProps) {
           timers.push(
             window.setTimeout(() => {
               if (!cancelled) setLineDone(true)
-            }, COUNT_TEN_MS[lang] * TEN_REVEAL_AT),
+            }, TEN_REVEAL_MS[lang]),
           )
         }
         await audio.say(lang, STEPS[i].stringId)

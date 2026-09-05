@@ -108,7 +108,9 @@ describe('ModuleHost engine', () => {
     render(<ModuleHost registry={registry} />)
     fireEvent.click(screen.getByText('done-clinic'))
     const beat = screen.getByTestId('story-beat')
-    expect(beat.textContent).toContain('My wiggles are getting smaller')
+    // Read the expected line from the strings rather than quoting it, so a copy
+    // rewrite does not fail a test about the beat being shown at all.
+    expect(beat.textContent).toContain(en['story.calmer1'].replace('{name}', '').split('.')[0].trim())
     // past the moment where a tap is still the tail of the press that got here
     act(() => vi.advanceTimersByTime(600))
     fireEvent.click(beat)

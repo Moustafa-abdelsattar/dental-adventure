@@ -30,5 +30,8 @@ test('English visit copy says your dentist without naming the dentist', () => {
 
   expect(visitCopy).not.toContain(['Dr.', 'Li' + 'li'].join(' '))
   expect(visitCopy).not.toContain(`Li${'li'}`)
-  expect(en['visit.meetDr']).toContain("Let's meet your dentist")
+  // The point is that she is "your dentist" and never a name. Pinning the exact
+  // sentence broke the moment the English was rewritten to translate the Arabic
+  // recordings, which is a change this test should not have opinions about.
+  expect(en['visit.meetDr'].toLowerCase()).toContain('dentist')
 })

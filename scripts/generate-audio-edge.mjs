@@ -3,6 +3,10 @@
 // is unavailable — rerun scripts/generate-audio.mjs (after wiping the audio
 // dirs) to restore the premium voice once a valid key is in .env.
 //
+// After a --wipe, rerun scripts/make-english-count.mjs: en/visit.countToTen is
+// built number by number with real gaps to count into, and this script would
+// replace it with the same ten words read in four seconds.
+//
 // Usage: node scripts/generate-audio-edge.mjs [--wipe]
 //   --wipe  delete existing clips first so everything regenerates
 import { readFileSync, mkdirSync, writeFileSync, existsSync, readdirSync, rmSync } from 'node:fs'
@@ -35,7 +39,11 @@ const WIPE = process.argv.includes('--wipe')
 // character in EN and AR; pitched up + slightly faster to sound like an
 // energetic boy rather than an adult narrator.
 const VOICES = { en: 'en-US-AndrewMultilingualNeural', ar: 'en-US-AndrewMultilingualNeural' }
-const PROSODY = { pitch: '+20%', rate: '+10%' }
+// Was rate '+10%'. English came out a third the length of the Arabic and read
+// as rushed next to it — partly the shorter script, but the speed-up on top of
+// that made it worse. The Arabic is a person talking to a four-year-old at a
+// four-year-old's pace, so English is now a touch under normal speed to match.
+const PROSODY = { pitch: '+20%', rate: '-8%' }
 
 async function makeTts(lang) {
   const tts = new MsEdgeTTS()
