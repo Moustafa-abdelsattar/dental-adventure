@@ -64,15 +64,26 @@ export function GameStage({
         </h1>
         {intro !== undefined && (
           <>
-            <p
-              className="w-full text-ink/70 font-bold text-center mt-1 min-h-14 text-balance"
-              onClick={audioReplayDisabled ? undefined : onIntroTap}
-            >
+            {/*
+              The spoken line is not printed on the stage any more.
+
+              It was two lines of caption when the English was a short script of
+              its own. Once the English became a translation of the Arabic
+              recordings it grew to seven or eight, which pushed the artwork
+              down the screen and put a wall of text in front of a child who
+              cannot read it — the audience for this game is four to eight, and
+              every word of it is spoken aloud already.
+
+              Kept in the accessibility tree rather than deleted: it is the only
+              text alternative to the narration for anyone playing with the
+              sound off or with a screen reader, and it costs nothing to leave
+              where assistive technology can still reach it.
+            */}
+            <p className="sr-only" data-testid="narration-text">
               {intro}
             </p>
-            {/* Its own row rather than beside the text: crowding the line
-                narrows it enough to add a wrap, and a four-year-old needs the
-                replay target big and obvious anyway. */}
+            {/* The replay button stays, and is now the whole control: a child
+                who missed the line taps here to hear it again. */}
             <AudioButton onPress={onIntroTap} disabled={audioReplayDisabled} />
           </>
         )}
