@@ -7,22 +7,24 @@
 // punctuation only gets it to 8.8s — commas and full stops buy a breath, not a
 // beat. So each number is synthesised on its own and spaced by hand.
 //
-// Rerun this after any narration regeneration: generate-audio-edge.mjs will
-// happily overwrite it with the fast version.
+// Rerun this after any narration regeneration: generate-audio.mjs will happily
+// overwrite it with the same ten words read straight through.
 //
 // Usage: node scripts/make-english-count.mjs [--gap=900]
 import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { createRequire } from 'node:module'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const require = createRequire(import.meta.url)
-const { MsEdgeTTS, OUTPUT_FORMAT } = require('../app/node_modules/msedge-tts/dist/index.js')
+const KEY = readFileSync(resolve(root, '.env'), 'utf8').match(/ELEVENLABS_API_KEY=(\S+)/)[1]
 
-const VOICE = 'en-US-AndrewMultilingualNeural'
-const PROSODY = { pitch: '+20%', rate: '-8%' }
+// The same voice and model as every other English clip. Building this one by
+// hand is about the gaps, not the narrator — a different voice counting to ten
+// in the middle of the visit would be worse than the rushed version.
+const VOICE = 'vWDp3PLsTWjIhBxxUKh9'
+const MODEL = 'eleven_multilingual_v2'
+const SETTINGS = { stability: 0.45, similarity_boost: 0.75, style: 0.35 }
 const GAP_MS = Number(process.argv.find(a => a.startsWith('--gap='))?.slice(6) ?? 900)
 const NUMBERS = ['One.', 'Two.', 'Three.', 'Four.', 'Five.', 'Six.', 'Seven.', 'Eight.', 'Nine.', 'Ten.']
 
@@ -30,16 +32,16 @@ const tmp = resolve(root, 'artifacts', '_count')
 rmSync(tmp, { recursive: true, force: true })
 mkdirSync(tmp, { recursive: true })
 
-const tts = new MsEdgeTTS()
-await tts.setMetadata(VOICE, OUTPUT_FORMAT.AUDIO_24KHZ_96KBITRATE_MONO_MP3)
-
 const parts = []
 for (const [i, word] of NUMBERS.entries()) {
-  const { audioStream } = await tts.toStream(word, PROSODY)
-  const chunks = []
-  for await (const c of audioStream) chunks.push(c)
+  const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${VOICE}?output_format=mp3_44100_96`, {
+    method: 'POST',
+    headers: { 'xi-api-key': KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text: word, model_id: MODEL, voice_settings: SETTINGS }),
+  })
+  if (!res.ok) throw new Error(`${word}: ${res.status} ${await res.text()}`)
   const p = resolve(tmp, `${i}.mp3`)
-  writeFileSync(p, Buffer.concat(chunks))
+  writeFileSync(p, Buffer.from(await res.arrayBuffer()))
   parts.push(p)
   process.stdout.write(`${word} `)
 }
@@ -49,7 +51,7 @@ console.log()
 const gap = resolve(tmp, 'gap.mp3')
 execFileSync('ffmpeg', [
   '-v', 'error', '-y',
-  '-f', 'lavfi', '-i', `anullsrc=r=24000:cl=mono`,
+  '-f', 'lavfi', '-i', `anullsrc=r=44100:cl=mono`,
   '-t', String(GAP_MS / 1000),
   '-c:a', 'libmp3lame', '-b:a', '96k',
   gap,

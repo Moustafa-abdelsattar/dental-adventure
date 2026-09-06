@@ -92,7 +92,7 @@ const AR_JUICE_COUNT_CUES = [
  * Arabic does not use this — it reaches the same frame through
  * AR_JUICE_COUNT_CUES, cued off its own recording.
  */
-const TEN_REVEAL_MS: Record<Lang, number> = { en: 17_000, ar: 25_360 }
+const TEN_REVEAL_MS: Record<Lang, number> = { en: 15_600, ar: 25_360 }
 
 /**
  * The visit simulation: meet the dentist (mask reveal), learn the raise-your-hand
