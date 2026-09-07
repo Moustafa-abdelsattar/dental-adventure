@@ -151,7 +151,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
   <p><strong>Changing a line is not free.</strong> Narration is baked one clip per string per language. An English edit means re-running <code>scripts/generate-audio-edge.mjs</code>; an Arabic edit on a line marked <span class="badge rec">recorded</span> means booking the voice again.</p>
   <p class="hint">Audio plays from <code>app/public/audio/</code> next door, so open this file from inside the repo. Rebuild it with <code>node scripts/build-narration-review.mjs</code>; refresh the screenshots with <code>node scripts/capture-narration-review.mjs</code>.</p>
   <div class="stats">
-    <div class="stat"><b>426s</b><span>English, all clips</span></div>
+    <div class="stat"><b>332s</b><span>English, all clips</span></div>
     <div class="stat"><b>361s</b><span>Arabic, all clips</span></div>
     <div class="stat"><b>35</b><span>Arabic clips voiced by a person</span></div>
     <div class="stat"><b>93</b><span>Arabic clips that are silence</span></div>
@@ -183,7 +183,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
       </figure></div>
   
   <div class="totals">
-    <span>Spoken runtime — English <strong>1.8s</strong></span>
+    <span>Spoken runtime — English <strong>1.9s</strong></span>
     <span><bdi>العربية</bdi> <strong>0.3s</strong></span>
     <span class="muted">excludes pauses and time waiting for the child</span>
   </div>
@@ -202,7 +202,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/lang.greet.mp3" aria-label="Play lang.greet">▶</button>
-        <span class="dur">1.81s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">1.90s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="language::lang.greet::0::en"
         rows="1">Hello! Let&#39;s play in English!</textarea>
@@ -296,7 +296,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
       </figure></div>
   
   <div class="totals">
-    <span>Spoken runtime — English <strong>6.7s</strong></span>
+    <span>Spoken runtime — English <strong>5.8s</strong></span>
     <span><bdi>العربية</bdi> <strong>7.5s</strong></span>
     <span class="muted">excludes pauses and time waiting for the child</span>
   </div>
@@ -314,11 +314,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/milo.welcome.mp3" aria-label="Play milo.welcome">▶</button>
-        <span class="dur">4.37s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">3.39s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="welcome::milo.welcome::0::en"
-        rows="1">Hello there, {name}! Today we&#39;re going on a trip to the dental clinic.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> Hello there, {name}! Today we&#39;re going on a trip to the dental clinic.</p></td>
+        rows="1">Hello, {name}! Today we&#39;re going on a trip to the dentist.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> Hello, {name}! Today we&#39;re going on a trip to the dentist.</p></td>
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/milo.welcome.mp3" aria-label="Play milo.welcome">▶</button>
@@ -339,7 +339,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/milo.welcomeBack.mp3" aria-label="Play milo.welcomeBack">▶</button>
-        <span class="dur">2.32s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">2.42s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="welcome::milo.welcomeBack::1::en"
         rows="1">Welcome back, {name}! Let&#39;s keep exploring!</textarea>
@@ -379,7 +379,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
       </figure></div>
   
   <div class="totals">
-    <span>Spoken runtime — English <strong>42.0s</strong></span>
+    <span>Spoken runtime — English <strong>29.3s</strong></span>
     <span><bdi>العربية</bdi> <strong>46.2s</strong></span>
     <span class="muted">excludes pauses and time waiting for the child</span>
   </div>
@@ -397,11 +397,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/clinic.intro.mp3" aria-label="Play clinic.intro">▶</button>
-        <span class="dur">6.41s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">3.48s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="clinic::clinic.intro::0::en"
-        rows="1">First we&#39;re going to get to know some of the things here in the clinic. Press on each one, {name}, and it will tell you what it does.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> First we&#39;re going to get to know some of the things here in the clinic. Press on each one, {name}, and it will tell you what it does.</p></td>
+        rows="1">Let&#39;s meet the clinic, {name}. Press each thing to see what it does.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> Let&#39;s meet the clinic, {name}. Press each thing to see what it does.</p></td>
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/clinic.intro.mp3" aria-label="Play clinic.intro">▶</button>
@@ -449,11 +449,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/clinic.light.desc.mp3" aria-label="Play clinic.light.desc">▶</button>
-        <span class="dur">4.50s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">3.02s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="clinic::clinic.light.desc::2::en"
-        rows="1">I shine like the warm sunshine, so we can see your teeth nice and clearly.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> I shine like the warm sunshine, so we can see your teeth nice and clearly.</p></td>
+        rows="1">I shine like the sun, so we can see your teeth clearly.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> I shine like the sun, so we can see your teeth clearly.</p></td>
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/clinic.light.desc.mp3" aria-label="Play clinic.light.desc">▶</button>
@@ -474,11 +474,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/clinic.suction.desc.mp3" aria-label="Play clinic.suction.desc">▶</button>
-        <span class="dur">7.43s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">4.97s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="clinic::clinic.suction.desc::3::en"
-        rows="1">I&#39;m Mister Thirsty. I&#39;m like a straw — I sip the water out of your mouth, so no sugar bugs go down into your tummy.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> I&#39;m Mister Thirsty. I&#39;m like a straw — I sip the water out of your mouth, so no sugar bugs go down into your tummy.</p></td>
+        rows="1">I&#39;m Mister Thirsty. I sip the water up, so none goes down your tummy.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> I&#39;m Mister Thirsty. I sip the water up, so none goes down your tummy.</p></td>
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/clinic.suction.desc.mp3" aria-label="Play clinic.suction.desc">▶</button>
@@ -499,11 +499,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/clinic.chair.desc.mp3" aria-label="Play clinic.chair.desc">▶</button>
-        <span class="dur">7.80s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">4.64s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="clinic::clinic.chair.desc::4::en"
-        rows="1">I&#39;m the dental chair. I&#39;m like a swing — I go up and I come down, so you stay comfy and happy while we fight the sugar bugs.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> I&#39;m the dental chair. I&#39;m like a swing — I go up and I come down, so you stay comfy and happy while we fight the sugar bugs.</p></td>
+        rows="1">I&#39;m the dental chair. I&#39;m like a swing — up and down, so you stay comfy.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> I&#39;m the dental chair. I&#39;m like a swing — up and down, so you stay comfy.</p></td>
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/clinic.chair.desc.mp3" aria-label="Play clinic.chair.desc">▶</button>
@@ -524,11 +524,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/clinic.syringe.desc.mp3" aria-label="Play clinic.syringe.desc">▶</button>
-        <span class="dur">4.60s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">3.39s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="clinic::clinic.syringe.desc::5::en"
-        rows="1">I puff water and air onto your teeth, to wash them well and dry them off.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> I puff water and air onto your teeth, to wash them well and dry them off.</p></td>
+        rows="1">I puff water and air, to wash your teeth and dry them.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> I puff water and air, to wash your teeth and dry them.</p></td>
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/clinic.syringe.desc.mp3" aria-label="Play clinic.syringe.desc">▶</button>
@@ -549,7 +549,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/clinic.done.mp3" aria-label="Play clinic.done">▶</button>
-        <span class="dur">2.69s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">3.39s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="clinic::clinic.done::6::en"
         rows="1">You explored the whole clinic, {name}! Amazing!</textarea>
@@ -574,11 +574,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/story.calmer1.mp3" aria-label="Play story.calmer1">▶</button>
-        <span class="dur">6.08s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">3.95s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="clinic::story.calmer1::7::en"
-        rows="1">Very well done, {name}. You&#39;ve finished the first step — you know the main things in the clinic now.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> Very well done, {name}. You&#39;ve finished the first step — you know the main things in the clinic now.</p></td>
+        rows="1">Well done, {name}. That&#39;s the clinic — you know it now.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> Well done, {name}. That&#39;s the clinic — you know it now.</p></td>
     <td class="c-lang ar off"><span class="dash">لا تُقال بالعربية</span></td>
     <td class="c-note"><textarea class="note" data-field="clinic::story.calmer1::7::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr><tr class="evt note"><td class="c-seq"></td><td colspan="4">
@@ -609,7 +609,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
       </figure></div>
   
   <div class="totals">
-    <span>Spoken runtime — English <strong>40.5s</strong></span>
+    <span>Spoken runtime — English <strong>23.6s</strong></span>
     <span><bdi>العربية</bdi> <strong>53.4s</strong></span>
     <span class="muted">excludes pauses and time waiting for the child</span>
   </div>
@@ -645,11 +645,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/tools.intro.mp3" aria-label="Play tools.intro">▶</button>
-        <span class="dur">6.69s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">4.50s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="tools::tools.intro::1::en"
-        rows="1">Let&#39;s play a game, {name}. Scratch the colours in front of you, and each tool will appear and tell you what it does.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> Let&#39;s play a game, {name}. Scratch the colours in front of you, and each tool will appear and tell you what it does.</p></td>
+        rows="1">Let&#39;s play, {name}. Scratch each colour, and a tool pops out to say hello.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> Let&#39;s play, {name}. Scratch each colour, and a tool pops out to say hello.</p></td>
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/tools.intro.mp3" aria-label="Play tools.intro">▶</button>
@@ -671,11 +671,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/tool.mirror.desc.mp3" aria-label="Play tool.mirror.desc">▶</button>
-        <span class="dur">4.83s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">3.16s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="tools::tool.mirror.desc::2::en"
-        rows="1">I&#39;m the mirror. We look in me to see your teeth clearly, from every side.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> I&#39;m the mirror. We look in me to see your teeth clearly, from every side.</p></td>
+        rows="1">I&#39;m the mirror. I show your teeth from every side.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> I&#39;m the mirror. I show your teeth from every side.</p></td>
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/tool.mirror.desc.mp3" aria-label="Play tool.mirror.desc">▶</button>
@@ -696,11 +696,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/tool.explorer.desc.mp3" aria-label="Play tool.explorer.desc">▶</button>
-        <span class="dur">6.08s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">3.30s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="tools::tool.explorer.desc::3::en"
-        rows="1">I&#39;m the tooth counter. I count your teeth one by one and make sure no sugar bugs are hiding in them.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> I&#39;m the tooth counter. I count your teeth one by one and make sure no sugar bugs are hiding in them.</p></td>
+        rows="1">I&#39;m the tooth counter. I count your teeth and check every one.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> I&#39;m the tooth counter. I count your teeth and check every one.</p></td>
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/tool.explorer.desc.mp3" aria-label="Play tool.explorer.desc">▶</button>
@@ -721,11 +721,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/tool.spray.desc.mp3" aria-label="Play tool.spray.desc">▶</button>
-        <span class="dur">8.03s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">3.39s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="tools::tool.spray.desc::4::en"
-        rows="1">I&#39;m the magic juice. I get sprayed on the tooth to send the sugar bugs to sleep, so we can catch them and they can&#39;t run around your mouth.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> I&#39;m the magic juice. I get sprayed on the tooth to send the sugar bugs to sleep, so we can catch them and they can&#39;t run around your mouth.</p></td>
+        rows="1">I&#39;m the magic juice. I send the sugar bugs to sleep.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> I&#39;m the magic juice. I send the sugar bugs to sleep.</p></td>
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/tool.spray.desc.mp3" aria-label="Play tool.spray.desc">▶</button>
@@ -746,11 +746,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/tool.brush.desc.mp3" aria-label="Play tool.brush.desc">▶</button>
-        <span class="dur">6.83s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">3.25s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="tools::tool.brush.desc::5::en"
-        rows="1">I&#39;m the little tooth shower. I sprinkle lots and lots of water to wash your teeth really well and take away any sugar bugs.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> I&#39;m the little tooth shower. I sprinkle lots and lots of water to wash your teeth really well and take away any sugar bugs.</p></td>
+        rows="1">I&#39;m the little shower. I wash your teeth until they&#39;re clean.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> I&#39;m the little shower. I wash your teeth until they&#39;re clean.</p></td>
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/tool.brush.desc.mp3" aria-label="Play tool.brush.desc">▶</button>
@@ -771,7 +771,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/tools.done.mp3" aria-label="Play tools.done">▶</button>
-        <span class="dur">3.48s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">3.34s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="tools::tools.done::6::en"
         rows="1">You met all the tools, {name}! They can&#39;t wait to help your teeth!</textarea>
@@ -796,11 +796,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/story.calmer2.mp3" aria-label="Play story.calmer2">▶</button>
-        <span class="dur">4.55s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">2.69s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="tools::story.calmer2::7::en"
-        rows="1">That&#39;s the second step of our trip done. You&#39;re really getting to know the dental clinic.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> That&#39;s the second step of our trip done. You&#39;re really getting to know the dental clinic.</p></td>
+        rows="1">Second step done. You know the tools now.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> Second step done. You know the tools now.</p></td>
     <td class="c-lang ar off"><span class="dash">لا تُقال بالعربية</span></td>
     <td class="c-note"><textarea class="note" data-field="tools::story.calmer2::7::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr></tbody>
@@ -835,7 +835,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
       </figure></div>
   
   <div class="totals">
-    <span>Spoken runtime — English <strong>44.3s</strong></span>
+    <span>Spoken runtime — English <strong>32.9s</strong></span>
     <span><bdi>العربية</bdi> <strong>22.5s</strong></span>
     <span class="muted">excludes pauses and time waiting for the child</span>
   </div>
@@ -853,11 +853,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/prepare.intro.mp3" aria-label="Play prepare.intro">▶</button>
-        <span class="dur">3.99s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">2.23s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="prepare::prepare.intro::0::en"
-        rows="1">Now let&#39;s try together, {name}, how we take those sugar bugs off your tooth.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> Now let&#39;s try together, {name}, how we take those sugar bugs off your tooth.</p></td>
+        rows="1">Let&#39;s take the sugar bugs off this tooth, {name}.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> Let&#39;s take the sugar bugs off this tooth, {name}.</p></td>
     <td class="c-lang ar off"><span class="dash">لا تُقال بالعربية</span></td>
     <td class="c-note"><textarea class="note" data-field="prepare::prepare.intro::0::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr>
@@ -871,11 +871,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/prepare.step.spray.mp3" aria-label="Play prepare.step.spray">▶</button>
-        <span class="dur">5.34s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">3.76s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="prepare::prepare.step.spray::1::en"
-        rows="1">First step: spray the magic juice on the tooth, to send the sugar bugs to sleep.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> First step: spray the magic juice on the tooth, to send the sugar bugs to sleep.</p></td>
+        rows="1">First, the magic juice. It sends the sugar bugs to sleep.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> First, the magic juice. It sends the sugar bugs to sleep.</p></td>
     <td class="c-lang ar off"><span class="dash">لا تُقال بالعربية</span></td>
     <td class="c-note"><textarea class="note" data-field="prepare::prepare.step.spray::1::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr><tr class="evt note"><td class="c-seq"></td><td colspan="4">
@@ -932,7 +932,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/milo.great.mp3" aria-label="Play milo.great">▶</button>
-        <span class="dur">1.81s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">1.67s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="prepare::milo.great::4::en"
         rows="1">Great job, {name}!</textarea>
@@ -950,11 +950,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/prepare.step.brush.mp3" aria-label="Play prepare.step.brush">▶</button>
-        <span class="dur">4.74s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">3.02s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="prepare::prepare.step.brush::5::en"
-        rows="1">Second step: use the little shower to take the sugar bugs off the tooth.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> Second step: use the little shower to take the sugar bugs off the tooth.</p></td>
+        rows="1">Now the little shower. It washes them away.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> Now the little shower. It washes them away.</p></td>
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/prepare.step.brush.mp3" aria-label="Play prepare.step.brush">▶</button>
@@ -1000,11 +1000,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/milo.praise.1.mp3" aria-label="Play milo.praise.1">▶</button>
-        <span class="dur">2.37s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">2.00s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="prepare::milo.praise.1::7::en"
-        rows="1">Well done, {name} — you cleaned it!</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> Well done, {name} — you cleaned it!</p></td>
+        rows="1">Well done, {name}! You cleaned it.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> Well done, {name}! You cleaned it.</p></td>
     <td class="c-lang ar off"><span class="dash">لا تُقال بالعربية</span></td>
     <td class="c-note"><textarea class="note" data-field="prepare::milo.praise.1::7::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr>
@@ -1018,11 +1018,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/milo.praise.2.mp3" aria-label="Play milo.praise.2">▶</button>
-        <span class="dur">1.81s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">1.58s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="prepare::milo.praise.2::8::en"
-        rows="1">Look at that — it&#39;s shiny now!</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> Look at that — it&#39;s shiny now!</p></td>
+        rows="1">Look — it&#39;s shiny now!</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> Look — it&#39;s shiny now!</p></td>
     <td class="c-lang ar off"><span class="dash">لا تُقال بالعربية</span></td>
     <td class="c-note"><textarea class="note" data-field="prepare::milo.praise.2::8::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr>
@@ -1036,11 +1036,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/milo.praise.3.mp3" aria-label="Play milo.praise.3">▶</button>
-        <span class="dur">2.23s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">1.76s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="prepare::milo.praise.3::9::en"
-        rows="1">Lovely. That tickled the tooth a little!</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> Lovely. That tickled the tooth a little!</p></td>
+        rows="1">Nice. That tickled a little!</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> Nice. That tickled a little!</p></td>
     <td class="c-lang ar off"><span class="dash">لا تُقال بالعربية</span></td>
     <td class="c-note"><textarea class="note" data-field="prepare::milo.praise.3::9::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr><tr class="evt note"><td class="c-seq"></td><td colspan="4">
@@ -1056,11 +1056,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/prepare.done.mp3" aria-label="Play prepare.done">▶</button>
-        <span class="dur">5.71s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">3.25s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="prepare::prepare.done::10::en"
-        rows="1">There — you took away every sugar bug, and the tooth is strong again. Very well done, {name}.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> There — you took away every sugar bug, and the tooth is strong again. Very well done, {name}.</p></td>
+        rows="1">Every sugar bug gone! The tooth is strong again, {name}.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> Every sugar bug gone! The tooth is strong again, {name}.</p></td>
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/prepare.done.mp3" aria-label="Play prepare.done">▶</button>
@@ -1081,7 +1081,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/story.reversal.mp3" aria-label="Play story.reversal">▶</button>
-        <span class="dur">5.29s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">4.92s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="prepare::story.reversal::11::en"
         rows="1">You helped me get ready, {name}. Now I&#39;ll stay right beside you while you practise your visit!</textarea>
@@ -1099,11 +1099,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/story.calmer3.mp3" aria-label="Play story.calmer3">▶</button>
-        <span class="dur">5.99s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">3.62s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="prepare::story.calmer3::12::en"
-        rows="1">Wow! You took away all the sugar bugs and the tooth is strong again. Very well done, {name}.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> Wow! You took away all the sugar bugs and the tooth is strong again. Very well done, {name}.</p></td>
+        rows="1">The sugar bugs are gone and the tooth is strong. Well done, {name}.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> The sugar bugs are gone and the tooth is strong. Well done, {name}.</p></td>
     <td class="c-lang ar off"><span class="dash">لا تُقال بالعربية</span></td>
     <td class="c-note"><textarea class="note" data-field="prepare::story.calmer3::12::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr></tbody>
@@ -1204,7 +1204,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
             </figure></div>
       </div></div>
   <div class="totals">
-    <span>Spoken runtime — English <strong>97.9s</strong></span>
+    <span>Spoken runtime — English <strong>57.0s</strong></span>
     <span><bdi>العربية</bdi> <strong>122.1s</strong></span>
     <span class="muted">excludes pauses and time waiting for the child</span>
   </div>
@@ -1222,11 +1222,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/visit.meetDr.mp3" aria-label="Play visit.meetDr">▶</button>
-        <span class="dur">12.63s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">6.18s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="visit::visit.meetDr::0::en"
-        rows="1">Now let&#39;s meet the dentist who will be with you in the clinic. Hello, {name}! I&#39;m your dentist. You&#39;ll always find me wearing a mask — but I&#39;m smiling at you underneath it. Try pressing on it.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> Now let&#39;s meet the dentist who will be with you in the clinic. Hello, {name}! I&#39;m your dentist. You&#39;ll always find me wearing a mask — but I&#39;m smiling at you underneath it. Try pressing on it.</p></td>
+        rows="1">Let&#39;s meet your dentist, {name}. Hello! I wear a mask, but I&#39;m smiling underneath. Tap it.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> Let&#39;s meet your dentist, {name}. Hello! I wear a mask, but I&#39;m smiling underneath. Tap it.</p></td>
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/visit.meetDr.mp3" aria-label="Play visit.meetDr">▶</button>
@@ -1266,11 +1266,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/visit.maskOff.mp3" aria-label="Play visit.maskOff">▶</button>
-        <span class="dur">4.78s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">2.42s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="visit::visit.maskOff::2::en"
-        rows="1">See? I&#39;ll be smiling at you the whole time, as long as you&#39;re my brave hero.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> See? I&#39;ll be smiling at you the whole time, as long as you&#39;re my brave hero.</p></td>
+        rows="1">See? I&#39;m smiling at you the whole time.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> See? I&#39;m smiling at you the whole time.</p></td>
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/visit.maskOff.mp3" aria-label="Play visit.maskOff">▶</button>
@@ -1309,11 +1309,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/visit.stopSignal.mp3" aria-label="Play visit.stopSignal">▶</button>
-        <span class="dur">21.22s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">8.41s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="visit::visit.stopSignal::4::en"
-        rows="1">You and I are going to be friends and fight the sugar bugs together, {name}. I&#39;ll help your teeth grow strong and beautiful again. So here is our agreement: you&#39;re a brave hero, you&#39;ll sit in the dental chair, and if anything bothers you at all, you raise your hand — and I will stop straight away. Let&#39;s try it together now.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> You and I are going to be friends and fight the sugar bugs together, {name}. I&#39;ll help your teeth grow strong and beautiful again. So here is our agreement: you&#39;re a brave hero, you&#39;ll sit in the dental chair, and if anything bothers you at all, you raise your hand — and I will stop straight away. Let&#39;s try it together now.</p></td>
+        rows="1">We&#39;re a team, {name}. Here&#39;s our deal: if anything bothers you, raise your hand. I&#39;ll stop straight away. Try it!</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> We&#39;re a team, {name}. Here&#39;s our deal: if anything bothers you, raise your hand. I&#39;ll stop straight away. Try it!</p></td>
     <td class="c-lang ar off"><span class="dash">لا تُقال بالعربية</span></td>
     <td class="c-note"><textarea class="note" data-field="visit::visit.stopSignal::4::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr><tr class="evt tap"><td class="c-seq"></td><td colspan="4">
@@ -1391,11 +1391,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/visit.step.chair.mp3" aria-label="Play visit.step.chair">▶</button>
-        <span class="dur">6.32s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">3.06s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="visit::visit.step.chair::8::en"
-        rows="1">First step: you&#39;ll sit on the dental chair. It&#39;s a lovely chair, and it goes up and it comes down.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> First step: you&#39;ll sit on the dental chair. It&#39;s a lovely chair, and it goes up and it comes down.</p></td>
+        rows="1">First, you sit in the chair. It goes up and down.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> First, you sit in the chair. It goes up and down.</p></td>
     <td class="c-lang ar off"><span class="dash">لا تُقال بالعربية</span></td>
     <td class="c-note"><textarea class="note" data-field="visit::visit.step.chair::8::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
@@ -1411,11 +1411,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/visit.step.light.mp3" aria-label="Play visit.step.light">▶</button>
-        <span class="dur">3.67s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">2.37s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="visit::visit.step.light::9::en"
-        rows="1">Then I&#39;ll turn on the light, so I can see your teeth nice and clearly.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> Then I&#39;ll turn on the light, so I can see your teeth nice and clearly.</p></td>
+        rows="1">Then the light comes on, so I can see your teeth.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> Then the light comes on, so I can see your teeth.</p></td>
     <td class="c-lang ar off"><span class="dash">لا تُقال بالعربية</span></td>
     <td class="c-note"><textarea class="note" data-field="visit::visit.step.light::9::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
@@ -1431,11 +1431,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/visit.step.mirror.mp3" aria-label="Play visit.step.mirror">▶</button>
-        <span class="dur">3.95s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">2.18s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="visit::visit.step.mirror::10::en"
-        rows="1">After that I&#39;ll use the mirror, to see your teeth from every direction.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> After that I&#39;ll use the mirror, to see your teeth from every direction.</p></td>
+        rows="1">Next, the mirror shows me every side.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> Next, the mirror shows me every side.</p></td>
     <td class="c-lang ar off"><span class="dash">لا تُقال بالعربية</span></td>
     <td class="c-note"><textarea class="note" data-field="visit::visit.step.mirror::10::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
@@ -1451,11 +1451,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/visit.step.sleepy.mp3" aria-label="Play visit.step.sleepy">▶</button>
-        <span class="dur">6.50s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">2.93s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="visit::visit.step.sleepy::11::en"
-        rows="1">And when I know where the sugar bugs are, I&#39;ll spray the magic juice on them, so they go to sleep and I can take them away.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> And when I know where the sugar bugs are, I&#39;ll spray the magic juice on them, so they go to sleep and I can take them away.</p></td>
+        rows="1">Then the magic juice sends the sugar bugs to sleep.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> Then the magic juice sends the sugar bugs to sleep.</p></td>
     <td class="c-lang ar off"><span class="dash">لا تُقال بالعربية</span></td>
     <td class="c-note"><textarea class="note" data-field="visit::visit.step.sleepy::11::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr><tr class="evt gap"><td class="c-seq"></td><td colspan="4">
@@ -1471,11 +1471,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/visit.step.count.mp3" aria-label="Play visit.step.count">▶</button>
-        <span class="dur">6.27s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">2.23s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="visit::visit.step.count::12::en"
-        rows="1">This juice is only for the sugar bugs, so close your eyes for me and count along from one to ten.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> This juice is only for the sugar bugs, so close your eyes for me and count along from one to ten.</p></td>
+        rows="1">Close your eyes, and count with me to ten.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> Close your eyes, and count with me to ten.</p></td>
     <td class="c-lang ar off"><span class="dash">لا تُقال بالعربية</span></td>
     <td class="c-note"><textarea class="note" data-field="visit::visit.step.count::12::note" rows="1" placeholder="Note / action…"></textarea></td>
   </tr>
@@ -1489,7 +1489,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/visit.countToTen.mp3" aria-label="Play visit.countToTen">▶</button>
-        <span class="dur">16.35s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">16.03s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="visit::visit.countToTen::13::en"
         rows="1">One. Two. Three. Four. Five. Six. Seven. Eight. Nine. Ten.</textarea>
@@ -1509,11 +1509,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/visit.step.clean.mp3" aria-label="Play visit.step.clean">▶</button>
-        <span class="dur">8.17s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">2.88s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="visit::visit.step.clean::14::en"
-        rows="1">After that I&#39;ll use the little shower, to wash your teeth really well and take away every sugar bug, so they&#39;re strong and beautiful again.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> After that I&#39;ll use the little shower, to wash your teeth really well and take away every sugar bug, so they&#39;re strong and beautiful again.</p></td>
+        rows="1">Last, the little shower washes them all away.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> Last, the little shower washes them all away.</p></td>
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/visit.step.clean.mp3" aria-label="Play visit.step.clean">▶</button>
@@ -1536,7 +1536,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/visit.done.mp3" aria-label="Play visit.done">▶</button>
-        <span class="dur">4.09s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">4.27s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="visit::visit.done::15::en"
         rows="1">And that&#39;s the whole visit, {name}! You knew every single step!</textarea>
@@ -1561,7 +1561,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/milo.starEarned.mp3" aria-label="Play milo.starEarned">▶</button>
-        <span class="dur">1.67s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">1.81s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="visit::milo.starEarned::16::en"
         rows="1">You earned a star, {name}!</textarea>
@@ -1588,7 +1588,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
       </figure></div>
   
   <div class="totals">
-    <span>Spoken runtime — English <strong>8.9s</strong></span>
+    <span>Spoken runtime — English <strong>4.0s</strong></span>
     <span><bdi>العربية</bdi> <strong>11.6s</strong></span>
     <span class="muted">excludes pauses and time waiting for the child</span>
   </div>
@@ -1606,11 +1606,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/reward.narration.mp3" aria-label="Play reward.narration">▶</button>
-        <span class="dur">8.92s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">4.04s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="reward::reward.narration::0::en"
-        rows="1">Wow! We&#39;ve finished our trip to the dental clinic. And here is a certificate with your name on it, {name}, because you were so brilliant today.</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> Wow! We&#39;ve finished our trip to the dental clinic. And here is a certificate with your name on it, {name}, because you were so brilliant today.</p></td>
+        rows="1">We did it, {name}! Here&#39;s your certificate, with your name on it.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> We did it, {name}! Here&#39;s your certificate, with your name on it.</p></td>
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/reward.narration.mp3" aria-label="Play reward.narration">▶</button>
@@ -1639,7 +1639,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
   
   
   <div class="totals">
-    <span>Spoken runtime — English <strong>20.0s</strong></span>
+    <span>Spoken runtime — English <strong>20.2s</strong></span>
     <span><bdi>العربية</bdi> <strong>4.2s</strong></span>
     <span class="muted">excludes pauses and time waiting for the child</span>
   </div>
@@ -1657,7 +1657,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/spray.intro.mp3" aria-label="Play spray.intro">▶</button>
-        <span class="dur">6.78s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">7.62s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="spray::spray.intro::0::en"
         rows="1">The tooth wants a quiet little rest, {name}. You can close your eyes if you like. Count with me, slowly, to ten.</textarea>
@@ -1684,7 +1684,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/spray.count.1.mp3" aria-label="Play spray.count.1">▶</button>
-        <span class="dur">0.74s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">0.79s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="spray::spray.count.1::1::en"
         rows="1">One</textarea>
@@ -1711,7 +1711,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/spray.count.2.mp3" aria-label="Play spray.count.2">▶</button>
-        <span class="dur">0.93s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">0.84s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="spray::spray.count.2::2::en"
         rows="1">Two</textarea>
@@ -1738,7 +1738,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/spray.count.3.mp3" aria-label="Play spray.count.3">▶</button>
-        <span class="dur">0.97s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">1.02s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="spray::spray.count.3::3::en"
         rows="1">Three</textarea>
@@ -1765,7 +1765,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/spray.count.4.mp3" aria-label="Play spray.count.4">▶</button>
-        <span class="dur">0.79s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">0.74s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="spray::spray.count.4::4::en"
         rows="1">Four</textarea>
@@ -1792,7 +1792,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/spray.count.5.mp3" aria-label="Play spray.count.5">▶</button>
-        <span class="dur">0.88s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">0.84s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="spray::spray.count.5::5::en"
         rows="1">Five</textarea>
@@ -1819,7 +1819,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/spray.count.6.mp3" aria-label="Play spray.count.6">▶</button>
-        <span class="dur">0.79s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">0.84s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="spray::spray.count.6::6::en"
         rows="1">Six</textarea>
@@ -1846,7 +1846,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/spray.count.7.mp3" aria-label="Play spray.count.7">▶</button>
-        <span class="dur">0.74s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">0.84s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="spray::spray.count.7::7::en"
         rows="1">Seven</textarea>
@@ -1873,7 +1873,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/spray.count.8.mp3" aria-label="Play spray.count.8">▶</button>
-        <span class="dur">0.65s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">0.79s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="spray::spray.count.8::8::en"
         rows="1">Eight</textarea>
@@ -1900,7 +1900,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/spray.count.9.mp3" aria-label="Play spray.count.9">▶</button>
-        <span class="dur">0.65s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">0.84s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="spray::spray.count.9::9::en"
         rows="1">Nine</textarea>
@@ -1927,7 +1927,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/spray.count.10.mp3" aria-label="Play spray.count.10">▶</button>
-        <span class="dur">0.93s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">0.88s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="spray::spray.count.10::10::en"
         rows="1">Ten</textarea>
@@ -1954,7 +1954,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/spray.done.mp3" aria-label="Play spray.done">▶</button>
-        <span class="dur">5.11s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">4.13s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="spray::spray.done::11::en"
         rows="1">Great counting with me, {name}! The tooth feels calm and cozy now.</textarea>
@@ -1982,7 +1982,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
   
   
   <div class="totals">
-    <span>Spoken runtime — English <strong>22.2s</strong></span>
+    <span>Spoken runtime — English <strong>20.7s</strong></span>
     <span><bdi>العربية</bdi> <strong>11.1s</strong></span>
     <span class="muted">excludes pauses and time waiting for the child</span>
   </div>
@@ -2000,7 +2000,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/practice.brush.intro.mp3" aria-label="Play practice.brush.intro">▶</button>
-        <span class="dur">5.06s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">5.34s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="practice-brush::practice.brush.intro::0::en"
         rows="1">Oh no, {name} — this tooth has sticky spots! Grab the brush and clean them all!</textarea>
@@ -2025,7 +2025,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/tool.brush.name.mp3" aria-label="Play tool.brush.name">▶</button>
-        <span class="dur">1.35s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">1.25s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="practice-brush::tool.brush.name::1::en"
         rows="1">Polishing Brush</textarea>
@@ -2075,11 +2075,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/milo.praise.1.mp3" aria-label="Play milo.praise.1">▶</button>
-        <span class="dur">2.37s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">2.00s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="practice-brush::milo.praise.1::3::en"
-        rows="1">Well done, {name} — you cleaned it!</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> Well done, {name} — you cleaned it!</p></td>
+        rows="1">Well done, {name}! You cleaned it.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> Well done, {name}! You cleaned it.</p></td>
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/milo.praise.1.mp3" aria-label="Play milo.praise.1">▶</button>
@@ -2100,11 +2100,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/milo.praise.2.mp3" aria-label="Play milo.praise.2">▶</button>
-        <span class="dur">1.81s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">1.58s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="practice-brush::milo.praise.2::4::en"
-        rows="1">Look at that — it&#39;s shiny now!</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> Look at that — it&#39;s shiny now!</p></td>
+        rows="1">Look — it&#39;s shiny now!</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> Look — it&#39;s shiny now!</p></td>
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/milo.praise.2.mp3" aria-label="Play milo.praise.2">▶</button>
@@ -2125,11 +2125,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/milo.praise.3.mp3" aria-label="Play milo.praise.3">▶</button>
-        <span class="dur">2.23s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">1.76s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="practice-brush::milo.praise.3::5::en"
-        rows="1">Lovely. That tickled the tooth a little!</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> Lovely. That tickled the tooth a little!</p></td>
+        rows="1">Nice. That tickled a little!</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> Nice. That tickled a little!</p></td>
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/milo.praise.3.mp3" aria-label="Play milo.praise.3">▶</button>
@@ -2150,11 +2150,11 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/milo.praise.4.mp3" aria-label="Play milo.praise.4">▶</button>
-        <span class="dur">3.11s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">1.86s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="practice-brush::milo.praise.4::6::en"
-        rows="1">Bravo, tooth hero — you have such gentle hands!</textarea>
-      <p class="was" dir="ltr" hidden><span>was</span> Bravo, tooth hero — you have such gentle hands!</p></td>
+        rows="1">Bravo! Such gentle hands.</textarea>
+      <p class="was" dir="ltr" hidden><span>was</span> Bravo! Such gentle hands.</p></td>
     <td class="c-lang ar">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/ar/milo.praise.4.mp3" aria-label="Play milo.praise.4">▶</button>
@@ -2175,7 +2175,7 @@ footer{color:var(--muted);font-size:.8rem;padding:2rem 1.25rem;text-align:center
     <td class="c-lang en">
       <div class="row-top">
         <button class="play" data-src="../../app/public/audio/en/practice.brush.done.mp3" aria-label="Play practice.brush.done">▶</button>
-        <span class="dur">3.81s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
+        <span class="dur">4.46s</span><span class="badge tts" title="Microsoft Edge neural TTS, voice en-US-AndrewMultilingualNeural">TTS</span>
       </div>
       <textarea class="edit" dir="ltr" data-field="practice-brush::practice.brush.done::7::en"
         rows="1">Wow! You made it sparkle, {name}! What a clean tooth!</textarea>
