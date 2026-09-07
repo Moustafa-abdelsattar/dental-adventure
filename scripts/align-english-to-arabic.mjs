@@ -9,10 +9,11 @@
 // "Mister Thirsty, like a straw, so no sugar bugs go down into your tummy",
 // the English was "I'm a straw! I drink up the water in your mouth."
 //
-// Every line below is a translation of the Arabic transcript for the same id,
-// keeping the app's established English vocabulary (magic juice, little
-// shower, sticky spots) and its {name} placeholder wherever the Arabic
-// addresses the child directly as "يا بطل يا صغنون".
+// Every line below carries the meaning of the Arabic transcript for the same
+// id, said as briefly as English can say it. The first pass at this translated
+// the Arabic sentence for sentence and ran long — Egyptian Arabic is warm and
+// unhurried, and rendered literally it filled the screen and outstayed the
+// picture. Short sentences, one idea each.
 //
 // Usage: node scripts/align-english-to-arabic.mjs [--dry]
 import { readFileSync, writeFileSync } from 'node:fs'
@@ -26,99 +27,82 @@ const enPath = resolve(root, 'app/src/content/strings/en.json')
 const ALIGNED = {
   // ── the welcome ────────────────────────────────────────────────────────
   // "أهلًا يا بطل يا صغنون. النهاردة عندنا رحلة في عيادة الأسنان."
-  'milo.welcome': "Hello there, {name}! Today we're going on a trip to the dental clinic.",
+  'milo.welcome': "Hello, {name}! Today we're going on a trip to the dentist.",
 
   // ── the clinic ─────────────────────────────────────────────────────────
   // "أول خطوة إن إحنا هنتعرف على شوية حاجات موجودة معانا في العيادة..."
-  'clinic.intro':
-    "First we're going to get to know some of the things here in the clinic. Press on each one, {name}, and it will tell you what it does.",
+  'clinic.intro': "Let's meet the clinic, {name}. Press each thing to see what it does.",
   // "أنا كرسي الأسنان زي المرجيحة بطلع وبنزلها..."
-  'clinic.chair.desc':
-    "I'm the dental chair. I'm like a swing — I go up and I come down, so you stay comfy and happy while we fight the sugar bugs.",
+  'clinic.chair.desc': "I'm the dental chair. I'm like a swing — up and down, so you stay comfy.",
   // "أنا بنور زي الشمس الشموسة عشان نعرف نشوف أسناننا كويس"
-  'clinic.light.desc': "I shine like the warm sunshine, so we can see your teeth nice and clearly.",
-  // "أنا مستر عطشان زي الشاليمو بشفط المية من بقك عشان السوسة ما تنزلش في بطنك"
-  'clinic.suction.desc':
-    "I'm Mister Thirsty. I'm like a straw — I sip the water out of your mouth, so no sugar bugs go down into your tummy.",
+  'clinic.light.desc': "I shine like the sun, so we can see your teeth clearly.",
+  // "أنا مستر عطشان زي الشاليمو بشفط المية من بقك..."
+  'clinic.suction.desc': "I'm Mister Thirsty. I sip the water up, so none goes down your tummy.",
   // "أنا برش مية وهوا على الأسنان عشان نغسل أسنانك كويس وننشفها."
-  'clinic.syringe.desc': "I puff water and air onto your teeth, to wash them well and dry them off.",
+  'clinic.syringe.desc': "I puff water and air, to wash your teeth and dry them.",
 
   // ── the tools ──────────────────────────────────────────────────────────
   // "هنلعب لعبة، وهي إنك هتخربش الألوان الموجودة قدامك..."
-  'tools.intro':
-    "Let's play a game, {name}. Scratch the colours in front of you, and each tool will appear and tell you what it does.",
+  'tools.intro': "Let's play, {name}. Scratch each colour, and a tool pops out to say hello.",
   // "أنا المراية بنشوف فيها أسنانك كويس من كل الاتجاهات."
-  'tool.mirror.desc': "I'm the mirror. We look in me to see your teeth clearly, from every side.",
-  // "أنا عدّاي الأسنان اللي بيعد أسنانك وبيتأكد إنها ما فيهاش أي سوسة"
-  'tool.explorer.desc':
-    "I'm the tooth counter. I count your teeth one by one and make sure no sugar bugs are hiding in them.",
+  'tool.mirror.desc': "I'm the mirror. I show your teeth from every side.",
+  // "أنا عدّاي الأسنان اللي بيعد أسنانك..."
+  'tool.explorer.desc': "I'm the tooth counter. I count your teeth and check every one.",
   // "أنا العصير السحري اللي بيترش على الأسنان عشان ينيّم السوسة..."
-  'tool.spray.desc':
-    "I'm the magic juice. I get sprayed on the tooth to send the sugar bugs to sleep, so we can catch them and they can't run around your mouth.",
+  'tool.spray.desc': "I'm the magic juice. I send the sugar bugs to sleep.",
   // "أنا الدش الصغنون بتاع الأسنان اللي بيرش مية كتييير..."
-  'tool.brush.desc':
-    "I'm the little tooth shower. I sprinkle lots and lots of water to wash your teeth really well and take away any sugar bugs.",
+  'tool.brush.desc': "I'm the little shower. I wash your teeth until they're clean.",
 
   // ── the tooth ──────────────────────────────────────────────────────────
-  // "دلوقتي بقى هنجرب مع بعض ازاي هنشيل السوسة الوحشة دي من على أسنانك."
-  'prepare.intro': "Now let's try together, {name}, how we take those sugar bugs off your tooth.",
-  // "أول خطوة إنك هترش العصير السحري على السن علشان السوسة تموت"
-  'prepare.step.spray': "First step: spray the magic juice on the tooth, to send the sugar bugs to sleep.",
-  // "تاني خطوة هتستخدم الدش الصغنون عشان تشيل السوسة الموجودة على السنّة."
-  'prepare.step.brush': "Second step: use the little shower to take the sugar bugs off the tooth.",
-  // "كده انت قدرت تشيل كل السوسة الموجودة على السنة والسنة رجعت قوية..."
-  'prepare.done':
-    "There — you took away every sugar bug, and the tooth is strong again. Very well done, {name}.",
+  // "دلوقتي بقى هنجرب مع بعض ازاي هنشيل السوسة الوحشة دي..."
+  'prepare.intro': "Let's take the sugar bugs off this tooth, {name}.",
+  // "أول خطوة إنك هترش العصير السحري على السن..."
+  'prepare.step.spray': "First, the magic juice. It sends the sugar bugs to sleep.",
+  // "تاني خطوة هتستخدم الدش الصغنون..."
+  'prepare.step.brush': "Now the little shower. It washes them away.",
+  // "كده انت قدرت تشيل كل السوسة... والسنة رجعت قوية"
+  'prepare.done': "Every sugar bug gone! The tooth is strong again, {name}.",
   // "عاش يا نجم نظفتها"
-  'milo.praise.1': "Well done, {name} — you cleaned it!",
+  'milo.praise.1': "Well done, {name}! You cleaned it.",
   // "شوف كده بقت لامعة"
-  'milo.praise.2': "Look at that — it's shiny now!",
+  'milo.praise.2': "Look — it's shiny now!",
   // "حلو دي دغدغة السنة شوية"
-  'milo.praise.3': "Lovely. That tickled the tooth a little!",
+  'milo.praise.3': "Nice. That tickled a little!",
   // "برافو يا بطل السنان إيدك خفيفة"
-  'milo.praise.4': "Bravo, tooth hero — you have such gentle hands!",
+  'milo.praise.4': "Bravo! Such gentle hands.",
 
   // ── the visit ──────────────────────────────────────────────────────────
-  // AR splits this over visit.meetDr + visit.maskPrompt; English has one line,
-  // so it carries both: "دلوقتي هنتعرف مع بعض على الدكتور..." and
-  // "أهلًا يا بطل يا صغنون. أنا الدكتور اللي هكون موجودة معاك في العيادة..."
-  'visit.meetDr':
-    "Now let's meet the dentist who will be with you in the clinic. Hello, {name}! I'm your dentist. You'll always find me wearing a mask — but I'm smiling at you underneath it. Try pressing on it.",
-  // "شفت بقى على طول هقوم بضحك لك طول ما انت بطل شطور"
-  'visit.maskOff': "See? I'll be smiling at you the whole time, as long as you're my brave hero.",
-  // AR splits this over visit.handPrompt + visit.stopSignal; English has one.
+  // carries the Arabic meetDr and maskPrompt
+  'visit.meetDr': "Let's meet your dentist, {name}. Hello! I wear a mask, but I'm smiling underneath. Tap it.",
+  // "شفت بقى على طول هقوم بضحك لك..."
+  'visit.maskOff': "See? I'm smiling at you the whole time.",
+  // carries the Arabic handPrompt and stopSignal
   'visit.stopSignal':
-    "You and I are going to be friends and fight the sugar bugs together, {name}. I'll help your teeth grow strong and beautiful again. So here is our agreement: you're a brave hero, you'll sit in the dental chair, and if anything bothers you at all, you raise your hand — and I will stop straight away. Let's try it together now.",
+    "We're a team, {name}. Here's our deal: if anything bothers you, raise your hand. I'll stop straight away. Try it!",
   // "بالظبط كده. شاطر يا بطل يا صغننون"
   'visit.stopSignalDone': "Exactly like that. Well done, {name}!",
-  // The four steps below are spoken as one recording in Arabic
-  // (visit.simulation); English says them one at a time, so each takes its
-  // sentence from that recording.
-  'visit.simulation': "Now let's go through all the steps together, from the moment you come into the clinic.",
-  'visit.step.chair': "First step: you'll sit on the dental chair. It's a lovely chair, and it goes up and it comes down.",
-  'visit.step.light': "Then I'll turn on the light, so I can see your teeth nice and clearly.",
-  'visit.step.mirror': "After that I'll use the mirror, to see your teeth from every direction.",
-  'visit.step.sleepy':
-    "And when I know where the sugar bugs are, I'll spray the magic juice on them, so they go to sleep and I can take them away.",
-  // "عشان العصير ده بتاع السوسة بس... تغمض عينك وتعد من واحد لعشرة"
-  'visit.step.count':
-    "This juice is only for the sugar bugs, so close your eyes for me and count along from one to ten.",
+  // the four steps below are one recording in Arabic (visit.simulation)
+  'visit.simulation': "Let's walk through the whole visit together.",
+  'visit.step.chair': "First, you sit in the chair. It goes up and down.",
+  'visit.step.light': "Then the light comes on, so I can see your teeth.",
+  'visit.step.mirror': "Next, the mirror shows me every side.",
+  'visit.step.sleepy': "Then the magic juice sends the sugar bugs to sleep.",
+  // "تغمض عينك وتعد من واحد لعشرة"
+  'visit.step.count': "Close your eyes, and count with me to ten.",
   // "بعد كده هستخدم الدش الصغنون عشان أغسل أسنانك كويس أوي..."
-  'visit.step.clean':
-    "After that I'll use the little shower, to wash your teeth really well and take away every sugar bug, so they're strong and beautiful again.",
+  'visit.step.clean': "Last, the little shower washes them all away.",
 
   // ── between the modules ────────────────────────────────────────────────
-  // "شاطر جدًا يا بطل يا صغنون، أنت كده عديت أول خطوة..."
-  'story.calmer1': "Very well done, {name}. You've finished the first step — you know the main things in the clinic now.",
-  // "كده احنا خلصنا تاني خطوة في رحلتنا بإنك تعرف عيادة الأسنان"
-  'story.calmer2': "That's the second step of our trip done. You're really getting to know the dental clinic.",
-  // "واااو. إمتى قدرت تشيل كل السوس الموجود على السنة والسنة رجعت قوية..."
-  'story.calmer3': "Wow! You took away all the sugar bugs and the tooth is strong again. Very well done, {name}.",
+  // "شاطر جدًا يا بطل... عديت أول خطوة"
+  'story.calmer1': "Well done, {name}. That's the clinic — you know it now.",
+  // "كده احنا خلصنا تاني خطوة في رحلتنا"
+  'story.calmer2': "Second step done. You know the tools now.",
+  // "واااو... السنة رجعت قوية. شاطر جدا"
+  'story.calmer3': "The sugar bugs are gone and the tooth is strong. Well done, {name}.",
 
   // ── the certificate ────────────────────────────────────────────────────
-  // "وااااو كده احنا خلصنا رحلتنا في عيادة الأسنان. ودي شهادة تقدير في اسمك..."
-  'reward.narration':
-    "Wow! We've finished our trip to the dental clinic. And here is a certificate with your name on it, {name}, because you were so brilliant today.",
+  // "خلصنا رحلتنا... ودي شهادة تقدير في اسمك"
+  'reward.narration': "We did it, {name}! Here's your certificate, with your name on it.",
 }
 
 const en = JSON.parse(readFileSync(enPath, 'utf8'))
