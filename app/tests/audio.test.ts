@@ -1,4 +1,4 @@
-import { audio } from '../src/lib/audio'
+import { audio, __resetAudioPrimingForTests } from '../src/lib/audio'
 
 class FakeAudio {
   static instances: FakeAudio[] = []
@@ -76,4 +76,28 @@ test('talking state toggles around a clip', () => {
   void audio.say('en', 'milo.great')
   FakeAudio.instances.at(-1)!.onended?.()
   expect(states).toEqual([true, false])
+})
+
+// Safari on iOS only plays sound a gesture started, and every screen after the
+// language picker speaks from an effect. A returning child never touches the
+// language screen, so without a real play inside the unlocking gesture they
+// hear nothing all session.
+test('unlock plays a silent primer inside the gesture, once', async () => {
+  __resetAudioPrimingForTests()
+  FakeAudio.instances = []
+
+  audio.unlock()
+  const primers = FakeAudio.instances.filter(a => a.src.startsWith('data:audio/wav'))
+  expect(primers).toHaveLength(1)
+  expect(primers[0].volume, 'silent, so nobody hears the thing that unlocks the sound').toBe(0)
+  // play() is called inside the gesture; the stop rides on its promise
+  expect(primers[0].paused).toBe(false)
+  await Promise.resolve()
+  expect(primers[0].paused, 'and it is stopped again straight after').toBe(true)
+
+  audio.unlock()
+  expect(
+    FakeAudio.instances.filter(a => a.src.startsWith('data:audio/wav')),
+    'priming twice would cut off whatever is already speaking',
+  ).toHaveLength(1)
 })

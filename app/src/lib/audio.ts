@@ -3,6 +3,10 @@ import type { Lang, StringId } from './i18n'
 const MUSIC_VOL = 0.25
 const DUCK_VOL = 0.08
 
+/** A zero-sample WAV. Enough to open playback, short enough to hear nothing. */
+const SILENT_WAV =
+  'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA='
+
 class AudioController {
   private unlocked = false
   private current: HTMLAudioElement | null = null
@@ -15,8 +19,36 @@ class AudioController {
   private muted = false
   private talkingSubs = new Set<(talking: boolean) => void>()
 
+  private primed = false
+
   unlock() {
     this.unlocked = true
+    if (this.primed) return
+    this.primed = true
+
+    // Setting a flag is not what unlocks audio.
+    //
+    // Safari on iOS only lets a page play sound that a user gesture started,
+    // and almost none of this game's narration begins in a handler — every
+    // screen speaks from an effect when it mounts. The language screen gets
+    // away with it because `choose()` calls say() inside the click. A child who
+    // already picked a language never sees that screen again: they land on the
+    // welcome, whose line starts in an effect, and hear nothing for the whole
+    // session.
+    //
+    // So play one silent frame here instead, synchronously inside the gesture
+    // that called us. That is what actually opens playback, and every later
+    // line rides on it.
+    try {
+      const primer = new Audio(SILENT_WAV)
+      primer.volume = 0
+      void Promise.resolve(primer.play())
+        .then(() => primer.pause())
+        .catch(() => {})
+    } catch {
+      // No Audio available (jsdom, or a browser refusing outright). The flag is
+      // still set, so nothing downstream changes behaviour.
+    }
   }
 
   onTalkingChange(cb: (t: boolean) => void) {
@@ -254,3 +286,11 @@ class AudioController {
 }
 
 export const audio = new AudioController()
+
+/**
+ * Test seam. The controller is a module singleton, so the priming flag survives
+ * between tests in a file and the second test to call `unlock` sees a no-op.
+ */
+export const __resetAudioPrimingForTests = () => {
+  ;(audio as unknown as { primed: boolean }).primed = false
+}
