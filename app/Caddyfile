@@ -4,13 +4,13 @@
 	auto_https off
 }
 
-# Kept identical to the Caddyfile at the repo root. There are two because it is
-# not certain from inside the repo which directory Railway builds from: the root
-# Dockerfile exists and looks like the deployment, but the headers it sets have
-# never appeared on the live site, and an app/.railwayignore exists while a root
-# one does not — both of which point at this directory being the service root.
-# Whichever it is, the site is served the same way. If that question ever gets
-# settled, delete the other one.
+# This is the deployment. Railway's service root is app/, which was not obvious
+# from inside the repo — there was an identical Dockerfile and Caddyfile at the
+# root that looked like the deployment and had not served a request in months.
+# The proof is this file: cache headers added at the root never appeared on the
+# live site, and the moment the same rules were added here they did. The root
+# pair has been deleted; do not add one back without checking which directory
+# Railway builds from, because an edit there is silently a no-op.
 :{$PORT:3000} {
 	encode gzip
 	root * /srv
