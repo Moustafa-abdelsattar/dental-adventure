@@ -1,0 +1,37 @@
+{
+	admin off
+	persist_config off
+	auto_https off
+}
+
+# Kept identical to the Caddyfile at the repo root. There are two because it is
+# not certain from inside the repo which directory Railway builds from: the root
+# Dockerfile exists and looks like the deployment, but the headers it sets have
+# never appeared on the live site, and an app/.railwayignore exists while a root
+# one does not — both of which point at this directory being the service root.
+# Whichever it is, the site is served the same way. If that question ever gets
+# settled, delete the other one.
+:{$PORT:3000} {
+	encode gzip
+	root * /srv
+
+	# Vite writes a content hash into every filename under /assets, so one of
+	# those URLs can never mean anything else. Cache them for a year.
+	@hashed path /assets/*
+	header @hashed Cache-Control "public, max-age=31536000, immutable"
+
+	# Everything else keeps its name across deploys — index.html, sw.js, the
+	# manifest, and every narration clip — and the live site has been sending no
+	# Cache-Control at all for them. With no header a browser falls back to
+	# heuristic caching, roughly a tenth of the file's age, so a returning child
+	# is served a stale index.html naming last month's asset hashes. Worse, the
+	# same applied to sw.js, so the browser never re-fetched it, never saw the
+	# new service worker, and the app could not fix itself.
+	@unhashed {
+		not path /assets/*
+	}
+	header @unhashed Cache-Control "no-cache"
+
+	try_files {path} /index.html
+	file_server
+}

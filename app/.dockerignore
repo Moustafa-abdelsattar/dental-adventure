@@ -1,0 +1,11 @@
+# COPY . ./ would otherwise drag a local node_modules and dist into the image,
+# overwriting the ones npm ci and the build just produced.
+node_modules
+dist
+.vite
+test-results
+playwright-report
+.playwright-mcp
+shots
+demo-artifact
+*.log
